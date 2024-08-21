@@ -1,0 +1,57 @@
+{
+  "id": "3765105000814488101",
+  "closing_Date": null,
+  "last_Name": null,
+  "city": null,
+  "zip_Code": null,
+  "lead_Category": null,
+  "tile_Category": null,
+  "tiling_Date_Likely_Purchase_Date": null,
+  "lead_Created_Time": "2024-01-11T17:11:49+05:30",
+  "pcH_Email_Id": "testing@gmail.com",
+  "l2_Owner": null,
+  "pch": "A K Naveen",
+  "sales_Person_Employee_code": "1112530",
+  "lead_Type": null,
+  "dealer_Type": null,
+  "deal_Name": "test not contactable -4",
+  "l2_Status": null,
+  "sales_Person": "Keshiv Sharma Gargashya",
+  "tile_Requirement_in_Area_Sq_ft": null,
+  "mobile": null,
+  "l1_Team_Remarks": null,
+  "layout": {
+    "id": "3765105000000091023",
+    "name": "Standard"
+  },
+  "lead_Status": null,
+  "cP_Name": null,
+  "stage": "Qualification",
+  "amount": "100",
+  "l2_Remarks": "testing",
+  "type": "B2B",
+  "created_By": {
+    "id": "3765105000326377004",
+    "name": "CRM  Masters",
+    "email": "orientbell.zoho2022@gmail.com"
+  },
+  "modified_By": {
+    "id": "3765105000326377004",
+    "name": "CRM  Masters",
+    "email": "orientbell.zoho2022@gmail.com"
+  },
+  "owner": {
+    "id": "3765105000326377004",
+    "name": "CRM  Masters",
+    "email": "orientbell.zoho2022@gmail.com"
+  },
+  "design_Selection": "sdfghj",
+  "dealer_Code": null,
+  "dealer_Name": "sdfghj",
+  "schedule_Store_Visit_Date": null,
+  "l2_Date_of_Visit_Planned_Visited": null,
+  "obL_Exec_Amount": null,
+  "obL_Exec_FLS_change_status_Remarks": "testing update",
+  "obL_Exec_FLS_lost_lead_Remarks": null,
+  "email": null
+}
