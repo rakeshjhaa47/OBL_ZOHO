@@ -3,6 +3,7 @@ using OBL_Zoho.Models;
 using OBL_Zoho.Models.Response;
 using OBL_Zoho.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Dynamic;
 using System.Net.Mime;
 
 namespace OBL_Zoho.Controllers
@@ -457,6 +458,19 @@ namespace OBL_Zoho.Controllers
         public async Task<IActionResult> GetTileArea()
         {
             return Ok(await _zohoService.GetTileAreaAsync());
+        }
+
+        [SwaggerOperation(Tags = new[] { "GenerateExcel" })]
+        [HttpPost]
+        [Route("GenerateExcel")]
+        public async Task<IActionResult> GenerateExcel([FromBody] ExpandoObject person)
+        {
+            if (person == null || !person.Any())
+                return BadRequest("No data provided.");
+
+            var response = await _zohoService.GenerateExcelAsync(person);
+           return File(response.FileContent, response.ContentType, response.FileName);
+         
         }
     }
 }

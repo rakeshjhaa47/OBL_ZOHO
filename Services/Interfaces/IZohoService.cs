@@ -1,5 +1,6 @@
 ﻿using OBL_Zoho.Models;
 using OBL_Zoho.Models.Response;
+using System.Dynamic;
 
 namespace OBL_Zoho.Services.Interfaces
 {
@@ -44,5 +45,6 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> GetLeadDetailsBYIdAsync(string accessToken, string id);
         Task<BaseResponse> SaveWonDataAsync(string accessToken, CategoryDetailsDatum obj);
         Task<BaseResponse> GetTileAreaAsync();
+        Task<ExcelResponse> GenerateExcelAsync(ExpandoObject person);
     }
 }

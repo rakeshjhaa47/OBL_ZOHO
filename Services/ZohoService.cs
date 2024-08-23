@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ClosedXML.Excel;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using OBL_Zoho.Models;
 using OBL_Zoho.Models.Helper;
 using OBL_Zoho.Models.Response;
 using OBL_Zoho.Services.Interfaces;
-using System.Drawing;
+using System.Dynamic;
 using System.Net.Http.Headers;
 
 namespace OBL_Zoho.Services
@@ -1387,6 +1388,47 @@ namespace OBL_Zoho.Services
             return new BaseResponse
             {
                 Response = TileAreaData.Areas
+            };
+        }
+
+
+        public async Task<ExcelResponse> GenerateExcelAsync(ExpandoObject person)
+        {
+            byte[] fileContent;
+            // Create a new Excel workbook
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Sheet1");
+
+                // Add headers and data dynamically
+                int column = 1;
+                foreach (var kvp in person)
+                {
+                    // Add header (key as the header)
+                    worksheet.Cell(1, column).Value = kvp.Key;
+
+                    // Add value (corresponding value in the next row)
+                    worksheet.Cell(2, column).Value = kvp.Value?.ToString() ?? string.Empty;
+
+                    column++;
+                }
+
+                // Convert to byte array
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    stream.Position = 0;
+
+                    // Return the file
+                    fileContent = stream.ToArray();
+                }
+            }
+
+            return new ExcelResponse
+            {
+                FileContent = fileContent,
+                FileName = "person.xlsx", 
+                ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // Set the MIME type
             };
         }
     }
