@@ -16,7 +16,12 @@
         public string Sales_Person_Email_ID { get; set; }
         public int? Tile_Requirement_in_Area_Sq_ft { get; set; }
         public DateTime Created_Time { get; set; }
-        public object Amount { get; set; }
+        private object _amount;
+        public object Amount
+        {
+            get => _amount ?? 0m;
+            set => _amount = value;
+        }
         public string City { get; set; }
         public string Tiling_Date_Likely_Purchase_Date { get; set; }
         public string PCH_Email_ID { get; set; }
