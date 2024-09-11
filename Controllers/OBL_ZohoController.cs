@@ -275,7 +275,7 @@ namespace OBL_Zoho.Controllers
         [Produces(MediaTypeNames.Application.Json)]
         public async Task<IActionResult> AddJunkLead(string accessToken, string id, BlueprintUpdateRequest_JunkLead bur)
         {
-            return Ok(await _zohoService.UpdateBlueprint_JunkLead(accessToken,id, bur));
+            return Ok(await _zohoService.UpdateBlueprint_JunkLead(accessToken, id, bur));
         }
 
         /// <summary>
@@ -314,17 +314,17 @@ namespace OBL_Zoho.Controllers
         [SwaggerOperation(Tags = new[] { "RecordsWithEms" })]
         [HttpPost]
         [Route("records-with-ems")]
-        public async Task<IActionResult> RecordsWithEms(string accessToken, string pchEmailId,bool isEmployee=false)
+        public async Task<IActionResult> RecordsWithEms(string accessToken, string pchEmailId, bool isEmployee = false)
         {
             return Ok(await _zohoService.GetRecordsWithEms(accessToken, pchEmailId, isEmployee));
         }
 
-       
+
 
         [SwaggerOperation(Tags = new[] { "RecordsWithEms" })]
         [HttpPost]
         [Route("get-zonal-manager-data")]
-        public async Task<IActionResult> GetZonalManagerData( string code)
+        public async Task<IActionResult> GetZonalManagerData(string code)
         {
             return Ok(await _zohoService.GetZonalManagerData(code));
         }
@@ -376,7 +376,7 @@ namespace OBL_Zoho.Controllers
         [Route("get-data-by-zhcode")]
         public async Task<IActionResult> GetDataByZHCode(string accessToken, string pageNumber, string code)
         {
-            return Ok(await _zohoService.GetDataByZHCode(accessToken, pageNumber,code));
+            return Ok(await _zohoService.GetDataByZHCode(accessToken, pageNumber, code));
         }
 
         [SwaggerOperation(Tags = new[] { "RecordsWithEms" })]
@@ -469,8 +469,33 @@ namespace OBL_Zoho.Controllers
                 return BadRequest("No data provided.");
 
             var response = await _zohoService.GenerateExcelAsync(person);
-           return File(response.FileContent, response.ContentType, response.FileName);
-         
+            return File(response.FileContent, response.ContentType, response.FileName);
+
+        }
+
+
+        [SwaggerOperation(Tags = new[] { "ActiveDeal" })]
+        [HttpPost]
+        [Route("ActiveDeal")]
+        public async Task<IActionResult> ActiveDeal(string PCH_Email_ID, string Start_Date, string End_Date)
+        {
+            return Ok(await _zohoService.ActiveDealAsync(PCH_Email_ID, Start_Date, End_Date));
+        }
+
+        [SwaggerOperation(Tags = new[] { "Deal" })]
+        [HttpPost]
+        [Route("Deal")]
+        public async Task<IActionResult> Deal(string? ZM_Code, string? ZH_Code, string Start_Date, string End_Date)
+        {
+            return Ok(await _zohoService.DealAsync(ZM_Code, ZH_Code, Start_Date, End_Date));
+        }
+
+        [SwaggerOperation(Tags = new[] { "DealSort" })]
+        [HttpPost]
+        [Route("DealSort")]
+        public async Task<IActionResult> DealSort(string PCH_Email_ID, string Start_Date, string End_Date)
+        {
+            return Ok(await _zohoService.DealSortAsync(PCH_Email_ID, Start_Date, End_Date));
         }
     }
 }
