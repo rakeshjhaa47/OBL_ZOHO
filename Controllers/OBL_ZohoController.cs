@@ -473,29 +473,12 @@ namespace OBL_Zoho.Controllers
 
         }
 
-
-        [SwaggerOperation(Tags = new[] { "ActiveDeal" })]
-        [HttpPost]
-        [Route("ActiveDeal")]
-        public async Task<IActionResult> ActiveDeal(string PCH_Email_ID, string Start_Date, string End_Date)
-        {
-            return Ok(await _zohoService.ActiveDealAsync(PCH_Email_ID, Start_Date, End_Date));
-        }
-
         [SwaggerOperation(Tags = new[] { "GetLeadsForZm" })]
         [HttpPost]
         [Route("GetLeadsForZm")]
         public async Task<IActionResult> GetLeadsForZm(string? ZM_Code, string? ZH_Code, string Start_Date, string End_Date)
         {
             return Ok(await _zohoService.GetLeadsForAsync(ZM_Code, ZH_Code, Start_Date, End_Date));
-        }
-
-        [SwaggerOperation(Tags = new[] { "DealSort" })]
-        [HttpPost]
-        [Route("DealSort")]
-        public async Task<IActionResult> DealSort(string PCH_Email_ID, string Start_Date, string End_Date)
-        {
-            return Ok(await _zohoService.DealSortAsync(PCH_Email_ID, Start_Date, End_Date));
         }
     }
 }

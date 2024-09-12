@@ -2,6 +2,7 @@
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.EMMA;
+using Irony.Parsing;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using OBL_Zoho.Models;
@@ -1394,7 +1395,6 @@ namespace OBL_Zoho.Services
             };
         }
 
-
         public async Task<ExcelResponse> GenerateExcelAsync(ExpandoObject person)
         {
             byte[] fileContent;
@@ -1434,21 +1434,54 @@ namespace OBL_Zoho.Services
                 ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // Set the MIME type
             };
         }
-
-        public async Task<BaseResponse> ActiveDealAsync(string PCH_Email_ID, string Start_Date, string End_Date)
+        
+        public async Task<BaseResponse> GetLeadsForAsync(string? zm_code, string? zh_code, string start_Date, string end_Date)
         {
-
-
-
+            var response = new LeadDataResponse();
+            int offSet = 0;
             var token = await GenerateRefreshToken();
+
+            while (true)
+            {
+                var dd = await GetLeadsForZMData(token.Response.access_token, zm_code, zh_code, start_Date, end_Date, offSet);
+                if (dd == null || dd?.data == null)
+                {
+                    break;
+                }
+
+                response.data.AddRange(dd.data);
+
+                if (dd.dealDataInfo?.more_records == true)
+                {
+                    offSet += 200;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            response.dealDataInfo = new DealDataInfo
+            {
+                count = response.data.Count,
+                more_records = false
+            };
+
+            return new BaseResponse
+            {
+                Response = response
+            };
+
+        }
+
+        private async Task<LeadDataResponse> GetLeadsForZMData(string accessToken, string? zm_code, string? zh_code,string start_Date, string end_Date,int offset)
+        {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
 
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token.Response.access_token);
-            request.Headers.Add("Authorization", $"Zoho-oauthtoken {token.Response.access_token}");
-            var content = new StringContent("{\r\n    \"select_query\": \"select Closing_Date,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time from Deals where ((PCH_Email_ID = '" + PCH_Email_ID +"') and (Created_Time between '"+ Start_Date + "' and '"+ End_Date + " ')) and Stage not in ('Qualification', 'Closed Won', 'Junk Lead', 'Closed Lost','Not Contactable - 4') ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset 0\"\r\n}", null, "application/json");
-
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
+            var content = new StringContent($@"{{""select_query"": ""select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total from Deals where ((ZM_Code ='{zm_code}'or ZH_Code='{zh_code}') and (Created_Time between '{start_Date}' and '{end_Date}')) and Stage not in ('Qualification', 'Closed Won', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4') group by Stage limit 200 offset {offset}""}}", null, "application/json");
 
             request.Content = content;
 
@@ -1456,69 +1489,8 @@ namespace OBL_Zoho.Services
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
 
-            return new BaseResponse
-            {
-                Response = JsonConvert.DeserializeObject<ActiveDataResponse>(result),
-            };
-
+            return JsonConvert.DeserializeObject<LeadDataResponse>(result);
         }
-        
-        public async Task<BaseResponse> DealSortAsync(string PCH_Email_ID, string Start_Date, string End_Date)
-        {
-
-
-
-            var token = await GenerateRefreshToken();
-            var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
-
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token.Response.access_token);
-            request.Headers.Add("Authorization", $"Zoho-oauthtoken {token.Response.access_token}");
-            var content = new StringContent("{\r\n    \"select_query\": \"select Closing_Date,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time from Deals where ((PCH_Email_ID = '" + PCH_Email_ID + "') and (Created_Time between '" + Start_Date + "' and '" + End_Date + " ')) and Stage not in ('Qualification', 'Closed Won', 'Junk Lead', 'Closed Lost','Not Contactable - 4') ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset 0\"\r\n}", null, "application/json");
-
-
-            request.Content = content;
-
-            var response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            var result = await response.Content.ReadAsStringAsync();
-
-            return new BaseResponse
-            {
-                Response = JsonConvert.DeserializeObject<ActiveDataResponse>(result),
-            };
-
-        }
-        
-        public async Task<BaseResponse> GetLeadsForAsync(string? ZM_Code, string? ZH_Code, string Start_Date, string End_Date)
-        {
-
-
-
-            var token = await GenerateRefreshToken();
-            var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
-
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token.Response.access_token);
-            request.Headers.Add("Authorization", $"Zoho-oauthtoken {token.Response.access_token}");
-            var content = new StringContent("{\r\n    \"select_query\": \"select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total from Deals where ((ZM_Code ='" + ZM_Code + "'or ZH_Code=' " + ZH_Code + "') and (Created_Time between '" + Start_Date + "' and '" + End_Date + " ')) and Stage not in ('Qualification', 'Closed Won', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4') group by Stage limit 200 offset 0\"\r\n}", null, "application/json");
-
-
-            request.Content = content;
-
-            var response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            var result = await response.Content.ReadAsStringAsync();
-
-            return new BaseResponse
-            {
-                Response = JsonConvert.DeserializeObject<LeadDataResponse>(result),
-            };
-
-        }
-        
     }
 }
 

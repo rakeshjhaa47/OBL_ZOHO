@@ -46,10 +46,6 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> SaveWonDataAsync(string accessToken, CategoryDetailsDatum obj);
         Task<BaseResponse> GetTileAreaAsync();
         Task<ExcelResponse> GenerateExcelAsync(ExpandoObject person);
-
-        Task<BaseResponse> ActiveDealAsync(string PCH_Email_ID, string Start_Date, string End_Date);
         Task<BaseResponse> GetLeadsForAsync(string? ZM_Code, string? ZH_Code, string Start_Date, string End_Date);
-        Task<BaseResponse> DealSortAsync(string PCH_Email_ID, string Start_Date, string End_Date);
-
     }
 }

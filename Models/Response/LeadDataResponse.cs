@@ -2,8 +2,13 @@
 {
     public class LeadDataResponse
     {
+        public LeadDataResponse()
+        {
+            data = new List<DealListData>();
+            dealDataInfo = new DealDataInfo();
+        }
         public List<DealListData> data { get; set; }
-        public Info DealDataInfo { get; set; }
+        public DealDataInfo dealDataInfo { get; set; }
     }
 
     public class DealListData
@@ -16,8 +21,8 @@
 
     public class DealDataInfo
     {
-        public int count { get; set; }
-        public bool more_records { get; set; }
+        public int? count { get; set; }
+        public bool? more_records { get; set; }
     }
 
     
