@@ -48,7 +48,7 @@ namespace OBL_Zoho.Services.Interfaces
         Task<ExcelResponse> GenerateExcelAsync(ExpandoObject person);
 
         Task<BaseResponse> ActiveDealAsync(string PCH_Email_ID, string Start_Date, string End_Date);
-        Task<BaseResponse> DealAsync(string? ZM_Code, string? ZH_Code, string Start_Date, string End_Date);
+        Task<BaseResponse> GetLeadsForAsync(string? ZM_Code, string? ZH_Code, string Start_Date, string End_Date);
         Task<BaseResponse> DealSortAsync(string PCH_Email_ID, string Start_Date, string End_Date);
 
     }

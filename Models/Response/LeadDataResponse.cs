@@ -1,6 +1,6 @@
 ﻿namespace OBL_Zoho.Models.Response
 {
-    public class DealData
+    public class LeadDataResponse
     {
         public List<DealListData> data { get; set; }
         public Info DealDataInfo { get; set; }

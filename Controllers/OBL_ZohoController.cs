@@ -482,12 +482,12 @@ namespace OBL_Zoho.Controllers
             return Ok(await _zohoService.ActiveDealAsync(PCH_Email_ID, Start_Date, End_Date));
         }
 
-        [SwaggerOperation(Tags = new[] { "Deal" })]
+        [SwaggerOperation(Tags = new[] { "GetLeadsForZm" })]
         [HttpPost]
-        [Route("Deal")]
-        public async Task<IActionResult> Deal(string? ZM_Code, string? ZH_Code, string Start_Date, string End_Date)
+        [Route("GetLeadsForZm")]
+        public async Task<IActionResult> GetLeadsForZm(string? ZM_Code, string? ZH_Code, string Start_Date, string End_Date)
         {
-            return Ok(await _zohoService.DealAsync(ZM_Code, ZH_Code, Start_Date, End_Date));
+            return Ok(await _zohoService.GetLeadsForAsync(ZM_Code, ZH_Code, Start_Date, End_Date));
         }
 
         [SwaggerOperation(Tags = new[] { "DealSort" })]

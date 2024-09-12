@@ -1491,7 +1491,7 @@ namespace OBL_Zoho.Services
 
         }
         
-        public async Task<BaseResponse> DealAsync(string? ZM_Code, string? ZH_Code, string Start_Date, string End_Date)
+        public async Task<BaseResponse> GetLeadsForAsync(string? ZM_Code, string? ZH_Code, string Start_Date, string End_Date)
         {
 
 
@@ -1514,7 +1514,7 @@ namespace OBL_Zoho.Services
 
             return new BaseResponse
             {
-                Response = JsonConvert.DeserializeObject<DealData>(result),
+                Response = JsonConvert.DeserializeObject<LeadDataResponse>(result),
             };
 
         }
