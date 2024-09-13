@@ -480,5 +480,22 @@ namespace OBL_Zoho.Controllers
         {
             return Ok(await _zohoService.GetLeadsForAsync(ZM_Code, ZH_Code, Start_Date, End_Date));
         }
+
+
+        [SwaggerOperation(Tags = new[] { "GetActiveLeads" })]
+        [HttpPost]
+        [Route("GetActiveLeads")]
+        public async Task<IActionResult> GetActiveLeads(string PCH_Email_ID, string Start_Date, string End_Date)
+        {
+            return Ok(await _zohoService.GetActiveLeadsAsync(PCH_Email_ID, Start_Date, End_Date));
+        }
+
+        [SwaggerOperation(Tags = new[] { "DealSort" })]
+        [HttpPost]
+        [Route("DealSort")]
+        public async Task<IActionResult> DealSort(string PCH_Email_ID, string Start_Date, string End_Date)
+        {
+            return Ok(await _zohoService.DealSortDataAsync(PCH_Email_ID, Start_Date, End_Date));
+        }
     }
 }

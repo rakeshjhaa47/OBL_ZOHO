@@ -47,5 +47,9 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> GetTileAreaAsync();
         Task<ExcelResponse> GenerateExcelAsync(ExpandoObject person);
         Task<BaseResponse> GetLeadsForAsync(string? ZM_Code, string? ZH_Code, string Start_Date, string End_Date);
+
+        Task<BaseResponse> GetActiveLeadsAsync(string PCH_Email_ID, string Start_Date, string End_Date);
+
+        Task<BaseResponse> DealSortDataAsync(string PCH_Email_ID, string Start_Date, string End_Date);
     }
 }

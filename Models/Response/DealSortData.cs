@@ -2,6 +2,12 @@
 {
     public class DealSortData
     {
+        public DealSortData()
+        {
+            data = new List<SortData>();
+            info = new SortDataInfo();
+        }
+
         public List<SortData> data { get; set; }
         public SortDataInfo info { get; set; }
     }

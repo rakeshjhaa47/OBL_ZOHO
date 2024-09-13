@@ -1,7 +1,12 @@
 ﻿namespace OBL_Zoho.Models.Response
 {
-    public class ActiveDataResponse
+    public class ActiveLeadsResponse
     {
+        public ActiveLeadsResponse()
+        {
+            data = new List<ActiveData>();
+            info = new ActiveDataInfo();
+        }
         public List<ActiveData> data { get; set; }
         public ActiveDataInfo info { get; set; }
     }
@@ -27,8 +32,8 @@
 
     public class ActiveDataInfo
     {
-        public int count { get; set; }
-        public bool more_records { get; set; }
+        public int? count { get; set; }
+        public bool? more_records { get; set; }
     }
 
     
