@@ -44,7 +44,6 @@ namespace OBL_Zoho.Services
             var response = client.PostAsync(request, content).Result;
             var result = await response.Content.ReadAsStringAsync();
             dynamic userResponse = JsonConvert.DeserializeObject<AccessTokenResponse>(result);
-            await GetAllEmployeeData();
             return new BaseResponse
             {
                 Response = userResponse,
