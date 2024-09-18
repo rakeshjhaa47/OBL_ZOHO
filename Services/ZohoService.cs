@@ -1,8 +1,4 @@
-﻿using Azure.Core;
-using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Drawing;
-using DocumentFormat.OpenXml.EMMA;
-using Irony.Parsing;
+﻿using ClosedXML.Excel;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using OBL_Zoho.Models;
@@ -1434,7 +1430,7 @@ namespace OBL_Zoho.Services
             };
         }
         
-        public async Task<BaseResponse> GetLeadsForAsync(string? zm_code, string? zh_code, string start_Date, string end_Date)
+        public async Task<BaseResponse> GetLeadsForAsync(string? zm_code, string? zh_code)
         {
             var response = new LeadDataResponse();
             int offSet = 0;
@@ -1442,7 +1438,7 @@ namespace OBL_Zoho.Services
 
             while (true)
             {
-                var dd = await GetLeadsForZMData(token.Response.access_token, zm_code, zh_code, start_Date, end_Date, offSet);
+                var dd = await GetLeadsForZMData(token.Response.access_token, zm_code, zh_code, offSet);
                 if (dd == null || dd?.data == null)
                 {
                     break;
@@ -1473,24 +1469,21 @@ namespace OBL_Zoho.Services
 
         }
 
-        private async Task<LeadDataResponse> GetLeadsForZMData(string accessToken, string? zm_code, string? zh_code,string start_Date, string end_Date,int offset)
+        private async Task<LeadDataResponse> GetLeadsForZMData(string accessToken, string? zm_code, string? zh_code, int offset)
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
-            var content = new StringContent($@"{{""select_query"": ""select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total from Deals where ((ZM_Code ='{zm_code}'or ZH_Code='{zh_code}') and (Created_Time between '{start_Date}' and '{end_Date}')) and Stage not in ('Qualification', 'Closed Won', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4') group by Stage limit 200 offset {offset}""}}", null, "application/json");
+            var content = new StringContent($@"{{""select_query"": ""select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total from Deals where ((ZM_Code ='{zm_code}' or ZH_Code='{zh_code}') and Stage not in ('Qualification', 'Closed Won', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4')) group by Stage limit 200 offset {offset}""}}", null, "application/json");
 
             request.Content = content;
-
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
-
             return JsonConvert.DeserializeObject<LeadDataResponse>(result);
         }
-
 
         public async Task<BaseResponse> GetActiveLeadsAsync(string PCH_Email_ID, string Start_Date, string End_Date)
         {

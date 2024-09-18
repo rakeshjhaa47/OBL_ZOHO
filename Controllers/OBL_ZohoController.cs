@@ -476,9 +476,9 @@ namespace OBL_Zoho.Controllers
         [SwaggerOperation(Tags = new[] { "GetZhLeadSummary" })]
         [HttpPost]
         [Route("GetZhLeadSummary")]
-        public async Task<IActionResult> GetZhLeadSummary(string? ZM_Code, string? ZH_Code, string Start_Date, string End_Date)
+        public async Task<IActionResult> GetZhLeadSummary(string? ZM_Code, string? ZH_Code)
         {
-            return Ok(await _zohoService.GetLeadsForAsync(ZM_Code, ZH_Code, Start_Date, End_Date));
+            return Ok(await _zohoService.GetLeadsForAsync(ZM_Code, ZH_Code));
         }
 
 
