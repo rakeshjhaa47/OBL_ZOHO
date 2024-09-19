@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OBL_Zoho.Models;
 using OBL_Zoho.Services;
 using OBL_Zoho.Services.Interfaces;
+using AnyTimePediatricsAPI.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +38,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed(_ => true));
-
+app.ConfigureCustomExceptionMiddleware();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
