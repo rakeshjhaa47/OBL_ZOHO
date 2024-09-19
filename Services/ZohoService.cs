@@ -1430,7 +1430,7 @@ namespace OBL_Zoho.Services
             };
         }
         
-        public async Task<BaseResponse> GetLeadsForAsync(string? zm_code, string? zh_code)
+        public async Task<BaseResponse> GetLeadsForAsync(string? zm_code, string? zh_code, string? BM_Code, string? Sales_Person_Emp_ID)
         {
             var response = new LeadDataResponse();
             int offSet = 0;
@@ -1438,7 +1438,7 @@ namespace OBL_Zoho.Services
 
             while (true)
             {
-                var dd = await GetLeadsForZMData(token.Response.access_token, zm_code, zh_code, offSet);
+                var dd = await GetLeadsForZMData(token.Response.access_token, zm_code, zh_code, BM_Code, Sales_Person_Emp_ID, offSet);
                 if (dd == null || dd?.data == null)
                 {
                     break;
@@ -1469,14 +1469,14 @@ namespace OBL_Zoho.Services
 
         }
 
-        private async Task<LeadDataResponse> GetLeadsForZMData(string accessToken, string? zm_code, string? zh_code, int offset)
+        private async Task<LeadDataResponse> GetLeadsForZMData(string accessToken, string? zm_code, string? zh_code, string? bm_code, string? sales_erson_emp_id, int offset)
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
-            var content = new StringContent($@"{{""select_query"": ""select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total from Deals where ((ZM_Code ='{zm_code}' or ZH_Code='{zh_code}') and Stage not in ('Qualification', 'Closed Won', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4')) group by Stage limit 200 offset {offset}""}}", null, "application/json");
+            var content = new StringContent($@"{{""select_query"": ""select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total from Deals where ((((ZM_Code ='{zm_code}'or ZH_Code='{zh_code}') or (BM_Code = '{bm_code}')) or (Sales_Person_Emp_ID = '{sales_erson_emp_id}')) and Stage not in ('Qualification', 'Closed Won', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4')) group by Stage limit 200 offset {offset}""}}", null, "application/json");
 
             request.Content = content;
             var response = await client.SendAsync(request);
