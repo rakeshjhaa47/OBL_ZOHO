@@ -13,10 +13,10 @@
 
     public class DealListData
     {
-        public object Total_Amount { get; set; }
+        public double? Total_Amount { get; set; }
         public string Stage { get; set; }
         public int Total_Count { get; set; }
-        public int Tile_Total { get; set; }
+        public double? Tile_Total { get; set; }
     }
 
     public class DealDataInfo

@@ -712,32 +712,32 @@ namespace OBL_Zoho.Services
 
         }
 
-        public async Task<BaseResponse> GetSalesEmployeeData(string accessToken, string salesPersonEmpID)
+        //public async Task<BaseResponse> GetSalesEmployeeData(string accessToken, string salesPersonEmpID)
+        //{
+        //    var request = $"https://www.zohoapis.com/crm/v6/coql";
+        //    //var body = new object{ "select_query"= "select ZH_Code,ZH_Name,ZH_Email_ID,ZM_Code,ZM_Name,ZM_Mail_ID,BH_Emp_ID,BH_Name,BH_mail_ID from Dealer where Sales_Person_Email = '<Sales Email Id>' limit 200 offset 0"};
+
+        //    var client = new HttpClient();
+        //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+        //    var response = client.GetAsync(request).Result;
+        //    var result = await response.Content.ReadAsStringAsync();
+
+
+        //    return new BaseResponse
+        //    {
+        //        Response = JsonConvert.DeserializeObject<SearchData>(result),
+        //    };
+        //}
+
+        public async Task<BaseResponse> GetZonalManagerData(string refreshToken, string code)
         {
-            var request = $"https://www.zohoapis.com/crm/v6/coql";
-            //var body = new object{ "select_query"= "select ZH_Code,ZH_Name,ZH_Email_ID,ZM_Code,ZM_Name,ZM_Mail_ID,BH_Emp_ID,BH_Name,BH_mail_ID from Dealer where Sales_Person_Email = '<Sales Email Id>' limit 200 offset 0"};
-
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
-            var response = client.GetAsync(request).Result;
-            var result = await response.Content.ReadAsStringAsync();
-
-
-            return new BaseResponse
-            {
-                Response = JsonConvert.DeserializeObject<SearchData>(result),
-            };
-        }
-
-        public async Task<BaseResponse> GetZonalManagerData(string code)
-        {
-            var token = await GenerateRefreshToken();
+            //var token = await GenerateRefreshToken();
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
 
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token.Response.access_token);
-            request.Headers.Add("Authorization", $"Zoho-oauthtoken {token.Response.access_token}");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
             var content = new StringContent("{\r\n    \"select_query\": \"select ZM_Code,ZM_Name,ZM_Mail_ID from Dealer where ZH_Code = " + code + " limit 200 offset 0\"\r\n}", null, "application/json");
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -749,15 +749,15 @@ namespace OBL_Zoho.Services
                 Response = JsonConvert.DeserializeObject<ZMResponse>(result),
             };
         }
-        public async Task<BaseResponse> GetBranchManagerData(string code)
+        public async Task<BaseResponse> GetBranchManagerData( string refreshToken, string code)
         {
-            var token = await GenerateRefreshToken();
+            //var token = await GenerateRefreshToken();
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
 
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token.Response.access_token);
-            request.Headers.Add("Authorization", $"Zoho-oauthtoken {token.Response.access_token}");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
             var content = new StringContent("{\r\n    \"select_query\": \"select BH_Name,BH_Emp_ID,BH_mail_ID from Dealer where ZM_Code = " + code + " limit 200 offset 0\"\r\n}", null, "application/json");
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -770,15 +770,15 @@ namespace OBL_Zoho.Services
             };
         }
 
-        public async Task<BaseResponse> GetSalesEmployeeData(string code)
+        public async Task<BaseResponse> GetSalesEmployeeData(string refreshToken, string code)
         {
-            var token = await GenerateRefreshToken();
+            //var token = await GenerateRefreshToken();
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
 
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token.Response.access_token);
-            request.Headers.Add("Authorization", $"Zoho-oauthtoken {token.Response.access_token}");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
             var content = new StringContent("{\r\n    \"select_query\": \"select Name,Sales_Person_Name,Sales_Person_Email from Dealer where BH_Emp_ID = " + code + " limit 200 offset 0\"\r\n}", null, "application/json");
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -791,15 +791,15 @@ namespace OBL_Zoho.Services
             };
         }
 
-        public async Task<BaseResponse> GetSalesEmployeePersonalData(string emailId)
+        public async Task<BaseResponse> GetSalesEmployeePersonalData(string refreshToken, string emailId)
         {
-            var token = await GenerateRefreshToken();
+            //var token = await GenerateRefreshToken();
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
 
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token.Response.access_token);
-            request.Headers.Add("Authorization", $"Zoho-oauthtoken {token.Response.access_token}");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
             var content = new StringContent("{\"select_query\": \"select ZH_Code,ZH_Name,ZH_Email_ID,ZM_Code,ZM_Name,ZM_Mail_ID,BH_Emp_ID,BH_Name,BH_mail_ID from Dealer where Sales_Person_Email  = '" + emailId + "' limit 200 offset 0\"\r\n}", null, "application/json");
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -812,15 +812,15 @@ namespace OBL_Zoho.Services
             };
         }
 
-        public async Task<BaseResponse> GetDetailsByCode(string code)
+        public async Task<BaseResponse> GetDetailsByCode(string refreshToken, string code)
         {
-            var token = await GenerateRefreshToken();
+            //var token = await GenerateRefreshToken();
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
 
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token.Response.access_token);
-            request.Headers.Add("Authorization", $"Zoho-oauthtoken {token.Response.access_token}");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
             var content = new StringContent("{\r\n    \"select_query\": \"select Sales_Person_Email from Dealer where Name='" + code + "' limit 200 offset 0\"\r\n}", null, "application/json");
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -893,15 +893,15 @@ namespace OBL_Zoho.Services
             };
         }
 
-        public async Task<BaseResponse> GetDetailsByZMCode(string code)
+        public async Task<BaseResponse> GetDetailsByZMCode(string refreshToken, string code)
         {
-            var token = await GenerateRefreshToken();
+            //var token = await GenerateRefreshToken();
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
 
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token.Response.access_token);
-            request.Headers.Add("Authorization", $"Zoho-oauthtoken {token.Response.access_token}");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
             var content = new StringContent("{\r\n    \"select_query\": \"select BH_Name,BH_Emp_ID,BH_mail_ID,Sales_Person_Email,Name,Sales_Person_Name from Dealer where ZM_Code= '" + code + "' limit 200 offset 0\"\r\n}", null, "application/json");
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -1141,15 +1141,15 @@ namespace OBL_Zoho.Services
             };
         }
 
-        private async Task<RootData> GetDataByEmployeeData(string accessToken, string pchEmailId, int offSet, bool isEmployee)
+        private async Task<RootData> GetDataByEmployeeData(string refreshToken, string pchEmailId, int offSet, bool isEmployee)
         {
             StringContent content;
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
             var createdTimeThreshold = DateTime.Now.AddDays(-275).ToString("yyyy-MM-ddTHH:mm:ssK");
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
-            request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
 
             if (isEmployee)
             {
@@ -1170,15 +1170,15 @@ namespace OBL_Zoho.Services
 
         }
 
-        public async Task<BaseResponse> GetRecordsWithEmsData(string pchEmailId, bool isEmployee)
+        public async Task<BaseResponse> GetRecordsWithEmsData(string refreshToken, string pchEmailId, bool isEmployee)
         {
             var response = new RootData();
             int offSet = 0;
-            var token = await GenerateRefreshToken();
+            //var token = await GenerateRefreshToken();
 
             while (true)
             {
-                var dd = await GetDataByEmployeeData(token.Response.access_token, pchEmailId, offSet, isEmployee);
+                var dd = await GetDataByEmployeeData(refreshToken, pchEmailId, offSet, isEmployee);
                 if (dd == null || dd?.data == null)
                 {
                     break;
@@ -1208,14 +1208,14 @@ namespace OBL_Zoho.Services
             };
         }
 
-        private async Task<RootData> GetDataByZhCodeData(string accessToken, string code, int offSet)
+        private async Task<RootData> GetDataByZhCodeData(string refreshToken, string code, int offSet)
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
             var createdTimeThreshold = DateTime.Now.AddDays(-275).ToString("yyyy-MM-ddTHH:mm:ssK");
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
-            request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
             var content = new StringContent("{\"select_query\": \"select Closing_Date,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time from Deals where ((ZH_Code = '" + code+"') and (Created_Time >= '" +createdTimeThreshold +"')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset " + offSet+ "\"}");
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -1226,16 +1226,16 @@ namespace OBL_Zoho.Services
 
         }
 
-        public async Task<BaseResponse> GetDataByZHCodeData(string code)
+        public async Task<BaseResponse> GetDataByZHCodeData(string refreshToken, string code)
         {
 
             var response = new RootData();
             int offSet = 0;
-            var token = await GenerateRefreshToken();
+            //var token = await GenerateRefreshToken();
 
             while (true)
             {
-                var dd = await GetDataByZhCodeData(token.Response.access_token, code, offSet);
+                var dd = await GetDataByZhCodeData(refreshToken, code, offSet);
                 if (dd == null || dd?.data == null)
                 {
                     break;
@@ -1430,15 +1430,15 @@ namespace OBL_Zoho.Services
             };
         }
         
-        public async Task<BaseResponse> GetLeadsForAsync(string? zm_code, string? zh_code, string? BM_Code, string? Sales_Person_Emp_ID)
+        public async Task<BaseResponse> GetLeadsForAsync(string refreshToken, string? zm_code, string? zh_code, string? BM_Code, string? Sales_Person_Emp_ID)
         {
             var response = new LeadDataResponse();
             int offSet = 0;
-            var token = await GenerateRefreshToken();
+            //var token = await GenerateRefreshToken();
 
             while (true)
             {
-                var dd = await GetLeadsForZMData(token.Response.access_token, zm_code, zh_code, BM_Code, Sales_Person_Emp_ID, offSet);
+                var dd = await GetLeadsForZMData(refreshToken, zm_code, zh_code, BM_Code, Sales_Person_Emp_ID, offSet);
                 if (dd == null || dd?.data == null)
                 {
                     break;
@@ -1469,14 +1469,15 @@ namespace OBL_Zoho.Services
 
         }
 
-        private async Task<LeadDataResponse> GetLeadsForZMData(string accessToken, string? zm_code, string? zh_code, string? bm_code, string? sales_erson_emp_id, int offset)
+        private async Task<LeadDataResponse> GetLeadsForZMData(string refreshToken, string? zm_code, string? zh_code, string? bm_code, string? sales_person_emp_id, int offset)
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+            var createdTimeThreshold = DateTime.Now.AddDays(-90).ToString("yyyy-MM-ddTHH:mm:ssK");
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
-            request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
-            var content = new StringContent($@"{{""select_query"": ""select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total from Deals where ((((ZM_Code ='{zm_code}'or ZH_Code='{zh_code}') or (BM_Code = '{bm_code}')) or (Sales_Person_Emp_ID = '{sales_erson_emp_id}')) and Stage not in ('Qualification', 'Closed Won', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4')) group by Stage limit 200 offset {offset}""}}", null, "application/json");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
+            var content = new StringContent($@"{{""select_query"": ""select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total from Deals where (((((ZM_Code ='{zm_code}'or ZH_Code='{zh_code}') or (BM_Code = '{bm_code}')) or (Sales_Person_Emp_ID = '{sales_person_emp_id}')) and Stage in ('Qualification', 'Closed Won', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared')) and (Created_Time >= '{createdTimeThreshold}')) group by Stage limit 200 offset {offset}""}}", null, "application/json");
 
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -1485,15 +1486,15 @@ namespace OBL_Zoho.Services
             return JsonConvert.DeserializeObject<LeadDataResponse>(result);
         }
 
-        public async Task<BaseResponse> GetActiveLeadsAsync(string PCH_Email_ID, string Start_Date, string End_Date)
+        public async Task<BaseResponse> GetActiveLeadsAsync(string refreshToken, string PCH_Email_ID, string Start_Date, string End_Date)
         {
             var response = new ActiveLeadsResponse();
             int offSet = 0;
-            var token = await GenerateRefreshToken();
+            //var token = await GenerateRefreshToken();
 
             while (true)
             {
-                var dd = await ActiveLead(token.Response.access_token, PCH_Email_ID, Start_Date, End_Date, offSet);
+                var dd = await ActiveLead(refreshToken, PCH_Email_ID, Start_Date, End_Date, offSet);
                 if (dd == null || dd?.data == null)
                 {
                     break;
@@ -1524,13 +1525,13 @@ namespace OBL_Zoho.Services
 
         }
 
-        private async Task<ActiveLeadsResponse> ActiveLead(string accessToken, string PCH_Email_ID, string Start_Date, string End_Date, int offset)
+        private async Task<ActiveLeadsResponse> ActiveLead(string refreshToken, string PCH_Email_ID, string Start_Date, string End_Date, int offset)
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
-            request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
             var content = new StringContent($@"{{""select_query"": ""select Closing_Date,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time from Deals where ((PCH_Email_ID = '{PCH_Email_ID}') and (Created_Time between '{Start_Date}' and '{End_Date}')) and Stage not in ('Qualification', 'Closed Won', 'Junk Lead', 'Closed Lost','Not Contactable - 4')  limit 200 offset {offset} ""}}", null, "application/json");
             request.Content = content;
 
@@ -1542,15 +1543,15 @@ namespace OBL_Zoho.Services
         }
 
 
-        public async Task<BaseResponse> DealSortDataAsync(string PCH_Email_ID, string Start_Date, string End_Date)
+        public async Task<BaseResponse> DealSortDataAsync(string refreshToken, string PCH_Email_ID, string Start_Date, string End_Date)
         {
             var response = new DealSortData();
             int offSet = 0;
-            var token = await GenerateRefreshToken();
+            //var token = await GenerateRefreshToken();
 
             while (true)
             {
-                var dd = await SortDealData(token.Response.access_token, PCH_Email_ID, Start_Date, End_Date, offSet);
+                var dd = await SortDealData(refreshToken, PCH_Email_ID, Start_Date, End_Date, offSet);
                 if (dd == null || dd?.data == null)
                 {
                     break;
@@ -1581,13 +1582,13 @@ namespace OBL_Zoho.Services
 
         }
 
-        private async Task<DealSortData> SortDealData(string accessToken, string PCH_Email_ID, string Start_Date, string End_Date, int offset)
+        private async Task<DealSortData> SortDealData(string refreshToken, string PCH_Email_ID, string Start_Date, string End_Date, int offset)
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
-            request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
             var content = new StringContent($@"{{""select Closing_Date,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time from Deals where ((PCH_Email_ID = '{PCH_Email_ID}') and (Created_Time between '{Start_Date}' and '{End_Date}')) and Stage not in ('Qualification', 'Closed Won', 'Junk Lead', 'Closed Lost','Not Contactable - 4') ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset {offset} ""}}", null, "application/json");
             request.Content = content;
 
@@ -1596,6 +1597,62 @@ namespace OBL_Zoho.Services
             var result = await response.Content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<DealSortData>(result);
+        }
+
+        public async Task<BaseResponse> ClosedWonAsync(string refreshToken, string? ZM_Code, string? ZH_Code, string? BM_Code, string? Sales_Person_Emp_ID,  string Start_Date, string End_Date)
+        {
+            var response = new SummaryResponse();
+            int offSet = 0;
+            //var token = await GenerateRefreshToken();
+
+            while (true)
+            {
+                var dd = await Closed(refreshToken, ZM_Code, ZH_Code, BM_Code,Sales_Person_Emp_ID, Start_Date, End_Date, offSet);
+                if (dd == null || dd?.data == null)
+                {
+                    break;
+                }
+
+                response.data.AddRange(dd.data);
+
+                if (dd.info?.more_records == true)
+                {
+                    offSet += 200;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            response.info = new SummaryDataInfo
+            {
+                count = response.data.Count,
+                more_records = false
+            };
+
+            return new BaseResponse
+            {
+                Response = response
+            };
+
+        }
+
+        private async Task<SummaryResponse> Closed(string refreshToken, string? ZM_Code, string? ZH_Code, string? BM_Code, string? Sales_Person_Emp_ID,  string Start_Date, string End_Date, int offSet)
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
+            var content = new StringContent($@"{{""select_query"": ""select Stage,Amount,Closing_Date from Deals where (((((((ZM_Code ='{ZM_Code}'or ZH_Code='{ZH_Code}') or (BM_Code = '{BM_Code}')) or (Sales_Person_Emp_ID = '{Sales_Person_Emp_ID}')) and (Stage ='Closed Won')) and (Closing_Date is not null)) and (Amount is not null)) and (Created_Time between '{Start_Date}' and '{End_Date}')) limit 200 offset {offSet} ""}}", null, "application/json");
+            request.Content = content;
+
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<SummaryResponse>(result);
         }
     }
 }
