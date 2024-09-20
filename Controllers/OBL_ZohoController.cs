@@ -38,16 +38,6 @@ namespace OBL_Zoho.Controllers
             return Ok(await _zohoService.GenerateAccessToken());
         }
 
-        [SwaggerOperation(Tags = new[] { "Access token" })]
-        [HttpPost]
-        [Route("generate-refresh-token")]
-        [Consumes(MediaTypeNames.Application.Json)]
-        [Produces(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> GenerateRefreshToken()
-        {
-            return Ok(await _zohoService.GenerateRefreshToken());
-        }
-
         /// <summary>
         /// Get records
         /// </summary>
@@ -334,51 +324,51 @@ namespace OBL_Zoho.Controllers
         [SwaggerOperation(Tags = new[] { "RecordsWithEms" })]
         [HttpPost]
         [Route("get-zonal-manager-data")]
-        public async Task<IActionResult> GetZonalManagerData(string refreshToken,string code)
+        public async Task<IActionResult> GetZonalManagerData(string code)
         {
-            return Ok(await _zohoService.GetZonalManagerData(refreshToken,code));
+            return Ok(await _zohoService.GetZonalManagerData(code));
         }
 
         [SwaggerOperation(Tags = new[] { "RecordsWithEms" })]
         [HttpPost]
         [Route("get-brach-manager-data")]
-        public async Task<IActionResult> GetBranchManagerData(string refreshToken,string code)
+        public async Task<IActionResult> GetBranchManagerData(string code)
         {
-            return Ok(await _zohoService.GetBranchManagerData(refreshToken,code));
+            return Ok(await _zohoService.GetBranchManagerData(code));
         }
 
 
         [SwaggerOperation(Tags = new[] { "RecordsWithEms" })]
         [HttpPost]
         [Route("get-sales-employee-data")]
-        public async Task<IActionResult> GetSalesEmployeeData(string refreshToken, string code)
+        public async Task<IActionResult> GetSalesEmployeeData(string code)
         {
-            return Ok(await _zohoService.GetSalesEmployeeData(refreshToken, code));
+            return Ok(await _zohoService.GetSalesEmployeeData(code));
         }
 
         [SwaggerOperation(Tags = new[] { "RecordsWithEms" })]
         [HttpPost]
         [Route("get-sales-employee-personal-data")]
-        public async Task<IActionResult> GetSalesEmployeePersonalData(string refreshToken, string code)
+        public async Task<IActionResult> GetSalesEmployeePersonalData(string code)
         {
-            return Ok(await _zohoService.GetSalesEmployeePersonalData(refreshToken, code));
+            return Ok(await _zohoService.GetSalesEmployeePersonalData(code));
         }
 
 
         [SwaggerOperation(Tags = new[] { "RecordsWithEms" })]
         [HttpPost]
         [Route("get-details-by-code")]
-        public async Task<IActionResult> GetDetailsByCode(string refreshToken, string code)
+        public async Task<IActionResult> GetDetailsByCode(string code)
         {
-            return Ok(await _zohoService.GetDetailsByCode(refreshToken, code));
+            return Ok(await _zohoService.GetDetailsByCode(code));
         }
 
         [SwaggerOperation(Tags = new[] { "RecordsWithEms" })]
         [HttpPost]
         [Route("get-details-by-zmcode")]
-        public async Task<IActionResult> GetDetailsByZMCode(string refreshToken, string code)
+        public async Task<IActionResult> GetDetailsByZMCode(string code)
         {
-            return Ok(await _zohoService.GetDetailsByZMCode(refreshToken, code));
+            return Ok(await _zohoService.GetDetailsByZMCode(code));
         }
         
         [SwaggerOperation(Tags = new[] { "RecordsWithEms" })]
@@ -424,18 +414,18 @@ namespace OBL_Zoho.Controllers
         [SwaggerOperation(Tags = new[] { "RecordsWithEms" })]
         [HttpPost]
         [Route("get-Employyee-Leads")]
-        public async Task<IActionResult> GetEmployyeeLeads(string refreshToken, string pchEmailId, bool isEmployee = false)
+        public async Task<IActionResult> GetEmployyeeLeads(string pchEmailId, bool isEmployee = false)
         {
-            return Ok(await _zohoService.GetRecordsWithEmsData(refreshToken, pchEmailId, isEmployee));
+            return Ok(await _zohoService.GetRecordsWithEmsData(pchEmailId, isEmployee));
         }
 
 
         [SwaggerOperation(Tags = new[] { "RecordsWithEms" })]
         [HttpPost]
         [Route("Get-ZhLeads")]
-        public async Task<IActionResult> GetZhLeads( string refreshToken, string code)
+        public async Task<IActionResult> GetZhLeads(string code)
         {
-            return Ok(await _zohoService.GetDataByZHCodeData(refreshToken, code));
+            return Ok(await _zohoService.GetDataByZHCodeData(code));
         }
 
         [SwaggerOperation(Tags = new[] { "RecordsWithEms" })]
@@ -486,35 +476,35 @@ namespace OBL_Zoho.Controllers
         [SwaggerOperation(Tags = new[] { "GetZhLeadSummary" })]
         [HttpPost]
         [Route("GetZhLeadSummary")]
-        public async Task<IActionResult> GetZhLeadSummary( string refreshToken, string? ZM_Code, string? ZH_Code,string? BM_Code,string? Sales_Person_Emp_ID)
+        public async Task<IActionResult> GetZhLeadSummary(string? ZM_Code, string? ZH_Code,string? BM_Code,string? Sales_Person_Emp_ID)
         {
-            return Ok(await _zohoService.GetLeadsForAsync(refreshToken, ZM_Code, ZH_Code,BM_Code,Sales_Person_Emp_ID));
+            return Ok(await _zohoService.GetLeadsForAsync(ZM_Code, ZH_Code,BM_Code,Sales_Person_Emp_ID));
         }
 
 
         [SwaggerOperation(Tags = new[] { "GetActiveLeadByDate" })]
         [HttpPost]
         [Route("GetActiveLeadByDate")]
-        public async Task<IActionResult> GetActiveLeadByDate(string refreshToken, string PCH_Email_ID, string Start_Date, string End_Date)
+        public async Task<IActionResult> GetActiveLeadByDate(string PCH_Email_ID, string Start_Date, string End_Date)
         {
-            return Ok(await _zohoService.GetActiveLeadsAsync(refreshToken, PCH_Email_ID, Start_Date, End_Date));
+            return Ok(await _zohoService.GetActiveLeadsAsync(PCH_Email_ID, Start_Date, End_Date));
         }
 
         [SwaggerOperation(Tags = new[] { "DealSort" })]
         [HttpPost]
         [Route("DealSort")]
-        public async Task<IActionResult> DealSort(string refreshToken, string PCH_Email_ID, string Start_Date, string End_Date)
+        public async Task<IActionResult> DealSort(string PCH_Email_ID, string Start_Date, string End_Date)
         {
-            return Ok(await _zohoService.DealSortDataAsync(refreshToken, PCH_Email_ID, Start_Date, End_Date));
+            return Ok(await _zohoService.DealSortDataAsync(PCH_Email_ID, Start_Date, End_Date));
         }
 
 
         [SwaggerOperation(Tags = new[] { "GetSummaryDashboard" })]
         [HttpPost]
         [Route("GetSummaryDashboard")]
-        public async Task<IActionResult> GetSummaryDashboard(string refreshToken, string? ZM_Code, string? ZH_Code, string? BM_Code, string? Sales_Person_Emp_ID,   string Start_Date, string End_Date)
+        public async Task<IActionResult> GetSummaryDashboard(string? ZM_Code, string? ZH_Code, string? BM_Code, string? Sales_Person_Emp_ID,   string Start_Date, string End_Date)
         {
-            return Ok(await _zohoService.ClosedWonAsync(refreshToken, ZM_Code, ZH_Code, BM_Code, Sales_Person_Emp_ID, Start_Date, End_Date));
+            return Ok(await _zohoService.ClosedWonAsync(ZM_Code, ZH_Code, BM_Code, Sales_Person_Emp_ID, Start_Date, End_Date));
         }
     }
 }
