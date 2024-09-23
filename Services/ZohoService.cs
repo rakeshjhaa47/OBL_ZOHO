@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Drawing;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using OBL_Zoho.Models;
@@ -1430,7 +1431,7 @@ namespace OBL_Zoho.Services
             };
         }
         
-        public async Task<BaseResponse> GetLeadsForAsync(string? zm_code, string? zh_code, string? BM_Code, string? Sales_Person_Emp_ID)
+        public async Task<BaseResponse> GetLeadsForAsync(string? zm_code, string? zh_code, string? pch_email_id, string? Sales_Person_Emp_ID)
         {
             var response = new LeadDataResponse();
             int offSet = 0;
@@ -1438,7 +1439,7 @@ namespace OBL_Zoho.Services
 
             while (true)
             {
-                var dd = await GetLeadsForZMData(token.Response.access_token, zm_code, zh_code, BM_Code, Sales_Person_Emp_ID, offSet);
+                var dd = await GetLeadsForZMData(token.Response.access_token, zm_code, zh_code, pch_email_id, Sales_Person_Emp_ID, offSet);
                 if (dd == null || dd?.data == null)
                 {
                     break;
@@ -1469,7 +1470,7 @@ namespace OBL_Zoho.Services
 
         }
 
-        private async Task<LeadDataResponse> GetLeadsForZMData(string token, string? zm_code, string? zh_code, string? bm_code, string? sales_person_emp_id, int offset)
+        private async Task<LeadDataResponse> GetLeadsForZMData(string token, string? zm_code, string? zh_code, string? pch_email_id, string? sales_person_emp_id, int offset)
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
@@ -1478,7 +1479,7 @@ namespace OBL_Zoho.Services
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
-            var content = new StringContent($@"{{""select_query"": ""select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total from Deals where (((((Stage = 'Closed Won' and Closing_Date >='{closingDate}') or (Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared') and Created_Time >= '{createdTimeThreshold}')) and (ZM_Code = '{zm_code}' or ZH_Code = '{zh_code}')) or (BM_Code = '{bm_code}')) or (Sales_Person_Emp_ID = '{sales_person_emp_id}')) group by Stage limit 200 offset {offset}""}}", null, "application/json");
+            var content = new StringContent($@"{{""select_query"": ""select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total from Deals where ((((Stage = 'Closed Won' and Closing_Date >= '{closingDate}') or (Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared') and Created_Time >= '{createdTimeThreshold}')) and (((ZM_Code = '{zm_code}' or ZH_Code = '{zh_code}') or (PCH_Email_ID = '{pch_email_id}')) or (Sales_Person_Email_ID = '{sales_person_emp_id}')))) group by Stage limit 200 offset {offset}""}}", null, "application/json");
 
             request.Content = content;
             var response = await client.SendAsync(request);
