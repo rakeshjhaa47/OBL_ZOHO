@@ -1474,10 +1474,11 @@ namespace OBL_Zoho.Services
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
             var createdTimeThreshold = DateTime.Now.AddDays(-90).ToString("yyyy-MM-ddTHH:mm:ssK");
+            var closingDate = DateTime.Now.AddDays(-90).ToString("yyyy-MM-dd");
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
-            var content = new StringContent($@"{{""select_query"": ""select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total from Deals where (((((ZM_Code ='{zm_code}'or ZH_Code='{zh_code}') or (BM_Code = '{bm_code}')) or (Sales_Person_Emp_ID = '{sales_person_emp_id}')) and Stage in ('Qualification', 'Closed Won', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared')) and (Created_Time >= '{createdTimeThreshold}')) group by Stage limit 200 offset {offset}""}}", null, "application/json");
+            var content = new StringContent($@"{{""select_query"": ""select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total from Deals where (((((Stage = 'Closed Won' and Closing_Date >='{closingDate}') or (Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared') and Created_Time >= '{createdTimeThreshold}')) and (ZM_Code = '{zm_code}' or ZH_Code = '{zh_code}')) or (BM_Code = '{bm_code}')) or (Sales_Person_Emp_ID = '{sales_person_emp_id}')) group by Stage limit 200 offset {offset}""}}", null, "application/json");
 
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -1645,7 +1646,7 @@ namespace OBL_Zoho.Services
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
-            var content = new StringContent($@"{{""select_query"": ""select Stage,Amount,Closing_Date from Deals where (((((((ZM_Code ='{ZM_Code}'or ZH_Code='{ZH_Code}') or (BM_Code = '{BM_Code}')) or (Sales_Person_Emp_ID = '{Sales_Person_Emp_ID}')) and (Stage ='Closed Won')) and (Closing_Date is not null)) and (Amount is not null)) and (Created_Time between '{Start_Date}' and '{End_Date}')) limit 200 offset {offSet} ""}}", null, "application/json");
+            var content = new StringContent($@"{{""select_query"": ""select Stage,Amount,Closing_Date from Deals where (((((((ZM_Code ='{ZM_Code}'or ZH_Code='{ZH_Code}') or (BM_Code = '{BM_Code}')) or (Sales_Person_Emp_ID = '{Sales_Person_Emp_ID}')) and (Stage ='Closed Won')) and (Closing_Date is not null)) and (Amount is not null)) and (Closing_Date between '{Start_Date}' and '{End_Date}')) limit 200 offset {offSet}""}}", null, "application/json");
             request.Content = content;
 
             var response = await client.SendAsync(request);
