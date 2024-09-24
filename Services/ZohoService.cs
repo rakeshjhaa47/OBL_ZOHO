@@ -1601,7 +1601,7 @@ namespace OBL_Zoho.Services
             return JsonConvert.DeserializeObject<DealSortData>(result);
         }
 
-        public async Task<BaseResponse> ClosedWonAsync(string? ZM_Code, string? ZH_Code, string? BM_Code, string? Sales_Person_Emp_ID,  string Start_Date, string End_Date)
+        public async Task<BaseResponse> ClosedWonAsync(string? ZM_Code, string? ZH_Code, string? PCH_Email_ID, string? Sales_Person_Emp_ID,  string Start_Date, string End_Date)
         {
             var response = new SummaryResponse();
             int offSet = 0;
@@ -1609,7 +1609,7 @@ namespace OBL_Zoho.Services
 
             while (true)
             {
-                var dd = await Closed(token.Response.access_token, ZM_Code, ZH_Code, BM_Code,Sales_Person_Emp_ID, Start_Date, End_Date, offSet);
+                var dd = await Closed(token.Response.access_token, ZM_Code, ZH_Code, PCH_Email_ID, Sales_Person_Emp_ID, Start_Date, End_Date, offSet);
                 if (dd == null || dd?.data == null)
                 {
                     break;
@@ -1640,14 +1640,14 @@ namespace OBL_Zoho.Services
 
         }
 
-        private async Task<SummaryResponse> Closed(string token, string? ZM_Code, string? ZH_Code, string? BM_Code, string? Sales_Person_Emp_ID,  string Start_Date, string End_Date, int offSet)
+        private async Task<SummaryResponse> Closed(string token, string? ZM_Code, string? ZH_Code, string? PCH_Email_ID, string? Sales_Person_Emp_ID,  string Start_Date, string End_Date, int offSet)
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
-            var content = new StringContent($@"{{""select_query"": ""select Stage,Amount,Closing_Date from Deals where (((((((ZM_Code ='{ZM_Code}'or ZH_Code='{ZH_Code}') or (BM_Code = '{BM_Code}')) or (Sales_Person_Emp_ID = '{Sales_Person_Emp_ID}')) and (Stage ='Closed Won')) and (Closing_Date is not null)) and (Amount is not null)) and (Closing_Date between '{Start_Date}' and '{End_Date}')) limit 200 offset {offSet}""}}", null, "application/json");
+            var content = new StringContent($@"{{""select_query"": ""select Stage,Amount,Closing_Date from Deals where (((((((ZM_Code ='{ZM_Code}' or ZH_Code='{ZH_Code}') or (PCH_Email_ID = '{PCH_Email_ID}')) or (Sales_Person_Email_ID = '{Sales_Person_Emp_ID}')) and (Stage ='Closed Won')) and (Closing_Date is not null)) and (Amount is not null)) and (Closing_Date between '{Start_Date}' and '{End_Date}')) limit 200 offset {offSet}""}}", null, "application/json");
             request.Content = content;
 
             var response = await client.SendAsync(request);

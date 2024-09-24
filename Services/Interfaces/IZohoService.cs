@@ -52,7 +52,7 @@ namespace OBL_Zoho.Services.Interfaces
 
         Task<BaseResponse> DealSortDataAsync(string PCH_Email_ID, string Start_Date, string End_Date);
 
-        Task<BaseResponse> ClosedWonAsync(string? ZM_Code, string? ZH_Code, string? BM_Code, string? Sales_Person_Emp_ID, string Start_Date, string End_Date);
+        Task<BaseResponse> ClosedWonAsync(string? ZM_Code, string? ZH_Code, string? PCH_Email_ID, string? Sales_Person_Emp_ID, string Start_Date, string End_Date);
 
     }
 }

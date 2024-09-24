@@ -502,9 +502,9 @@ namespace OBL_Zoho.Controllers
         [SwaggerOperation(Tags = new[] { "GetSummaryDashboard" })]
         [HttpPost]
         [Route("GetSummaryDashboard")]
-        public async Task<IActionResult> GetSummaryDashboard(string? ZM_Code, string? ZH_Code, string? BM_Code, string? Sales_Person_Emp_ID,   string Start_Date, string End_Date)
+        public async Task<IActionResult> GetSummaryDashboard(string? ZM_Code, string? ZH_Code, string? PCH_Email_ID, string? Sales_Person_Emp_ID,   string Start_Date, string End_Date)
         {
-            return Ok(await _zohoService.ClosedWonAsync(ZM_Code, ZH_Code, BM_Code, Sales_Person_Emp_ID, Start_Date, End_Date));
+            return Ok(await _zohoService.ClosedWonAsync(ZM_Code, ZH_Code, PCH_Email_ID, Sales_Person_Emp_ID, Start_Date, End_Date));
         }
     }
 }
