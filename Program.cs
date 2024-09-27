@@ -1,13 +1,14 @@
-using Microsoft.OpenApi.Models;
-using Microsoft.EntityFrameworkCore;
-using OBL_Zoho.Models;
-using OBL_Zoho.Services;
-using OBL_Zoho.Services.Interfaces;
 using AnyTimePediatricsAPI.Middleware;
-using OBL_Zoho.Models.Response;
-using FirebaseAdminAuthentication.DependencyInjection.Extensions;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using OBL_Zoho.Models;
+using OBL_Zoho.Models.Response;
+using OBL_Zoho.Services;
+using OBL_Zoho.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,13 +22,19 @@ builder.Services.AddScoped<IZohoService, ZohoService>();
 
 builder.Services.AddControllers();
 
-//var fbConfig = builder.Configuration.GetValue<string>("FIREBASE_CONFIG");
-//builder.Services.AddSingleton(FirebaseApp.Create(new AppOptions
-//{
-//    Credential = GoogleCredential.FromJson(fbConfig)
-//}));
-
 builder.Services.Configure<FirebaseSetting>(builder.Configuration.GetSection("FIREBASE_CONFIG"));
+
+builder.Services.AddSingleton<FirebaseApp>(provider =>
+{
+    var fbConfig = provider.GetRequiredService<IOptions<FirebaseSetting>>().Value;
+    return FirebaseApp.Create(new AppOptions
+    {
+        Credential = GoogleCredential.FromJson(JsonConvert.SerializeObject(fbConfig))
+    });
+});
+
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpClient();
 builder.Services.AddSwaggerGen(c =>

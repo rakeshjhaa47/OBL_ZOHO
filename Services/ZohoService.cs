@@ -1651,7 +1651,7 @@ namespace OBL_Zoho.Services
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
-            var content = new StringContent($@"{{""select_query"": ""select Stage,Amount,Closing_Date from Deals where (((((((ZM_Code ='{ZM_Code}' or ZH_Code='{ZH_Code}') or (PCH_Email_ID = '{PCH_Email_ID}')) or (Sales_Person_Email_ID = '{Sales_Person_Emp_ID}')) and (Stage ='Closed Won')) and (Closing_Date is not null)) and (Amount is not null)) and (Closing_Date between '{Start_Date}' and '{End_Date}')) limit 200 offset {offSet}""}}", null, "application/json");
+            var content = new StringContent($@"{{""select_query"":""select Stage,Amount,Closing_Date from Deals where (((((((ZM_Code ='{ZM_Code}' or ZH_Code='{ZH_Code}') or (PCH_Email_ID = '{PCH_Email_ID}')) or (Sales_Person_Email_ID = '{Sales_Person_Emp_ID}')) and (Stage ='Closed Won')) and (Closing_Date is not null)) and (Amount is not null)) and (Closing_Date between '{Start_Date}' and '{End_Date}')) limit 200 offset {offSet}""}}", null, "application/json");
             request.Content = content;
 
             var response = await client.SendAsync(request);
