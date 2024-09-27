@@ -1664,29 +1664,35 @@ namespace OBL_Zoho.Services
 
         public async Task<BaseResponse> CreateFireBaseToken()
         {
-            string jsonCredential = JsonConvert.SerializeObject(_firebaseSetting);
-            byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(jsonCredential);
+            try {
+                string jsonCredential = JsonConvert.SerializeObject(_firebaseSetting);
+                byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(jsonCredential);
 
-            using (var stream = new MemoryStream(byteArray))
-            {
-                string[] scopes = new string[]
+                using (var stream = new MemoryStream(byteArray))
                 {
+                    string[] scopes = new string[]
+                    {
                 "https://www.googleapis.com/auth/cloud-platform",
                 "https://www.googleapis.com/auth/firebase.messaging"
-                };
+                    };
 
-                // Load the service account credentials from the stream
-                GoogleCredential credential = GoogleCredential.FromStream(stream).CreateScoped(scopes);
+                    // Load the service account credentials from the stream
+                    GoogleCredential credential = GoogleCredential.FromStream(stream).CreateScoped(scopes);
 
-                // Generate an access token
-                string token = await credential.UnderlyingCredential.GetAccessTokenForRequestAsync();
+                    // Generate an access token
+                    string token = await credential.UnderlyingCredential.GetAccessTokenForRequestAsync();
 
-                return new BaseResponse
-                {
-                    Response = token
-                };
+                    return new BaseResponse
+                    {
+                        Response = token
+                    };
+                }
+
             }
-
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }
