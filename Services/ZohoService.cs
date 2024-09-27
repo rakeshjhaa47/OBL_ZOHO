@@ -1661,6 +1661,35 @@ namespace OBL_Zoho.Services
 
             return JsonConvert.DeserializeObject<SummaryResponse>(result);
         }
+
+
+        public async Task<BaseResponse> CreateFireBaseToken()
+        {
+
+            //string serviceAccountPath = @"C:\Users\ankur\tilekartFirebase.json";
+            string serviceAccountPath = _configuration.GetValue<string>("Firebase_Config");
+
+            string[] scopes = new string[]
+            {
+            "https://www.googleapis.com/auth/cloud-platform", // Required for Firebase services
+            "https://www.googleapis.com/auth/firebase.messaging" // Messaging specific scope
+            };
+
+            // Load the service account credentials
+            GoogleCredential credential;
+            using (var stream = new FileStream(serviceAccountPath, FileMode.Open, FileAccess.Read))
+            {
+                credential = GoogleCredential.FromStream(stream).CreateScoped(scopes);
+            }
+
+            // Generate an access token
+            string token = await credential.UnderlyingCredential.GetAccessTokenForRequestAsync();
+
+            return new BaseResponse
+            {
+                Response = token
+            };
+        }
     }
 }
 

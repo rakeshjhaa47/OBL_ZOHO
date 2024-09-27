@@ -49,6 +49,15 @@ namespace OBL_Zoho.Controllers
             return Ok(await _zohoService.GenerateRefreshToken());
         }
 
+
+        [SwaggerOperation(Tags = new[] { "Access token" })]
+        [HttpPost]
+        [Route("CreateFireBaseToken")]
+        public async Task<IActionResult> CreateFireBaseToken()
+        {
+            return Ok(await _zohoService.CreateFireBaseToken());
+        }
+
         /// <summary>
         /// Get records
         /// </summary>

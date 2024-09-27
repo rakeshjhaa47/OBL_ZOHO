@@ -54,7 +54,7 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> DealSortDataAsync(string refreshToken,string PCH_Email_ID, string Start_Date, string End_Date);
 
         Task<BaseResponse> ClosedWonAsync(string refreshToken,string? ZM_Code, string? ZH_Code, string? PCH_Email_ID, string? Sales_Person_Emp_ID, string Start_Date, string End_Date);
-        //Task<BaseResponse> CreateAccessTokenAsync();
+        Task<BaseResponse> CreateFireBaseToken();
 
     }
 }
