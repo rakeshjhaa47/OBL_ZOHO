@@ -7,6 +7,7 @@ namespace OBL_Zoho.Services.Interfaces
     public interface IZohoService
     {
         Task<BaseResponse> GenerateAccessToken();
+        Task<BaseResponse> GenerateRefreshToken();
         Task<BaseResponse> GetRecords(string accessToken, string pageNumber, string perPageRecord);
         Task<BaseResponse> GetRecordsById(string accessToken, string id);
         Task<BaseResponse> GetRecordsById_Extra(string accessToken, string id);
@@ -28,31 +29,32 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> UpdateBlueprint_NonContactableLead(string accessToken, string id, BlueprintUpdateRequest_NonContactableLead bur);
         Task<BaseResponse> GetRecordsWithEms(string accessToken, string pchEmailId, bool isEmployee = false);
         //Task<BaseResponse> GetSalesEmployeeData(string accessToken, string salesPersonEmpID);
-        Task<BaseResponse> GetZonalManagerData(string code);
-        Task<BaseResponse> GetBranchManagerData(string code);
-        Task<BaseResponse> GetSalesEmployeePersonalData(string emailId);
-        Task<BaseResponse> GetDetailsByCode(string code);
-        Task<BaseResponse> GetSalesEmployeeData(string code);
-        Task<BaseResponse> GetDetailsByZMCode(string code);
+        Task<BaseResponse> GetZonalManagerData(string refreshToken,string code);
+        Task<BaseResponse> GetBranchManagerData(string refreshToken,string code);
+        Task<BaseResponse> GetSalesEmployeePersonalData(string refreshToken,string emailId);
+        Task<BaseResponse> GetDetailsByCode(string refreshToken, string code);
+        Task<BaseResponse> GetSalesEmployeeData(string refreshToken,string code);
+        Task<BaseResponse> GetDetailsByZMCode(string refreshToken, string code);
         Task<BaseResponse> GetDataByZHCode(string accessToken, string pageNumber, string code);
         Task<DataByCodeResponse> GetDataByCode(string code);
         Task<BaseResponse> GetUserByCode(string code);
         Task<BaseResponse> UpdateSalesPersonNotesAsync(string accessToken, UpdateSalesPersonNotes obj);
         Task<BaseResponse> GetSalesPersonNotesAsync(string accessToken, string id);
-        Task<BaseResponse> GetRecordsWithEmsData(string pchEmailId, bool isEmployee);
-        Task<BaseResponse> GetDataByZHCodeData(string code);
+        Task<BaseResponse> GetRecordsWithEmsData(string refreshToken ,string pchEmailId, bool isEmployee);
+        Task<BaseResponse> GetDataByZHCodeData(string refreshToken,string code);
         Task<BaseResponse> AssignOwnerDeal(string accessToken, UpdateOwnerDealRequest obj);
         Task<BaseResponse> GetLeadDetailsBYIdAsync(string accessToken, string id);
         Task<BaseResponse> SaveWonDataAsync(string accessToken, CategoryDetailsDatum obj);
         Task<BaseResponse> GetTileAreaAsync();
         Task<ExcelResponse> GenerateExcelAsync(ExpandoObject person);
-        Task<BaseResponse> GetLeadsForAsync(string? ZM_Code, string? ZH_Code, string? pch_email_id, string? Sales_Person_Emp_ID);
+        Task<BaseResponse> GetLeadsForAsync(string refreshToken,string? ZM_Code, string? ZH_Code, string? pch_email_id, string? Sales_Person_Emp_ID);
 
-        Task<BaseResponse> GetActiveLeadsAsync(string PCH_Email_ID, string Start_Date, string End_Date);
+        Task<BaseResponse> GetActiveLeadsAsync(string refreshToken,string PCH_Email_ID, string Start_Date, string End_Date);
 
-        Task<BaseResponse> DealSortDataAsync(string PCH_Email_ID, string Start_Date, string End_Date);
+        Task<BaseResponse> DealSortDataAsync(string refreshToken,string PCH_Email_ID, string Start_Date, string End_Date);
 
-        Task<BaseResponse> ClosedWonAsync(string? ZM_Code, string? ZH_Code, string? PCH_Email_ID, string? Sales_Person_Emp_ID, string Start_Date, string End_Date);
+        Task<BaseResponse> ClosedWonAsync(string refreshToken,string? ZM_Code, string? ZH_Code, string? PCH_Email_ID, string? Sales_Person_Emp_ID, string Start_Date, string End_Date);
+        //Task<BaseResponse> CreateAccessTokenAsync();
 
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace OBL_Zoho.Models.Response
+﻿using Newtonsoft.Json;
+
+namespace OBL_Zoho.Models.Response
 {
 #nullable disable
 
@@ -47,7 +49,13 @@
 
     public class BPData
     {
-        public List<string> Attachments { get; set; }
+        public List<Attachments> Attachments { get; set; }
+    }
+    public class Attachments
+    {
+        public string name { get; set; }
+        [JsonProperty("$link_url")]
+        public string? link_url { get; set; }
     }
 
     public class Fields
