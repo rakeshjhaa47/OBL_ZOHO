@@ -1,9 +1,7 @@
-﻿using Azure;
-using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Drawing;
-using DocumentFormat.OpenXml.Spreadsheet;
+﻿using ClosedXML.Excel;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using OBL_Zoho.Models;
 using OBL_Zoho.Models.Helper;
@@ -11,7 +9,6 @@ using OBL_Zoho.Models.Response;
 using OBL_Zoho.Services.Interfaces;
 using System.Dynamic;
 using System.Net.Http.Headers;
-
 namespace OBL_Zoho.Services
 {
     public class ZohoService : IZohoService
@@ -19,12 +16,14 @@ namespace OBL_Zoho.Services
         private readonly IAppSettingsService _appSettingsService;
         private readonly OblZohoContext _context;
         private readonly IConfiguration _configuration;
+        private readonly FirebaseSetting _firebaseSetting;
 
-        public ZohoService(IAppSettingsService appSettingsService, OblZohoContext context, IConfiguration configuration)
+        public ZohoService(IAppSettingsService appSettingsService, OblZohoContext context, IConfiguration configuration, IOptions<FirebaseSetting> options)
         {
             _appSettingsService = appSettingsService;
             _context = context;
             _configuration = configuration;
+            _firebaseSetting = options.Value;
         }
 
         public async Task<BaseResponse> GenerateAccessToken()
@@ -1665,30 +1664,29 @@ namespace OBL_Zoho.Services
 
         public async Task<BaseResponse> CreateFireBaseToken()
         {
+            string jsonCredential = JsonConvert.SerializeObject(_firebaseSetting);
+            byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(jsonCredential);
 
-            //string serviceAccountPath = @"C:\Users\ankur\tilekartFirebase.json";
-            string serviceAccountPath = _configuration.GetValue<string>("Firebase_Config");
-
-            string[] scopes = new string[]
+            using (var stream = new MemoryStream(byteArray))
             {
-            "https://www.googleapis.com/auth/cloud-platform", // Required for Firebase services
-            "https://www.googleapis.com/auth/firebase.messaging" // Messaging specific scope
-            };
+                string[] scopes = new string[]
+                {
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/firebase.messaging"
+                };
 
-            // Load the service account credentials
-            GoogleCredential credential;
-            using (var stream = new FileStream(serviceAccountPath, FileMode.Open, FileAccess.Read))
-            {
-                credential = GoogleCredential.FromStream(stream).CreateScoped(scopes);
+                // Load the service account credentials from the stream
+                GoogleCredential credential = GoogleCredential.FromStream(stream).CreateScoped(scopes);
+
+                // Generate an access token
+                string token = await credential.UnderlyingCredential.GetAccessTokenForRequestAsync();
+
+                return new BaseResponse
+                {
+                    Response = token
+                };
             }
 
-            // Generate an access token
-            string token = await credential.UnderlyingCredential.GetAccessTokenForRequestAsync();
-
-            return new BaseResponse
-            {
-                Response = token
-            };
         }
     }
 }
