@@ -5,6 +5,9 @@ using OBL_Zoho.Services;
 using OBL_Zoho.Services.Interfaces;
 using AnyTimePediatricsAPI.Middleware;
 using OBL_Zoho.Models.Response;
+using FirebaseAdminAuthentication.DependencyInjection.Extensions;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,8 +20,14 @@ builder.Services.AddScoped<IAppSettingsService, AppSettingsService>();
 builder.Services.AddScoped<IZohoService, ZohoService>();
 
 builder.Services.AddControllers();
-builder.Services.Configure<FirebaseSetting>(builder.Configuration.GetSection("fbSettings"));
 
+//var fbConfig = builder.Configuration.GetValue<string>("FIREBASE_CONFIG");
+//builder.Services.AddSingleton(FirebaseApp.Create(new AppOptions
+//{
+//    Credential = GoogleCredential.FromJson(fbConfig)
+//}));
+
+builder.Services.Configure<FirebaseSetting>(builder.Configuration.GetSection("FIREBASE_CONFIG"));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpClient();
 builder.Services.AddSwaggerGen(c =>
@@ -43,7 +52,6 @@ app.UseSwaggerUI();
 app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed(_ => true));
 app.ConfigureCustomExceptionMiddleware();
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
 app.MapControllers();

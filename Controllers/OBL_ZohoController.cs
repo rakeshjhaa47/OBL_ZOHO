@@ -55,7 +55,16 @@ namespace OBL_Zoho.Controllers
         [Route("CreateFireBaseToken")]
         public async Task<IActionResult> CreateFireBaseToken()
         {
-            return Ok(await _zohoService.CreateFireBaseToken());
+
+            try
+            {
+                var response = await _zohoService.CreateFireBaseToken();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Error creating Firebase token", Details = ex.Message });
+            }
         }
 
         /// <summary>
