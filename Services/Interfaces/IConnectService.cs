@@ -8,6 +8,7 @@ namespace OBL_Zoho.Services.Interfaces
 
         Task<BaseResponse> OBLSortConnect( string Assigned_CP_By_Agent, string Created_Time);
 
+        Task<BaseResponse> SummaryCount(string Stage, string Closing_Date, string Created_Time, string Assigned_CP_By_Agent);
 
     }
 }

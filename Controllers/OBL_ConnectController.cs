@@ -34,6 +34,15 @@ namespace OBL_Zoho.Controllers
             return Ok(await _ConnectService.OBLSortConnect(Assigned_CP_By_Agent,Created_Time));
         }
 
+        [HttpPost]
+        [Route("summary-count")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> Count( string Stage, string Closing_Date,string Created_Time,string Assigned_CP_By_Agent )
+        {
+            return Ok(await _ConnectService.SummaryCount(Stage,Closing_Date,Created_Time,Assigned_CP_By_Agent));
+        }
+
 
     }
 }
