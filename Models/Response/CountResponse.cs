@@ -14,10 +14,10 @@
     }
     public class Datacount
     {
-        public object Total_Amount { get; set; }
+        public decimal? Total_Amount { get; set; }
         public string Stage { get; set; }
         public int Total_Count { get; set; }
-        public object Tile_Total { get; set; }
+        public decimal? Tile_Total { get; set; }
     }
 
     public class CountInfo

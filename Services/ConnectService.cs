@@ -35,16 +35,15 @@ namespace OBL_Zoho.Services
 
 
 
-        public async Task<BaseResponse> OBLSortConnect(  string Assigned_CP_By_Agent, string Created_Time)
+        public async Task<BaseResponse> CpSummaryAsync(  string Assigned_CP_By_Agent, string Created_Time)
         {
-
             var refreshtoken =await GenerateRefreshTokenForOblConnect();
             var response = new OBLConnect();
             int offSet = 0;
 
             while (true)
             {
-                var dd = await Sort(refreshtoken.Response.access_token,  Assigned_CP_By_Agent, Created_Time, offSet);
+                var dd = await CpSummary(refreshtoken.Response.access_token,  Assigned_CP_By_Agent, Created_Time, offSet);
                 if (dd == null || dd?.data == null)
                 {
                     break;
@@ -74,7 +73,7 @@ namespace OBL_Zoho.Services
 
         }
 
-        private async Task<OBLConnect> Sort(string refreshtoken,  string Assigned_CP_By_Agent, string Created_Time, int offSet)
+        private async Task<OBLConnect> CpSummary(string refreshtoken,  string Assigned_CP_By_Agent, string Created_Time, int offSet)
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
@@ -91,7 +90,7 @@ namespace OBL_Zoho.Services
             return JsonConvert.DeserializeObject<OBLConnect>(result);
         }
 
-        public async Task<BaseResponse> SummaryCount(string Stage, string Closing_Date, string Created_Time, string Assigned_CP_By_Agent)
+        public async Task<BaseResponse> CpDashboardAsync(string Closing_Date, string Created_Time, string Assigned_CP_By_Agent)
         {
 
             var refreshtoken = await GenerateRefreshTokenForOblConnect();
@@ -100,7 +99,7 @@ namespace OBL_Zoho.Services
 
             while (true)
             {
-                var dd = await Summary(refreshtoken.Response.access_token, Stage, Closing_Date, Created_Time, Assigned_CP_By_Agent, offSet);
+                var dd = await CpDashboard(refreshtoken.Response.access_token, Closing_Date, Created_Time, Assigned_CP_By_Agent, offSet);
                 if (dd == null || dd?.data == null)
                 {
                     break;
@@ -130,14 +129,14 @@ namespace OBL_Zoho.Services
 
         }
 
-        private async Task<CountResponse> Summary(string refreshtoken, string Stage, string Closing_Date, string Created_Time, string Assigned_CP_By_Agent, int offSet)
+        private async Task<CountResponse> CpDashboard(string refreshtoken, string Closing_Date, string Created_Time, string Assigned_CP_By_Agent, int offSet)
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshtoken);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshtoken}");
-            var content = new StringContent($@"{{""select_query"":""select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total from Deals where (((Stage = '{Stage}' and Closing_Date >='{Closing_Date}') or (Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared') and Created_Time >= '{Created_Time}')) and (Assigned_CP_By_Agent = '{Assigned_CP_By_Agent}')) group by Stage limit 200 offset {offSet}""}}", null, "application/json");
+            var content = new StringContent($@"{{""select_query"":""select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total from Deals where (((Stage = 'Closed Won' and Closing_Date >='{Closing_Date}') or (Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared') and Created_Time >= '{Created_Time}')) and (Assigned_CP_By_Agent = '{Assigned_CP_By_Agent}')) group by Stage limit 200 offset {offSet}""}}", null, "application/json");
             request.Content = content;
 
             var response = await client.SendAsync(request);

@@ -16,33 +16,31 @@ namespace OBL_Zoho.Controllers
             _ConnectService = connectService;
         }
 
+        //[HttpPost]
+        //[Route("generate-refresh-token-for-connect")]
+        //[Consumes(MediaTypeNames.Application.Json)]
+        //[Produces(MediaTypeNames.Application.Json)]
+        //public async Task<IActionResult> GenerateRefreshTokenForConnect()
+        //{
+        //    return Ok(await _ConnectService.GenerateRefreshTokenForOblConnect());
+        //}
+
         [HttpPost]
-        [Route("generate-refresh-token-for-connect")]
+        [Route("cp-summary")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> GenerateRefreshTokenForConnect()
+        public async Task<IActionResult> CpSummary(string Assigned_CP_By_Agent,string Created_Time)
         {
-            return Ok(await _ConnectService.GenerateRefreshTokenForOblConnect());
+            return Ok(await _ConnectService.CpSummaryAsync(Assigned_CP_By_Agent,Created_Time));
         }
 
         [HttpPost]
-        [Route("obl-connect-sort")]
+        [Route("cp-dashboard")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> OBlConnect(string Assigned_CP_By_Agent,string Created_Time)
+        public async Task<IActionResult> CpDashboard(string Closing_Date,string Created_Time,string Assigned_CP_By_Agent )
         {
-            return Ok(await _ConnectService.OBLSortConnect(Assigned_CP_By_Agent,Created_Time));
+            return Ok(await _ConnectService.CpDashboardAsync(Closing_Date,Created_Time,Assigned_CP_By_Agent));
         }
-
-        [HttpPost]
-        [Route("summary-count")]
-        [Consumes(MediaTypeNames.Application.Json)]
-        [Produces(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> Count( string Stage, string Closing_Date,string Created_Time,string Assigned_CP_By_Agent )
-        {
-            return Ok(await _ConnectService.SummaryCount(Stage,Closing_Date,Created_Time,Assigned_CP_By_Agent));
-        }
-
-
     }
 }
