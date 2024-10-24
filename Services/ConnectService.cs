@@ -1,0 +1,94 @@
+﻿using Newtonsoft.Json;
+using OBL_Zoho.Models.Response;
+using OBL_Zoho.Services.Interfaces;
+using System.Net.Http.Headers;
+
+namespace OBL_Zoho.Services
+{
+    public class ConnectService : IConnectService
+    {
+        public ConnectService()
+        {
+           
+        }
+        public async Task<BaseResponse> GenerateRefreshTokenForOblConnect()
+        {
+            var request = "https://accounts.zoho.com/oauth/v2/token";
+
+            var client = new HttpClient();
+            Dictionary<string, string> pairs = new Dictionary<string, string>();
+            pairs.Add("refresh_token", "1000.ae08c7feb3cff59a5fe0e16d2eeba2dd.a5f6e4b8a90ced047aa490d16cb90501");
+            pairs.Add("client_id", "1000.CLKJQBSFMW6SANQRWQ64HKIVYC34VC");
+            pairs.Add("client_secret", "163b44b012c0cd6246a3c2716f55e3be00f5d344d9");
+            pairs.Add("grant_type", "refresh_token");
+            pairs.Add("redirect_uri", "https://www.google.com/");
+
+            var content = new FormUrlEncodedContent(pairs);
+            var response = client.PostAsync(request, content).Result;
+            var result = await response.Content.ReadAsStringAsync();
+            dynamic userResponse = JsonConvert.DeserializeObject<AccessTokenResponse>(result);
+            return new BaseResponse
+            {
+                Response = userResponse,
+            };
+        }
+
+
+
+        public async Task<BaseResponse> OBLSortConnect(  string Assigned_CP_By_Agent, string Created_Time)
+        {
+
+            var refreshtoken =await GenerateRefreshTokenForOblConnect();
+            var response = new OBLConnect();
+            int offSet = 0;
+
+            while (true)
+            {
+                var dd = await Sort(refreshtoken.Response.access_token,  Assigned_CP_By_Agent, Created_Time, offSet);
+                if (dd == null || dd?.data == null)
+                {
+                    break;
+                }
+                response.data.AddRange(dd.data);
+
+                if (dd.info?.more_records == true)
+                {
+                    offSet += 200;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            response.info = new OBLInfo
+            {
+                count = response.data.Count,
+                more_records = false
+            };
+
+            return new BaseResponse
+            {
+                Response = response
+            };
+
+        }
+
+        private async Task<OBLConnect> Sort(string refreshtoken,  string Assigned_CP_By_Agent, string Created_Time, int offSet)
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshtoken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshtoken}");
+            var content = new StringContent($@"{{""select_query"":""select Closing_Date,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Assigned_CP_By_Agent,Mobile,Dealer_Name,Created_Time from Deals where ((Assigned_CP_By_Agent = '{Assigned_CP_By_Agent}') and (Created_Time >= '{Created_Time}')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset {offSet}""}}", null, "application/json");
+            request.Content = content;
+
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<OBLConnect>(result);
+        }
+    }
+}

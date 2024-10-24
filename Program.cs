@@ -19,6 +19,7 @@ builder.Services.AddDbContext<OblZohoContext>(opts =>
 // Add services to the container.
 builder.Services.AddScoped<IAppSettingsService, AppSettingsService>();
 builder.Services.AddScoped<IZohoService, ZohoService>();
+builder.Services.AddScoped<IConnectService, ConnectService>();
 
 builder.Services.AddControllers();
 
