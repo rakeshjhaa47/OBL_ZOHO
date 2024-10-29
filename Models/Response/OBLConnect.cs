@@ -1,4 +1,7 @@
-﻿namespace OBL_Zoho.Models.Response
+﻿using System.Reflection;
+using System.Text.Json.Serialization;
+
+namespace OBL_Zoho.Models.Response
 {
     public class OBLConnect
     {
@@ -29,6 +32,23 @@
         public string Stage { get; set; }
         public string? Zip_Code { get; set; }
         public string id { get; set; }
+
+        public string MobileNumber
+        {
+            get => Mobile?.ToString() ?? string.Empty;
+            set
+            {
+                // Attempt to parse string to decimal, leave null if invalid
+                if (decimal.TryParse(value, out var parsedValue))
+                {
+                    Mobile = parsedValue;
+                }
+                else
+                {
+                    Mobile = null; // Or handle accordingly if you expect a default
+                }
+            }
+        }
     }
 
     public class OBLInfo

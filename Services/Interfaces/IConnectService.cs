@@ -6,9 +6,9 @@ namespace OBL_Zoho.Services.Interfaces
     {
         Task<BaseResponse> GenerateRefreshTokenForOblConnect();
 
-        Task<BaseResponse> CpSummaryAsync( string Assigned_CP_By_Agent, string Created_Time);
+        Task<BaseResponse> CpSummaryAsync(string accessToken, string Assigned_CP_By_Agent, string Created_Time);
 
-        Task<BaseResponse> CpDashboardAsync(string Closing_Date, string Created_Time, string Assigned_CP_By_Agent);
+        Task<BaseResponse> CpDashboardAsync(string accessToken, string Closing_Date, string Created_Time, string Assigned_CP_By_Agent);
 
     }
 }

@@ -16,31 +16,31 @@ namespace OBL_Zoho.Controllers
             _ConnectService = connectService;
         }
 
-        //[HttpPost]
-        //[Route("generate-refresh-token-for-connect")]
-        //[Consumes(MediaTypeNames.Application.Json)]
-        //[Produces(MediaTypeNames.Application.Json)]
-        //public async Task<IActionResult> GenerateRefreshTokenForConnect()
-        //{
-        //    return Ok(await _ConnectService.GenerateRefreshTokenForOblConnect());
-        //}
+        [HttpPost]
+        [Route("generate-access-token-for-connect")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> GenerateRefreshTokenForConnect()
+        {
+            return Ok(await _ConnectService.GenerateRefreshTokenForOblConnect());
+        }
 
         [HttpPost]
         [Route("cp-summary")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> CpSummary(string Assigned_CP_By_Agent,string Created_Time)
+        public async Task<IActionResult> CpSummary(string accessToken, string Assigned_CP_By_Agent,string Created_Time)
         {
-            return Ok(await _ConnectService.CpSummaryAsync(Assigned_CP_By_Agent,Created_Time));
+            return Ok(await _ConnectService.CpSummaryAsync(accessToken,Assigned_CP_By_Agent, Created_Time));
         }
 
         [HttpPost]
         [Route("cp-dashboard")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> CpDashboard(string Closing_Date,string Created_Time,string Assigned_CP_By_Agent )
+        public async Task<IActionResult> CpDashboard(string accessToken, string Closing_Date,string Created_Time,string Assigned_CP_By_Agent )
         {
-            return Ok(await _ConnectService.CpDashboardAsync(Closing_Date,Created_Time,Assigned_CP_By_Agent));
+            return Ok(await _ConnectService.CpDashboardAsync(accessToken,Closing_Date, Created_Time,Assigned_CP_By_Agent));
         }
     }
 }

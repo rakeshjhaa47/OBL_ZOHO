@@ -35,15 +35,14 @@ namespace OBL_Zoho.Services
 
 
 
-        public async Task<BaseResponse> CpSummaryAsync(  string Assigned_CP_By_Agent, string Created_Time)
+        public async Task<BaseResponse> CpSummaryAsync(string accessToken, string Assigned_CP_By_Agent, string Created_Time)
         {
-            var refreshtoken =await GenerateRefreshTokenForOblConnect();
             var response = new OBLConnect();
             int offSet = 0;
 
             while (true)
             {
-                var dd = await CpSummary(refreshtoken.Response.access_token,  Assigned_CP_By_Agent, Created_Time, offSet);
+                var dd = await CpSummary(accessToken, Assigned_CP_By_Agent, Created_Time, offSet);
                 if (dd == null || dd?.data == null)
                 {
                     break;
@@ -73,13 +72,13 @@ namespace OBL_Zoho.Services
 
         }
 
-        private async Task<OBLConnect> CpSummary(string refreshtoken,  string Assigned_CP_By_Agent, string Created_Time, int offSet)
+        private async Task<OBLConnect> CpSummary(string accessToken,  string Assigned_CP_By_Agent, string Created_Time, int offSet)
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshtoken);
-            request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshtoken}");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
             var content = new StringContent($@"{{""select_query"":""select Closing_Date,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Assigned_CP_By_Agent,Mobile,Dealer_Name,Created_Time from Deals where ((Assigned_CP_By_Agent = '{Assigned_CP_By_Agent}') and (Created_Time >= '{Created_Time}')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset {offSet}""}}", null, "application/json");
             request.Content = content;
 
@@ -90,16 +89,14 @@ namespace OBL_Zoho.Services
             return JsonConvert.DeserializeObject<OBLConnect>(result);
         }
 
-        public async Task<BaseResponse> CpDashboardAsync(string Closing_Date, string Created_Time, string Assigned_CP_By_Agent)
+        public async Task<BaseResponse> CpDashboardAsync(string accessToken, string Closing_Date, string Created_Time, string Assigned_CP_By_Agent)
         {
-
-            var refreshtoken = await GenerateRefreshTokenForOblConnect();
             var response = new CountResponse();
             int offSet = 0;
 
             while (true)
             {
-                var dd = await CpDashboard(refreshtoken.Response.access_token, Closing_Date, Created_Time, Assigned_CP_By_Agent, offSet);
+                var dd = await CpDashboard(accessToken, Closing_Date, Created_Time, Assigned_CP_By_Agent, offSet);
                 if (dd == null || dd?.data == null)
                 {
                     break;
@@ -129,13 +126,13 @@ namespace OBL_Zoho.Services
 
         }
 
-        private async Task<CountResponse> CpDashboard(string refreshtoken, string Closing_Date, string Created_Time, string Assigned_CP_By_Agent, int offSet)
+        private async Task<CountResponse> CpDashboard(string accessToken, string Closing_Date, string Created_Time, string Assigned_CP_By_Agent, int offSet)
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshtoken);
-            request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshtoken}");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
             var content = new StringContent($@"{{""select_query"":""select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total from Deals where (((Stage = 'Closed Won' and Closing_Date >='{Closing_Date}') or (Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared') and Created_Time >= '{Created_Time}')) and (Assigned_CP_By_Agent = '{Assigned_CP_By_Agent}')) group by Stage limit 200 offset {offSet}""}}", null, "application/json");
             request.Content = content;
 
