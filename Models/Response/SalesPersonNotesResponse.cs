@@ -133,7 +133,7 @@ namespace OBL_Zoho.Models.Response
         public SalesPersonContactName Contact_Name { get; set; }
         public object? gaconnectorfields1__Number_of_Website_Visits { get; set; }
         public Layout Layout { get; set; }
-        public int Positive { get; set; }
+        public int? Positive { get; set; }
         public object? gaconnectorfields1__IP_Address { get; set; }
         public int? Total_Sq_Mt { get; set; }
         public object? Sampling_From_HO_Store_Remarks_B2B { get; set; }
@@ -154,7 +154,7 @@ namespace OBL_Zoho.Models.Response
         public object? Purchase_Date { get; set; }
         public DateTime? Last_Activity_Time { get; set; }
         public object? BH_Name { get; set; }
-        public int Negative { get; set; }
+        public int? Negative { get; set; }
         public string Deal_Name { get; set; }
         public object? Remarks { get; set; }
         public List<object?> Reason_of_NPD_B2B { get; set; }
@@ -281,7 +281,7 @@ namespace OBL_Zoho.Models.Response
         public object? Campaign_Name { get; set; }
         public object? Search_Partner_Network { get; set; }
         public DateTime? Stage_Update_Date_Time { get; set; }
-        public int Scoring { get; set; }
+        public int? Scoring { get; set; }
         public string Reason_of_Junk_Leads { get; set; }
 
         [JsonProperty("$canvas_id")]
@@ -290,7 +290,7 @@ namespace OBL_Zoho.Models.Response
         public object? ADGROUPID { get; set; }
         public object? SKU_3_size_B2B { get; set; }
         public string Sales_Person_Emp_ID { get; set; }
-        public int Lead_Conversion_Time { get; set; }
+        public int? Lead_Conversion_Time { get; set; }
         public object? Mapped_Plant_Value { get; set; }
         public object? Lead_Type { get; set; }
         public string ZH_Code { get; set; }

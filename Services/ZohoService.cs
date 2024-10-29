@@ -1310,7 +1310,6 @@ namespace OBL_Zoho.Services
 
         public async Task<BaseResponse> GetLeadDetailsBYIdAsync(string accessToken, string id)
         {
-
             var stageHostoryRequest = $"https://www.zohoapis.com/crm/v6/Deals/{id}/Stage_History?fields=Stage,Close_Date,Modified_Time,Modified_By";
 
             var searchDataRequest = "https://www.zohoapis.com/crm/v6/Deals/" + id;
@@ -1332,7 +1331,6 @@ namespace OBL_Zoho.Services
 
             //bind stageHistory Data into searchData
             searchDataResponses.data[0].Stage_History = stageHistoryResponses.data;
-
 
             return new BaseResponse
             {
