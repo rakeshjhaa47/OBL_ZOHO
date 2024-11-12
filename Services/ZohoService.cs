@@ -1159,12 +1159,12 @@ namespace OBL_Zoho.Services
 
             if (isEmployee)
             {
-                content = new StringContent("{\"select_query\": \"select Closing_Date,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time from Deals where ((Sales_Person_Email_ID = '" + pchEmailId + "') and (Created_Time >= '" + createdTimeThreshold + "')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset " + offSet + "\"}");
+                content = new StringContent("{\"select_query\": \"select Closing_Date,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Assigned_CP_Name,Lead_Category from Deals where ((Sales_Person_Email_ID = '" + pchEmailId + "') and (Created_Time >= '"+ createdTimeThreshold +"')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset " + offSet + "\"}");
 
             }
             else
             {
-                content = new StringContent("{\"select_query\": \"select 	Closing_Date,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time from Deals where ((PCH_Email_ID = '" + pchEmailId + "') and (Created_Time >= '" + createdTimeThreshold + "')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset " + offSet + "\"}");
+                content = new StringContent("{\"select_query\": \"select Closing_Date,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Assigned_CP_Name,Lead_Category from Deals where ((PCH_Email_ID = '" + pchEmailId +"') and (Created_Time >= '"+ createdTimeThreshold + "')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset " + offSet+ "\"}");
 
             }
             request.Content = content;
