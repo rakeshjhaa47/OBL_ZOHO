@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using OBL_Zoho.Models;
 using OBL_Zoho.Models.Helper;
+using OBL_Zoho.Models.Request;
 using OBL_Zoho.Models.Response;
 using OBL_Zoho.Services.Interfaces;
 using System.Dynamic;
@@ -1700,6 +1701,40 @@ namespace OBL_Zoho.Services
                 Response = token
             };
 
+        }
+
+        public async Task<BaseResponse> UpdateStageVisitedStoreAsync(string accessToken, string id, BlueprintRequest bur)
+        {
+            var request = "https://www.zohoapis.com/crm/v4/Deals/" + id + "/actions/blueprint";
+
+            var bdu = new BlueprintStoreData();
+            bdu.Remarks_of_visit_store = bur.blueprint[0].data.Remarks_of_visit_store;
+
+            var bu = new BlueprintData();
+            bu.transition_id = bur.blueprint[0].transition_id;
+            bu.data = bdu;
+
+            var xx = new List<BlueprintData>();
+            xx.Add(bu);
+
+            var ddd = new BlueprintRequest();
+            ddd.blueprint = xx;
+
+            var dd = JsonConvert.SerializeObject(ddd);
+            var buffer = System.Text.Encoding.UTF8.GetBytes(dd);
+            var byteContent = new ByteArrayContent(buffer);
+            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+            var response = client.PutAsync(request, byteContent).Result;
+            var result = await response.Content.ReadAsStringAsync();
+            dynamic userResponse = JsonConvert.DeserializeObject<BlueprintUpdateResponse>(result);
+
+            return new BaseResponse
+            {
+                Response = userResponse,
+            };
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OBL_Zoho.Models;
+using OBL_Zoho.Models.Request;
 using OBL_Zoho.Models.Response;
 using OBL_Zoho.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
@@ -534,6 +535,14 @@ namespace OBL_Zoho.Controllers
         public async Task<IActionResult> GetSummaryDashboard(string refreshToken, string? ZM_Code, string? ZH_Code, string? PCH_Email_ID, string? Sales_Person_Emp_ID, string Start_Date, string End_Date)
         {
             return Ok(await _zohoService.ClosedWonAsync(refreshToken, ZM_Code, ZH_Code, PCH_Email_ID, Sales_Person_Emp_ID, Start_Date, End_Date));
+        }
+
+        [SwaggerOperation(Tags = new[] { "UpdateStageVisitedStore" })]
+        [HttpPost]
+        [Route("UpdateStageVisitedStore")]
+        public async Task<IActionResult> UpdateStageVisitedStore(string refreshToken, string id, BlueprintRequest blueprintRequest)
+        {
+            return Ok(await _zohoService.UpdateStageVisitedStoreAsync(refreshToken, id, blueprintRequest));
         }
     }
 }
