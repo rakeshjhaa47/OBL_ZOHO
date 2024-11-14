@@ -18,6 +18,7 @@ namespace OBL_Zoho.Services
         private readonly OblZohoContext _context;
         private readonly IConfiguration _configuration;
         private readonly FirebaseSetting _firebaseSetting;
+        private readonly Random _random;
 
         public ZohoService(IAppSettingsService appSettingsService, OblZohoContext context, IConfiguration configuration, IOptions<FirebaseSetting> options)
         {
@@ -25,6 +26,7 @@ namespace OBL_Zoho.Services
             _context = context;
             _configuration = configuration;
             _firebaseSetting = options.Value;
+            _random = new Random();
         }
 
         public async Task<BaseResponse> GenerateAccessToken()
@@ -875,6 +877,23 @@ namespace OBL_Zoho.Services
 
         public async Task<BaseResponse> GenerateRefreshToken()
         {
+            int randomNumber = _random.Next(1, 4); // Generates a number between 1 and 3
+
+            switch (randomNumber)
+            {
+                case 1:
+                    return await GenerateRefreshTokens("1000.409c5512889ce31ce505bf8d6573c66d.bb2e2916a1ba4129a4ce11ab536f1b62");
+                case 2:
+                    return await GenerateRefreshTokens("1000.a5eda847245b9700e7d60e3d8988f68d.a32bf66136bac168ee70a63b47858e61");
+                case 3:
+                    return await GenerateRefreshTokens("1000.67da5eaa46309cec6e06d2d56a1d1c5d.7bd4b9b51a15c9bf026faa3c79ac3702");
+                default:
+                    throw new InvalidOperationException("Invalid random number generated.");
+            }
+        }
+           
+        private async Task<BaseResponse> GenerateRefreshTokens(string refreshtoken)
+        {
             var refreshToken = _appSettingsService.GetRefreshToken();
             var clientId = _appSettingsService.GetClientId();
             var clientSecret = _appSettingsService.GetClientSecret();
@@ -883,7 +902,7 @@ namespace OBL_Zoho.Services
 
             var client = new HttpClient();
             Dictionary<string, string> pairs = new Dictionary<string, string>();
-            pairs.Add("refresh_token", "1000.409c5512889ce31ce505bf8d6573c66d.bb2e2916a1ba4129a4ce11ab536f1b62");
+            pairs.Add("refresh_token", refreshtoken);
             pairs.Add("client_id", "1000.CLKJQBSFMW6SANQRWQ64HKIVYC34VC");
             pairs.Add("client_secret", "163b44b012c0cd6246a3c2716f55e3be00f5d344d9");
             pairs.Add("grant_type", "refresh_token");
