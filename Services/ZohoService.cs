@@ -1608,19 +1608,17 @@ namespace OBL_Zoho.Services
 
         private async Task<DealSortData> SortDealData(string token, string PCH_Email_ID, string Start_Date, string End_Date, int offset)
         {
-            var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+             var client = new HttpClient();
+             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
-            request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
-            var content = new StringContent($@"{{""select Closing_Date,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time from Deals where ((PCH_Email_ID = '{PCH_Email_ID}') and (Created_Time between '{Start_Date}' and '{End_Date}')) and Stage not in ('Qualification', 'Closed Won', 'Junk Lead', 'Closed Lost','Not Contactable - 4') ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset {offset} ""}}", null, "application/json");
-            request.Content = content;
-
-            var response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            var result = await response.Content.ReadAsStringAsync();
-
-            return JsonConvert.DeserializeObject<DealSortData>(result);
+             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
+             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
+             var content = new StringContent($@"{{""select_query"": ""select Closing_Date, Tile_Requirement_in_Area_Sq_ft, Stage, Amount, Deal_Name, PCH_Email_ID, Sales_Person_Email_ID, City, Zip_Code, Tiling_Date_Likely_Purchase_Date, Mobile, Dealer_Name, Created_Time, Assigned_CP_Name from Deals where ((PCH_Email_ID = '{PCH_Email_ID}') and(Created_Time between '{Start_Date}' and '{End_Date}')) and Stage not in ('Qualification', 'Closed Won', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4') ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset {offset}""}}", null, "application/json");
+             request.Content = content;
+             var response = await client.SendAsync(request);
+             response.EnsureSuccessStatusCode();
+             var result = await response.Content.ReadAsStringAsync();
+             return JsonConvert.DeserializeObject<DealSortData>(result);
         }
 
         public async Task<BaseResponse> ClosedWonAsync(string refreshToken, string? ZM_Code, string? ZH_Code, string? PCH_Email_ID, string? Sales_Person_Emp_ID, string Start_Date, string End_Date)

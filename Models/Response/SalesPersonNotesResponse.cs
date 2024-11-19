@@ -196,6 +196,7 @@ namespace OBL_Zoho.Models.Response
         public object? Dealer_Type { get; set; }
         public object? NP_5_Date { get; set; }
         public object? Tiling_Date_Likely_Purchase_Date { get; set; }
+        public string? Assigned_CP_Name { get; set; }
         public string Closing_Date { get; set; }
         public int Cost_per_Conversion { get; set; }
         public SalesPersonModifiedBy Modified_By { get; set; }

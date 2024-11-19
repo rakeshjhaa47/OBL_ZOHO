@@ -21,6 +21,7 @@
         public string Tiling_Date_Likely_Purchase_Date { get; set; }
         public string PCH_Email_ID { get; set; }
         public string Mobile { get; set; }
+        public string? Assigned_CP_Name { get; set; }
         public string Closing_Date { get; set; }
         public string Dealer_Name { get; set; }
         public string Deal_Name { get; set; }
