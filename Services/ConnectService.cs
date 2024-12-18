@@ -83,27 +83,9 @@ namespace OBL_Zoho.Services
             request.Content = content;
 
             var response = await client.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var result = await response.Content.ReadAsStringAsync();
-
-                try
-                {
-                    return JsonConvert.DeserializeObject<OBLConnect>(result);
-                }
-                catch (JsonSerializationException ex)
-                {
-                    throw new Exception($"Deserialization failed: {ex.Message}");
-                }
-            }
-            else
-            {
-                var errorContent = await response.Content.ReadAsStringAsync();
-                throw new Exception($"Request failed with status code {response.StatusCode}. Response: {errorContent}");
-            }
-
-
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<OBLConnect>(result);
         }
 
         public async Task<BaseResponse> CpDashboardAsync(string accessToken, string Closing_Date, string Created_Time, string Assigned_CP_By_Agent)
