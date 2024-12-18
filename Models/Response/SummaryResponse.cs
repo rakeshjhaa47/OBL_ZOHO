@@ -15,6 +15,9 @@
     public class SummaryData
     {
         public int Amount { get; set; }
+
+        public decimal? Final_Tile_Requirement_in_Area_Sq_ft { get; set; }
+
         public string Stage { get; set; }
         public string id { get; set; }
         public string Closing_Date { get; set; }

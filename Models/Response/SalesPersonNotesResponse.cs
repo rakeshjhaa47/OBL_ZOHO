@@ -53,6 +53,9 @@ namespace OBL_Zoho.Models.Response
     public class SalesPersonDatum
     {
         public string? FLS_Follow_Up_Remarks_B2B { get; set; }
+
+        public decimal? Final_Tile_Requirement_in_Area_Sq_ft { get; set; }
+
         public string? L2_Purchase_Value_if_purchased { get; set; }
         public SalesPersonOwner Owner { get; set; }
         public string? GCLID { get; set; }

@@ -25,7 +25,7 @@ namespace OBL_Zoho.Models.Response
         public string? City { get; set; }
         public DateTime? Tiling_Date_Likely_Purchase_Date { get; set; }
         public string PCH_Email_ID { get; set; }
-        public decimal? Mobile { get; set; }
+        public string? Mobile { get; set; }
         public DateTime? Closing_Date { get; set; }
         public string? Dealer_Name { get; set; }
         public string Deal_Name { get; set; }
@@ -35,20 +35,20 @@ namespace OBL_Zoho.Models.Response
 
         public string MobileNumber
         {
-            get => Mobile?.ToString() ?? string.Empty;
+            get => Mobile ?? string.Empty; 
             set
             {
-                // Attempt to parse string to decimal, leave null if invalid
-                if (decimal.TryParse(value, out var parsedValue))
+                if (value != null && value.All(char.IsDigit))
                 {
-                    Mobile = parsedValue;
+                    Mobile = value; 
                 }
                 else
                 {
-                    Mobile = null; // Or handle accordingly if you expect a default
+                    Mobile = null; 
                 }
             }
         }
+
     }
 
     public class OBLInfo

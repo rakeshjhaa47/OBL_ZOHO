@@ -15,6 +15,9 @@
     {
         public string Sales_Person_Email_ID { get; set; }
         public int? Tile_Requirement_in_Area_Sq_ft { get; set; }
+
+        public decimal? Final_Tile_Requirement_in_Area_Sq_ft { get; set; } 
+
         public DateTime Created_Time { get; set; }
         private object _amount;
         public object Amount

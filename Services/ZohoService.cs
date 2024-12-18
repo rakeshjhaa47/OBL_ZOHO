@@ -1178,12 +1178,12 @@ namespace OBL_Zoho.Services
 
             if (isEmployee)
             {
-                content = new StringContent("{\"select_query\": \"select Closing_Date,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Assigned_CP_Name,Lead_Category from Deals where ((Sales_Person_Email_ID = '" + pchEmailId + "') and (Created_Time >= '"+ createdTimeThreshold +"')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset " + offSet + "\"}");
+                content = new StringContent("{\"select_query\": \"select Closing_Date,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Assigned_CP_Name,Lead_Category,Final_Tile_Requirement_in_Area_Sq_ft from Deals where ((Sales_Person_Email_ID = '" + pchEmailId + "') and (Created_Time >= '"+ createdTimeThreshold +"')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset " + offSet + "\"}");
 
             }
             else
             {
-                content = new StringContent("{\"select_query\": \"select Closing_Date,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Assigned_CP_Name,Lead_Category from Deals where ((PCH_Email_ID = '" + pchEmailId +"') and (Created_Time >= '"+ createdTimeThreshold + "')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset " + offSet+ "\"}");
+                content = new StringContent("{\"select_query\": \"select Closing_Date,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Assigned_CP_Name,Lead_Category,Final_Tile_Requirement_in_Area_Sq_ft from Deals where ((PCH_Email_ID = '" + pchEmailId +"') and (Created_Time >= '"+ createdTimeThreshold + "')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset " + offSet+ "\"}");
 
             }
             request.Content = content;
@@ -1330,7 +1330,7 @@ namespace OBL_Zoho.Services
 
         public async Task<BaseResponse> GetLeadDetailsBYIdAsync(string accessToken, string id)
         {
-            var stageHostoryRequest = $"https://www.zohoapis.com/crm/v6/Deals/{id}/Stage_History?fields=Stage,Close_Date,Modified_Time,Modified_By";
+            var stageHostoryRequest = $"https://www.zohoapis.com/crm/v6/Deals/{id}/Stage_History?fields=Stage,Close_Date,Final_Tile_Requirement_in_Area_Sq_ft,Modified_Time,Modified_By";
 
             var searchDataRequest = "https://www.zohoapis.com/crm/v6/Deals/" + id;
 
@@ -1501,7 +1501,7 @@ namespace OBL_Zoho.Services
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
-            var content = new StringContent($@"{{""select_query"": ""select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total from Deals where ((((Stage = 'Closed Won' and Closing_Date >= '{closingDate}') or (Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared') and Created_Time >= '{createdTimeThreshold}')) and (((ZM_Code = '{zm_code}' or ZH_Code = '{zh_code}') or (PCH_Email_ID = '{pch_email_id}')) or (Sales_Person_Email_ID = '{sales_person_emp_id}')))) group by Stage limit 200 offset {offset}""}}", null, "application/json");
+            var content = new StringContent($@"{{""select_query"": ""select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total ,Final_Tile_Requirement_in_Area_Sq_ft from Deals where ((((Stage = 'Closed Won' and Closing_Date >= '{closingDate}') or (Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared') and Created_Time >= '{createdTimeThreshold}')) and (((ZM_Code = '{zm_code}' or ZH_Code = '{zh_code}') or (PCH_Email_ID = '{pch_email_id}')) or (Sales_Person_Email_ID = '{sales_person_emp_id}')))) group by Stage limit 200 offset {offset}""}}", null, "application/json");
 
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -1667,7 +1667,7 @@ namespace OBL_Zoho.Services
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
-            var content = new StringContent($@"{{""select_query"":""select Stage,Amount,Closing_Date from Deals where (((((((ZM_Code ='{ZM_Code}' or ZH_Code='{ZH_Code}') or (PCH_Email_ID = '{PCH_Email_ID}')) or (Sales_Person_Email_ID = '{Sales_Person_Emp_ID}')) and (Stage ='Closed Won')) and (Closing_Date is not null)) and (Amount is not null)) and (Closing_Date between '{Start_Date}' and '{End_Date}')) limit 200 offset {offSet}""}}", null, "application/json");
+            var content = new StringContent($@"{{""select_query"":""select Stage,Amount,Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft from Deals where (((((((ZM_Code ='{ZM_Code}' or ZH_Code='{ZH_Code}') or (PCH_Email_ID = '{PCH_Email_ID}')) or (Sales_Person_Email_ID = '{Sales_Person_Emp_ID}')) and (Stage ='Closed Won')) and (Closing_Date is not null)) and (Amount is not null)) and (Closing_Date between '{Start_Date}' and '{End_Date}')) limit 200 offset {offSet}""}}", null, "application/json");
             request.Content = content;
 
             var response = await client.SendAsync(request);
