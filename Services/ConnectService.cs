@@ -148,10 +148,10 @@ namespace OBL_Zoho.Services
         }
 
 
-        public async Task<BaseResponse> FireBaseToken()
+        public async Task<BaseResponse> CreateFireBaseTokenForConnect()
         {
             string token;
-            string jsonCredential = JsonConvert.SerializeObject(_firebaseforConnect);  
+            string jsonCredential = JsonConvert.SerializeObject(_firebaseforConnect);  // Assuming _firebaseSetting is a complex object
             byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(jsonCredential);
 
             GoogleCredential credential;

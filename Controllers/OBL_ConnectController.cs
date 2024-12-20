@@ -44,22 +44,12 @@ namespace OBL_Zoho.Controllers
             return Ok(await _ConnectService.CpDashboardAsync(accessToken,Closing_Date, Created_Time,Assigned_CP_By_Agent));
         }
 
-
-        [SwaggerOperation(Tags = new[] { "Access token" })]
+        [Route("generate-firebase-token-for-connect")]
         [HttpPost]
-        [Route("CreateFireBaseTokenforConnect")]
         public async Task<IActionResult> CreateFireBaseTokenforConnect()
         {
-
-            try
-            {
-                var response = await _ConnectService.FireBaseToken();
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Message = "Error creating Firebase token", Details = ex.Message });
-            }
+            var response = await _ConnectService.CreateFireBaseTokenForConnect();
+            return Ok(response);
         }
     }
 }
