@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OBL_Zoho.Services;
 using OBL_Zoho.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net.Mime;
@@ -41,6 +42,24 @@ namespace OBL_Zoho.Controllers
         public async Task<IActionResult> CpDashboard(string accessToken, string Closing_Date,string Created_Time,string Assigned_CP_By_Agent )
         {
             return Ok(await _ConnectService.CpDashboardAsync(accessToken,Closing_Date, Created_Time,Assigned_CP_By_Agent));
+        }
+
+
+        [SwaggerOperation(Tags = new[] { "Access token" })]
+        [HttpPost]
+        [Route("CreateFireBaseTokenforConnect")]
+        public async Task<IActionResult> CreateFireBaseTokenforConnect()
+        {
+
+            try
+            {
+                var response = await _ConnectService.FireBaseToken();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Error creating Firebase token", Details = ex.Message });
+            }
         }
     }
 }

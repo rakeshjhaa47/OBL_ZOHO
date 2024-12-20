@@ -10,5 +10,7 @@ namespace OBL_Zoho.Services.Interfaces
 
         Task<BaseResponse> CpDashboardAsync(string accessToken, string Closing_Date, string Created_Time, string Assigned_CP_By_Agent);
 
+        Task<BaseResponse> FireBaseToken();
+
     }
 }

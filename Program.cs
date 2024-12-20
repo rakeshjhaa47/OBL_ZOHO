@@ -25,6 +25,9 @@ builder.Services.AddControllers();
 
 builder.Services.Configure<FirebaseSetting>(builder.Configuration.GetSection("FIREBASE_CONFIG"));
 
+builder.Services.Configure<FirebaseforConnect>(builder.Configuration.GetSection("FirebaseforConnect"));
+
+
 builder.Services.AddSingleton<FirebaseApp>(provider =>
 {
     var fbConfig = provider.GetRequiredService<IOptions<FirebaseSetting>>().Value;

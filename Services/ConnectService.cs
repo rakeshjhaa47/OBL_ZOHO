@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Google.Apis.Auth.OAuth2;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using OBL_Zoho.Models.Response;
 using OBL_Zoho.Services.Interfaces;
 using System.Net.Http.Headers;
@@ -7,9 +9,12 @@ namespace OBL_Zoho.Services
 {
     public class ConnectService : IConnectService
     {
-        public ConnectService()
+        private readonly FirebaseforConnect _firebaseforConnect;
+
+        public ConnectService(IOptions<FirebaseforConnect> options)
         {
-           
+            _firebaseforConnect = options.Value;
+
         }
         public async Task<BaseResponse> GenerateRefreshTokenForOblConnect()
         {
@@ -140,6 +145,50 @@ namespace OBL_Zoho.Services
             var result = await response.Content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<CountResponse>(result);
+        }
+
+
+        public async Task<BaseResponse> FireBaseToken()
+        {
+            string token;
+            string jsonCredential = JsonConvert.SerializeObject(_firebaseforConnect);  
+            byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(jsonCredential);
+
+            GoogleCredential credential;
+            using (var stream = new MemoryStream(byteArray))
+            {
+                string[] scopes = new string[]
+                {
+                    "https://www.googleapis.com/auth/userinfo.email",
+                    "https://www.googleapis.com/auth/firebase.database",
+                    "https://www.googleapis.com/auth/firebase.messaging"
+                };
+
+                try
+                {
+                    credential = GoogleCredential.FromStream(stream).CreateScoped(scopes);
+                }
+                catch (Exception ex)
+                {
+
+                    throw new Exception("Error loading Firebase credentials", ex);
+                }
+            }
+
+            try
+            {
+                token = await credential.UnderlyingCredential.GetAccessTokenForRequestAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error generating Firebase access token", ex);
+            }
+
+            return new BaseResponse
+            {
+                Response = token
+            };
+
         }
     }
 }
