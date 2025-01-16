@@ -33,6 +33,7 @@ namespace OBL_Zoho.Models.Response
         public string Lead_Response_Medium_Whatsapp_Email_B2B_L2_Calli { get; set; }
         public string Dealer_Type { get; set; }
         public string Notes { get; set; }
+        public string Reason_of_Junk_Leads { get; set; }
     }
 
     /*Closed Lost*/
@@ -53,6 +54,7 @@ namespace OBL_Zoho.Models.Response
         public string Sales_Person_Customer_Remarks { get; set; }
         public string Closing_Date { get; set; }
         public string Notes { get; set; }
+        public string Reason_of_Junk_Leads { get; set; }
     }
 
     /*Quotation shared*/

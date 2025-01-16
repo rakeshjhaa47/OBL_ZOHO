@@ -332,6 +332,7 @@ namespace OBL_Zoho.Services
             bdu.Sales_Person_Customer_Remarks = bur.blueprint[0].data.Sales_Person_Customer_Remarks;
             bdu.Closing_Date = bur.blueprint[0].data.Closing_Date;
             bdu.Notes = bur.blueprint[0].data.Notes;
+            bdu.Reason_of_Junk_Leads = bur.blueprint[0].data.Reason_of_Junk_Leads;
 
             var bu = new BlueprintUpdate_ClosedLost();
             bu.transition_id = bur.blueprint[0].transition_id;
