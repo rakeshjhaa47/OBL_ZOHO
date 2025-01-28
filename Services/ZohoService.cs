@@ -1759,5 +1759,72 @@ namespace OBL_Zoho.Services
                 Response = userResponse,
             };
         }
+
+        private async Task<LeadBystageResponse> getLeadsByStageAsynclist(string refreshToken, string pchEmailId, string Sales_Person_Email_ID, int offSet, bool isEmployee)
+        {
+            StringContent content;
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+            var createdTimeThreshold = DateTime.Now.AddDays(-275).ToString("yyyy-MM-ddTHH:mm:ssK");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
+
+            if (isEmployee)
+            {
+                content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time from Deals where (((PCH_Email_ID = '"+ pchEmailId +"') and (Created_Time > '"+ createdTimeThreshold+"')) and (Stage_Category = 'Closed')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset " + offSet+ "\"}");
+
+            }
+            else
+            {
+                content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time from Deals where (((Sales_Person_Email_ID = '"+ Sales_Person_Email_ID +"') and (Created_Time > '"+ createdTimeThreshold+"')) and (Stage_Category = 'Closed')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset "+ offSet+"\"}");
+
+            }
+            request.Content = content;
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<LeadBystageResponse>(result);
+
+        }
+
+        public async Task<BaseResponse> getLeadsByStageAsync(string refreshToken, string pchEmailId,string Sales_Person_Email_ID, bool isEmployee)
+        {
+            var response = new LeadBystageResponse();
+            int offSet = 0;
+            //var token = await GenerateRefreshToken();
+
+            while (true)
+            {
+                var dd = await getLeadsByStageAsynclist(refreshToken, pchEmailId, Sales_Person_Email_ID, offSet, isEmployee);
+                if (dd == null || dd?.data == null)
+                {
+                    break;
+                }
+
+                response.data.AddRange(dd.data);
+
+                if (dd.info?.more_records == true)
+                {
+                    offSet += 200;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            response.info = new Infodata
+            {
+                count = response.data.Count,
+                more_records = false
+            };
+
+            return new BaseResponse
+            {
+                Response = response
+            };
+        }
     }
 }

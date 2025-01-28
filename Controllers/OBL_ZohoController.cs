@@ -545,5 +545,14 @@ namespace OBL_Zoho.Controllers
         {
             return Ok(await _zohoService.UpdateStageVisitedStoreAsync(refreshToken, id, blueprintRequest));
         }
+
+
+        [SwaggerOperation(Tags = new[] { "getLeadsByStage" })]
+        [HttpPost]
+        [Route("getLeadsByStage")]
+        public async Task<IActionResult> getLeadsByStage(string refreshToken, string pchEmailId, string Sales_Person_Email_ID, bool isEmployee = false)
+        {
+            return Ok(await _zohoService.getLeadsByStageAsync(refreshToken, pchEmailId, Sales_Person_Email_ID, isEmployee));
+        }
     }
 }
