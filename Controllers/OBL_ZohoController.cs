@@ -36,7 +36,7 @@ namespace OBL_Zoho.Controllers
         [Produces(MediaTypeNames.Application.Json)]
         public async Task<IActionResult> GenerateAccessToken()
         {
-            return Ok(await _zohoService.GenerateAccessToken());
+            return Ok(await _zohoService.GenerateRefreshToken());
         }
 
 

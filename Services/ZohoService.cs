@@ -878,7 +878,7 @@ namespace OBL_Zoho.Services
 
         public async Task<BaseResponse> GenerateRefreshToken()
         {
-            int randomNumber = _random.Next(1, 4); // Generates a number between 1 and 3
+            int randomNumber = _random.Next(1, 6); // Generates a number between 1 and 5
 
             switch (randomNumber)
             {
@@ -888,6 +888,10 @@ namespace OBL_Zoho.Services
                     return await GenerateRefreshTokens("1000.a5eda847245b9700e7d60e3d8988f68d.a32bf66136bac168ee70a63b47858e61");
                 case 3:
                     return await GenerateRefreshTokens("1000.67da5eaa46309cec6e06d2d56a1d1c5d.7bd4b9b51a15c9bf026faa3c79ac3702");
+                case 4:
+                    return await GenerateRefreshTokens("1000.efb846477ac5595b01f90c75d4b1c101.2e575cc6c66b1e9e4702f77caf96bbf4");
+                case 5:
+                    return await GenerateRefreshTokens("1000.aa6cc85731bfde1428e843433ef69220.568ea1e4317d974ce2e71bc437b05833");
                 default:
                     throw new InvalidOperationException("Invalid random number generated.");
             }
