@@ -1760,7 +1760,7 @@ namespace OBL_Zoho.Services
             };
         }
 
-        private async Task<LeadBystageResponse> getLeadsByStageAsynclist(string refreshToken, string pchEmailId, string Sales_Person_Email_ID, int offSet, bool isEmployee)
+        private async Task<LeadBystageResponse> getLeadsByStageAsynclist(string refreshToken, string pchEmailId, string Stage_Category, string Sales_Person_Email_ID, bool isEmployee, int offSet, int limit)
         {
             StringContent content;
             var client = new HttpClient();
@@ -1772,53 +1772,35 @@ namespace OBL_Zoho.Services
 
             if (isEmployee)
             {
-                content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time from Deals where (((PCH_Email_ID = '"+ pchEmailId +"') and (Created_Time > '"+ createdTimeThreshold+"')) and (Stage_Category = 'Closed')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset " + offSet+ "\"}");
-
+                content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category from Deals where (((Sales_Person_Email_ID = '"+Sales_Person_Email_ID+"') and (Created_Time > '"+createdTimeThreshold+"')) and (Stage_Category = '"+Stage_Category+"')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit "+limit+" offset "+offSet+" \"}");
             }
             else
             {
-                content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time from Deals where (((Sales_Person_Email_ID = '"+ Sales_Person_Email_ID +"') and (Created_Time > '"+ createdTimeThreshold+"')) and (Stage_Category = 'Closed')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset "+ offSet+"\"}");
-
+                content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category from Deals where (((PCH_Email_ID = '"+pchEmailId+"') and (Created_Time > '"+createdTimeThreshold+"')) and (Stage_Category = '"+Stage_Category+"')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit "+limit+" offset "+offSet+" \"}");
             }
             request.Content = content;
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
-
+            
             return JsonConvert.DeserializeObject<LeadBystageResponse>(result);
-
+        
         }
 
-        public async Task<BaseResponse> getLeadsByStageAsync(string refreshToken, string pchEmailId,string Sales_Person_Email_ID, bool isEmployee)
+        public async Task<BaseResponse> getLeadsByStageAsync(string refreshToken, string pchEmailId, string Stage_Category,string Sales_Person_Email_ID, bool isEmployee, int offSet, int limit)
         {
             var response = new LeadBystageResponse();
-            int offSet = 0;
-            //var token = await GenerateRefreshToken();
+            var dd = await getLeadsByStageAsynclist(refreshToken, pchEmailId, Stage_Category, Sales_Person_Email_ID, isEmployee, offSet, limit);
 
-            while (true)
+            if (dd?.data != null)
             {
-                var dd = await getLeadsByStageAsynclist(refreshToken, pchEmailId, Sales_Person_Email_ID, offSet, isEmployee);
-                if (dd == null || dd?.data == null)
-                {
-                    break;
-                }
-
                 response.data.AddRange(dd.data);
-
-                if (dd.info?.more_records == true)
-                {
-                    offSet += 200;
-                }
-                else
-                {
-                    break;
-                }
             }
 
             response.info = new Infodata
             {
                 count = response.data.Count,
-                more_records = false
+                more_records = dd.info.more_records
             };
 
             return new BaseResponse

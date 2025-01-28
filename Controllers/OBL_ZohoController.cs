@@ -550,9 +550,9 @@ namespace OBL_Zoho.Controllers
         [SwaggerOperation(Tags = new[] { "getLeadsByStage" })]
         [HttpPost]
         [Route("getLeadsByStage")]
-        public async Task<IActionResult> getLeadsByStage(string refreshToken, string pchEmailId, string Sales_Person_Email_ID, bool isEmployee = false)
+        public async Task<IActionResult> getLeadsByStage(string refreshToken, string pchEmailId, string Stage_Category, string Sales_Person_Email_ID , bool isEmployee = false,int offSet =0, int limit =10)
         {
-            return Ok(await _zohoService.getLeadsByStageAsync(refreshToken, pchEmailId, Sales_Person_Email_ID, isEmployee));
+            return Ok(await _zohoService.getLeadsByStageAsync(refreshToken, pchEmailId, Stage_Category, Sales_Person_Email_ID , isEmployee,offSet,limit));
         }
     }
 }
