@@ -60,6 +60,10 @@ namespace OBL_Zoho.Services.Interfaces
 
         Task<BaseResponse> getLeadsByStageAsync(string refreshToken, string pchEmailId, string Stage_Category, string Sales_Person_Email_ID, bool isEmployee,int offSet,int limit);
 
+        Task<BaseResponse> GetEmployyeeDealAsync(string accessToken, string Deal_Name, string City);
+
+        Task<BaseResponse> getLeadsByBHAsync(string refreshToken,  string Closing_Date, string Sales_Person_Emp_ID, string BM_Code, bool isEmployee = false);
+
 
     }
 }
