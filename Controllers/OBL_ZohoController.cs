@@ -555,20 +555,20 @@ namespace OBL_Zoho.Controllers
             return Ok(await _zohoService.getLeadsByStageAsync(refreshToken, pchEmailId, Stage_Category, Sales_Person_Email_ID , isEmployee,offSet,limit));
         }
 
-        [SwaggerOperation(Tags = new[] { "GetEmployyeeDeal" })]
+        [SwaggerOperation(Tags = new[] { "Obl" })]
         [HttpPost]
-        [Route("GetEmployyeeDeal")]
-        public async Task<IActionResult> GetEmployyeeDeal(string refreshToken, string Deal_Name, string City)
+        [Route("OblSearch")]
+        public async Task<IActionResult> OblSearch(string refreshToken, string Deal_Name, string City)
         {
-            return Ok(await _zohoService.GetEmployyeeDealAsync(refreshToken, Deal_Name, City));
+            return Ok(await _zohoService.OblSearchAsync(refreshToken, Deal_Name, City));
         }
 
-        [SwaggerOperation(Tags = new[] { "getLeadsByBH" })]
+        [SwaggerOperation(Tags = new[] { "Obl" })]
         [HttpPost]
-        [Route("getLeadsByBH")]
-        public async Task<IActionResult> getLeadsByBH(string refreshToken, string Closing_Date, string Sales_Person_Emp_ID, string BM_Code, bool isEmployee = false)
+        [Route("OblSummary")]
+        public async Task<IActionResult> OblSummary(string refreshToken, string Closing_Date, string Sales_Person_Emp_ID, string BM_Code, bool isEmployee = false)
         {
-            return Ok(await _zohoService.getLeadsByBHAsync(refreshToken,  Closing_Date, Sales_Person_Emp_ID, BM_Code, isEmployee));
+            return Ok(await _zohoService.OblSummaryAsync(refreshToken,  Closing_Date, Sales_Person_Emp_ID, BM_Code, isEmployee));
         }
     }
 }

@@ -1810,7 +1810,7 @@ namespace OBL_Zoho.Services
             };
         }
 
-        private async Task<Rootdeal> GetDataByEmployeeDeal(string refreshToken, string Deal_Name, string City, int offSet)
+        private async Task<Rootdeal> GetOblSearchAsync(string refreshToken, string Deal_Name, string City, int offSet)
         {
             StringContent content;
             var client = new HttpClient();
@@ -1831,7 +1831,7 @@ namespace OBL_Zoho.Services
 
         }
 
-        public async Task<BaseResponse> GetEmployyeeDealAsync(string refreshToken, string Deal_Name, string City)
+        public async Task<BaseResponse> OblSearchAsync(string refreshToken, string Deal_Name, string City)
         {
             var response = new Rootdeal();
             int offSet = 0;
@@ -1839,7 +1839,7 @@ namespace OBL_Zoho.Services
 
             while (true)
             {
-                var dd = await GetDataByEmployeeDeal(refreshToken, Deal_Name, City, offSet);
+                var dd = await GetOblSearchAsync(refreshToken, Deal_Name, City, offSet);
                 if (dd == null || dd?.data == null)
                 {
                     break;
@@ -1870,7 +1870,7 @@ namespace OBL_Zoho.Services
         }
 
 
-        private async Task<RootBHData> GetDataByEmployeeBH(string refreshToken,  string Closing_Date, string Sales_Person_Emp_ID, string BM_Code, int offSet, bool isEmployee = false)
+        private async Task<RootBHData> GetOblSummaryAsync(string refreshToken,  string Closing_Date, string Sales_Person_Emp_ID, string BM_Code, int offSet, bool isEmployee = false)
         {
             StringContent content;
             var client = new HttpClient();
@@ -1899,7 +1899,7 @@ namespace OBL_Zoho.Services
 
         }
 
-        public async Task<BaseResponse> getLeadsByBHAsync(string refreshToken,  string Closing_Date, string Sales_Person_Emp_ID, string BM_Code,  bool isEmployee)
+        public async Task<BaseResponse> OblSummaryAsync(string refreshToken,  string Closing_Date, string Sales_Person_Emp_ID, string BM_Code,  bool isEmployee)
         {
             var response = new RootBHData();
             int offSet = 0;
@@ -1907,7 +1907,7 @@ namespace OBL_Zoho.Services
 
             while (true)
             {
-                var dd = await GetDataByEmployeeBH(refreshToken, Closing_Date, Sales_Person_Emp_ID, BM_Code, offSet, isEmployee);
+                var dd = await GetOblSummaryAsync(refreshToken, Closing_Date, Sales_Person_Emp_ID, BM_Code, offSet, isEmployee);
                 if (dd == null || dd?.data == null)
                 {
                     break;
