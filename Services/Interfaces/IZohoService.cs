@@ -58,7 +58,7 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> CreateFireBaseToken();
         Task<BaseResponse> UpdateStageVisitedStoreAsync(string accessToken, string id, BlueprintRequest bur);
 
-        Task<BaseResponse> getLeadsByStageAsync(string refreshToken, string pchEmailId, string Stage_Category, string Sales_Person_Email_ID, bool isEmployee,int offSet,int limit);
+        Task<BaseResponse> getLeadsByStageAsync(string refreshToken, string pchEmailId, string Stage_Category, string Sales_Person_Email_ID, string MaxAreasqft, string MinAreaSqFt, bool isEmployee,int offSet,int limit);
 
         Task<BaseResponse> OblSearchAsync(string accessToken, string Deal_Name, string City);
 
