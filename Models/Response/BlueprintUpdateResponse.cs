@@ -109,6 +109,7 @@ namespace OBL_Zoho.Models.Response
     {
         public string Remarks_spoken_to_customer { get; set; }
         public string Notes { get; set; }
+        public string? Remarks_of_Scheduled_a_Visit { get; set; }
     }
 
     /*Sales person pitch*/

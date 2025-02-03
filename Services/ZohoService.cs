@@ -506,7 +506,7 @@ namespace OBL_Zoho.Services
             var request = "https://www.zohoapis.com/crm/v4/Deals/" + id + "/actions/blueprint";
 
             var bdu = new BlueprintDataUpdate_VisitedStore();
-            bdu.Notes = bur.blueprint[0].data.Notes;
+            bdu.Remarks_of_Scheduled_a_Visit = bur.blueprint[0].data.Notes;
 
             var bu = new BlueprintUpdate_VisitedStore();
             bu.transition_id = bur.blueprint[0].transition_id;
