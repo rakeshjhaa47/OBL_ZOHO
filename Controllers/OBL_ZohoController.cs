@@ -550,25 +550,25 @@ namespace OBL_Zoho.Controllers
         [SwaggerOperation(Tags = new[] { "getLeadsByStage" })]
         [HttpPost]
         [Route("getLeadsByStage")]
-        public async Task<IActionResult> getLeadsByStage(string refreshToken, string pchEmailId, string Stage_Category, string Sales_Person_Email_ID , string MaxAreasqft, string MinAreaSqFt, bool isEmployee = false,int offSet =0, int limit =10)
+        public async Task<IActionResult> getLeadsByStage(string refreshToken, string Stage_Category, string Sales_Person_Email_ID , string MaxAreasqft, string MinAreaSqFt, bool isEmployee = false,int offSet =0, int limit =10)
         {
-            return Ok(await _zohoService.getLeadsByStageAsync(refreshToken, pchEmailId, Stage_Category, Sales_Person_Email_ID , MaxAreasqft, MinAreaSqFt, isEmployee,offSet,limit));
+            return Ok(await _zohoService.getLeadsByStageAsync(refreshToken, Stage_Category, Sales_Person_Email_ID , MaxAreasqft, MinAreaSqFt, isEmployee,offSet,limit));
         }
 
         [SwaggerOperation(Tags = new[] { "Obl" })]
         [HttpPost]
         [Route("OblSearch")]
-        public async Task<IActionResult> OblSearch(string refreshToken, string Deal_Name, string City)
+        public async Task<IActionResult> OblSearch(string refreshToken, string Deal_Name, string City, string Stage_Category)
         {
-            return Ok(await _zohoService.OblSearchAsync(refreshToken, Deal_Name, City));
+            return Ok(await _zohoService.OblSearchAsync(refreshToken, Deal_Name, City, Stage_Category));
         }
 
         [SwaggerOperation(Tags = new[] { "Obl" })]
         [HttpPost]
         [Route("OblSummary")]
-        public async Task<IActionResult> OblSummary(string refreshToken, string Closing_Date, string Sales_Person_Emp_ID,  string BM_Code, bool isEmployee = false)
+        public async Task<IActionResult> OblSummary(string refreshToken, string Sales_Person_Emp_ID, bool isEmployee = false)
         {
-            return Ok(await _zohoService.OblSummaryAsync(refreshToken,  Closing_Date, Sales_Person_Emp_ID,   BM_Code, isEmployee));
+            return Ok(await _zohoService.OblSummaryAsync(refreshToken, Sales_Person_Emp_ID, isEmployee));
         }
     }
 }
