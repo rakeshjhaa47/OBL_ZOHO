@@ -1761,37 +1761,35 @@ namespace OBL_Zoho.Services
             };
         }
 
-        private async Task<LeadBystageResponse> getLeadsByStageAsynclist(string refreshToken, string Stage_Category, string Sales_Person_Email_ID, string MaxAreasqft, string MinAreaSqFt, bool isEmployee, int offSet, int limit)
+        private async Task<LeadBystageResponse> getLeadsByStageAsynclist(string refreshToken, string Stage_Category, string Sales_Person_Email_ID, string createdTime, string MaxAreasqft, string MinAreaSqFt, bool isEmployee, int offSet, int limit)
         {
             StringContent content;
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
-            var createdTimeThreshold = DateTime.Now.AddDays(-275).ToString("yyyy-MM-ddTHH:mm:ssK");
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
 
             if (isEmployee)
             {
-                content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category from Deals where ((((Sales_Person_Email_ID = '"+Sales_Person_Email_ID+"') and (Created_Time > '"+createdTimeThreshold+"')) and (Stage_Category = '"+Stage_Category+"')) and (Tile_Requirement_in_Area_Sq_ft between '"+MinAreaSqFt+"' and '"+MaxAreasqft+"')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit "+limit+" offset "+offSet+"\"}");
+                content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category from Deals where ((((Sales_Person_Email_ID = '" + Sales_Person_Email_ID + "') and (Created_Time > '" + createdTime + "')) and (Stage_Category = '" + Stage_Category + "')) and (Tile_Requirement_in_Area_Sq_ft between '" + MinAreaSqFt + "' and '" + MaxAreasqft + "')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit " + limit + " offset " + offSet + "\"}");
             }
             else
             {
-                content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category from Deals where ((((PCH_Email_ID = '"+ Sales_Person_Email_ID + "') and (Created_Time > '"+createdTimeThreshold+"')) and (Stage_Category = '"+Stage_Category+"')) and (Tile_Requirement_in_Area_Sq_ft between '"+MinAreaSqFt+"' and '"+MaxAreasqft+"')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit "+limit+" offset "+offSet+"\"}");
+                content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category from Deals where ((((PCH_Email_ID = '" + Sales_Person_Email_ID + "') and (Created_Time > '" + createdTime + "')) and (Stage_Category = '" + Stage_Category + "')) and (Tile_Requirement_in_Area_Sq_ft between '" + MinAreaSqFt + "' and '" + MaxAreasqft + "')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit " + limit + " offset " + offSet + "\"}");
             }
             request.Content = content;
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
-            
+
             return JsonConvert.DeserializeObject<LeadBystageResponse>(result);
-        
         }
 
-        public async Task<BaseResponse> getLeadsByStageAsync(string refreshToken, string Stage_Category,string Sales_Person_Email_ID, string MaxAreasqft, string MinAreaSqFt, bool isEmployee, int offSet, int limit)
+        public async Task<BaseResponse> getLeadsByStageAsync(string refreshToken, string Stage_Category,string Sales_Person_Email_ID,string createdTime, string MaxAreasqft, string MinAreaSqFt, bool isEmployee, int offSet, int limit)
         {
             var response = new LeadBystageResponse();
-            var dd = await getLeadsByStageAsynclist(refreshToken, Stage_Category, Sales_Person_Email_ID, MaxAreasqft,MinAreaSqFt, isEmployee, offSet, limit);
+            var dd = await getLeadsByStageAsynclist(refreshToken, Stage_Category, Sales_Person_Email_ID, createdTime, MaxAreasqft,MinAreaSqFt, isEmployee, offSet, limit);
 
             if (dd?.data != null)
             {
@@ -1835,7 +1833,6 @@ namespace OBL_Zoho.Services
         {
             var response = new Rootdeal();
             int offSet = 0;
-            //var token = await GenerateRefreshToken();
 
             while (true)
             {
@@ -1876,17 +1873,18 @@ namespace OBL_Zoho.Services
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
             var createdTimeThreshold = DateTime.Now.AddDays(-90).ToString("yyyy-MM-ddTHH:mm:ssK");
+            var closingDate = DateTime.Now.AddDays(-90).ToString("yyyy-MM-dd");
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
 
             if (isEmployee)
             {
-                content = new StringContent("{\"select_query\": \"select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total, SUM(Final_Tile_Requirement_in_Area_Sq_ft) as Final_Tile_Total from Deals where (((Stage = 'Closed Won'and Closing_Date >='" + createdTimeThreshold+"') or (Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared') and Created_Time >= '"+createdTimeThreshold+"')) and (Sales_Person_Emp_ID = '"+Sales_Person_Emp_ID+"')) group by Stage limit 200 offset "+ offSet + " \"}");
+                content = new StringContent("{\"select_query\": \"select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total, SUM(Final_Tile_Requirement_in_Area_Sq_ft) as Final_Tile_Total from Deals where (((Stage = 'Closed Won'and Closing_Date >='" + closingDate + "') or (Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared') and Created_Time >= '" + createdTimeThreshold + "')) and (Sales_Person_Emp_ID = '" + Sales_Person_Emp_ID + "')) group by Stage limit 200 offset " + offSet + " \"}");
             }
             else
             {
-                content = new StringContent("{\"select_query\": \"select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total, SUM(Final_Tile_Requirement_in_Area_Sq_ft) as Final_Tile_Total from Deals where (((Stage = 'Closed Won' and Closing_Date >='" + createdTimeThreshold + "') or (Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared') and Created_Time >= '"+createdTimeThreshold+"')) and (BM_Code = '"+ Sales_Person_Emp_ID + "')) group by Stage limit 200 offset "+ offSet + " \"}");
+                content = new StringContent("{\"select_query\": \"select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total, SUM(Final_Tile_Requirement_in_Area_Sq_ft) as Final_Tile_Total from Deals where (((Stage = 'Closed Won' and Closing_Date >='" + closingDate + "') or (Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared') and Created_Time >= '" + createdTimeThreshold + "')) and (BM_Code = '" + Sales_Person_Emp_ID + "')) group by Stage limit 200 offset " + offSet + " \"}");
             }
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -1894,14 +1892,12 @@ namespace OBL_Zoho.Services
             var result = await response.Content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<RootBHData>(result);
-
         }
 
         public async Task<BaseResponse> OblSummaryAsync(string refreshToken, string Sales_Person_Emp_ID,  bool isEmployee)
         {
             var response = new RootBHData();
             int offSet = 0;
-            //var token = await GenerateRefreshToken();
 
             while (true)
             {
