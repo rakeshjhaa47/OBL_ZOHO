@@ -1507,7 +1507,7 @@ namespace OBL_Zoho.Services
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
-            var content = new StringContent($@"{{""select_query"": ""select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total ,SUM(Final_Tile_Requirement_in_Area_Sq_ft) as Final_Tile_Total from Deals where ((((Stage = 'Closed Won' and Closing_Date >= '2024-10-10') or (Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared') and Created_Time >= '2024-06-06T12:12:12+05:30')) and (((ZM_Code = '{zm_code}' or ZH_Code = '{zh_code}') or (PCH_Email_ID = '{pch_email_id}')) or (Sales_Person_Email_ID = '{sales_person_emp_id}')))) group by Stage limit 200 offset 0""}}", null, "application/json");
+            var content = new StringContent($@"{{""select_query"": ""select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total ,SUM(Final_Tile_Requirement_in_Area_Sq_ft) as Final_Tile_Total from Deals where ((((Stage = 'Closed Won' and Closing_Date >= '{closingDate}') or (Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared') and Created_Time >= '{createdTimeThreshold}')) and (((ZM_Code = '{zm_code}' or ZH_Code = '{zh_code}') or (PCH_Email_ID = '{pch_email_id}')) or (Sales_Person_Email_ID = '{sales_person_emp_id}')))) group by Stage limit 200 offset 0""}}", null, "application/json");
 
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -1780,6 +1780,15 @@ namespace OBL_Zoho.Services
             }
             request.Content = content;
             var response = await client.SendAsync(request);
+            if ((int)response.StatusCode == 204)
+            {
+                return new LeadBystageResponse
+                {
+                    data = new List<Datumdata>(),
+                    info = new Infodata()
+                };
+
+            }
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
 

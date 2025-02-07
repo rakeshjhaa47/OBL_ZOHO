@@ -15,7 +15,7 @@
     {
         public double? Total_Amount { get; set; }
 
-        public decimal? Final_Tile_Requirement_in_Area_Sq_ft { get; set; }
+        public decimal? Final_Tile_Total { get; set; }
 
         public string Stage { get; set; }
         public int Total_Count { get; set; }
