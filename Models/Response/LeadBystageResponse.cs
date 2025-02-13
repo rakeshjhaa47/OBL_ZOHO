@@ -30,6 +30,7 @@
         public string Stage { get; set; }
         public string? Zip_Code { get; set; }
         public string id { get; set; }
+        public string? Assigned_CP_Name { get; set; }
     }
 
     public class Infodata
