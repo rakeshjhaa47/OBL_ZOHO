@@ -30,18 +30,18 @@ namespace OBL_Zoho.Controllers
         [Route("cp-summary")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> CpSummary(string accessToken, string Assigned_CP_By_Agent,string Created_Time)
+        public async Task<IActionResult> CpSummary(string accessToken, string Assigned_CP_By_Agent, string Created_Time)
         {
-            return Ok(await _ConnectService.CpSummaryAsync(accessToken,Assigned_CP_By_Agent, Created_Time));
+            return Ok(await _ConnectService.CpSummaryAsync(accessToken, Assigned_CP_By_Agent, Created_Time));
         }
 
         [HttpPost]
         [Route("cp-dashboard")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> CpDashboard(string accessToken, string Closing_Date,string Created_Time,string Assigned_CP_By_Agent )
+        public async Task<IActionResult> CpDashboard(string accessToken, string Closing_Date, string Created_Time, string Assigned_CP_By_Agent)
         {
-            return Ok(await _ConnectService.CpDashboardAsync(accessToken,Closing_Date, Created_Time,Assigned_CP_By_Agent));
+            return Ok(await _ConnectService.CpDashboardAsync(accessToken, Closing_Date, Created_Time, Assigned_CP_By_Agent));
         }
 
         [Route("generate-firebase-token-for-connect")]
@@ -54,25 +54,25 @@ namespace OBL_Zoho.Controllers
 
         [Route("ConnectAll-Stage")]
         [HttpPost]
-        public async Task<IActionResult> ConnectAllStage(string accessToken, string Assigned_CP_By_Agent,string Created_Time, string Stage_Category,string MaxRequirement,string MinRequirement)
+        public async Task<IActionResult> ConnectAllStage(string accessToken, string Assigned_CP, string Created_Time, string Stage_Category, string MaxRequirement, string MinRequirement, int limit, int offSet)
         {
-            var response = await _ConnectService.ConnectAllStageAsync(accessToken, Assigned_CP_By_Agent, Created_Time,Stage_Category, MaxRequirement, MinRequirement);
+            var response = await _ConnectService.ConnectAllStageAsync(accessToken, Assigned_CP, Created_Time, Stage_Category, MaxRequirement, MinRequirement, limit, offSet);
             return Ok(response);
         }
 
         [Route("Connect-Dashboard")]
         [HttpPost]
-        public async Task<IActionResult> ConnectDashboard(string accessToken, string Assigned_CP_By_Agent,  string Stage, string Start_Date ,string End_Date )
+        public async Task<IActionResult> ConnectDashboard(string accessToken, string Assigned_CP, string Start_Date, string End_Date)
         {
-            var response = await _ConnectService.ConnectDashboardAsync(accessToken, Assigned_CP_By_Agent, Stage, Start_Date,End_Date);
+            var response = await _ConnectService.ConnectDashboardAsync(accessToken, Assigned_CP, Start_Date, End_Date);
             return Ok(response);
         }
 
         [Route("Summary-Count")]
         [HttpPost]
-        public async Task<IActionResult> SummaryCount(string accessToken,  string Stage,string Closing_Date, string Created_Time,string Assigned_CP_By_Agent)
+        public async Task<IActionResult> SummaryCount(string accessToken, string Assigned_CP)
         {
-            var response = await _ConnectService.SummaryCountAsync(accessToken,  Stage,Closing_Date,Created_Time,Assigned_CP_By_Agent);
+            var response = await _ConnectService.SummaryCountAsync(accessToken, Assigned_CP);
             return Ok(response);
         }
     }
