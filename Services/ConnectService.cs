@@ -190,5 +190,168 @@ namespace OBL_Zoho.Services
             };
 
         }
+
+        public async Task<BaseResponse> ConnectAllStageAsync(string accessToken, string Assigned_CP_By_Agent, string Created_Time, string Stage_Category, string MaxRequirement, string MinRequirement)
+        {
+            var response = new ConnectAllResponse();
+            int offSet = 0;
+
+            while (true)
+            {
+                var dd = await ConnectAll(accessToken, Assigned_CP_By_Agent, Created_Time, Stage_Category, MaxRequirement, MinRequirement, offSet);
+                if (dd == null || dd?.data == null)
+                {
+                    break;
+                }
+                response.data.AddRange(dd.data);
+
+                if (dd.info?.more_records == true)
+                {
+                    offSet += 200;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            response.info = new InfoAllData
+            {
+                count = response.data.Count,
+                more_records = false
+            };
+
+            return new BaseResponse
+            {
+                Response = response
+            };
+
+        }
+
+        private async Task<ConnectAllResponse> ConnectAll(string accessToken, string Assigned_CP_By_Agent, string Created_Time, string Stage_Category, string MaxRequirement, string MinRequirement, int offSet)
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
+            var content = new StringContent($@"{{""select_query"":""select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category,Assigned_CP_By_Agent from Deals where ((((Assigned_CP_By_Agent  = '{Assigned_CP_By_Agent}') and (Created_Time > '{Created_Time}')) and (Stage_Category = '{Stage_Category}')) and (Tile_Requirement_in_Area_Sq_ft between '{MinRequirement}' and '{MaxRequirement}')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset {offSet}""}}", null, "application/json");
+            request.Content = content;
+
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<ConnectAllResponse>(result);
+        }
+
+        public async Task<BaseResponse> ConnectDashboardAsync(string accessToken, string Assigned_CP_By_Agent, string Stage, string Start_Date, string End_Date)
+        {
+            var response = new DashboardResponse();
+            int offSet = 0;
+
+            while (true)
+            {
+                var dd = await ConnectDashboard(accessToken, Assigned_CP_By_Agent,  Stage, Start_Date, End_Date, offSet);
+                if (dd == null || dd?.data == null)
+                {
+                    break;
+                }
+                response.data.AddRange(dd.data);
+
+                if (dd.info?.more_records == true)
+                {
+                    offSet += 200;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            response.info = new InfoDashboard
+            {
+                count = response.data.Count,
+                more_records = false
+            };
+
+            return new BaseResponse
+            {
+                Response = response
+            };
+
+        }
+
+        private async Task<DashboardResponse> ConnectDashboard(string accessToken, string Assigned_CP_By_Agent, string Stage, string Start_Date, string End_Date, int offSet)
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
+            var content = new StringContent($@"{{""select_query"":""select Stage,Amount,Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft from Deals where ((((Assigned_CP_By_Agent = '{Assigned_CP_By_Agent}' and Stage ='{Stage}') and (Closing_Date is not null)) and (Amount is not null)) and (Closing_Date between '{Start_Date}' and '{End_Date}')) limit 200 offset {offSet}""}}", null, "application/json");
+            request.Content = content;
+
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<DashboardResponse>(result);
+        }
+
+
+        public async Task<BaseResponse> SummaryCountAsync(string accessToken, string Stage, string Closing_Date, string Created_Time, string Assigned_CP_By_Agent)
+        {
+            var response = new SummaryCountResponse();
+            int offSet = 0;
+
+            while (true)
+            {
+                var dd = await SummaryCountApi(accessToken,  Stage, Closing_Date, Created_Time,Assigned_CP_By_Agent, offSet);
+                if (dd == null || dd?.data == null)
+                {
+                    break;
+                }
+                response.data.AddRange(dd.data);
+
+                if (dd.info?.more_records == true)
+                {
+                    offSet += 200;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            response.info = new InfoCount
+            {
+                count = response.data.Count,
+                more_records = false
+            };
+
+            return new BaseResponse
+            {
+                Response = response
+            };
+
+        }
+
+        private async Task<SummaryCountResponse> SummaryCountApi(string accessToken, string Stage, string Closing_Date, string Created_Time, string Assigned_CP_By_Agent, int offSet)
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
+            var content = new StringContent($@"{{""select_query"":""select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total, SUM(Final_Tile_Requirement_in_Area_Sq_ft) as Final_Tile_Total from Deals where (((Stage = '{Stage}' and Closing_Date >='{Closing_Date}') or (Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared') and Created_Time >= '{Created_Time}')) and (Assigned_CP_By_Agent = '{Assigned_CP_By_Agent}')) group by Stage limit 200 offset {offSet}""}}", null, "application/json");
+            request.Content = content;
+
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<SummaryCountResponse>(result);
+        }
     }
 }
