@@ -75,5 +75,14 @@ namespace OBL_Zoho.Controllers
             var response = await _ConnectService.SummaryCountAsync(accessToken, Assigned_CP);
             return Ok(response);
         }
+
+
+        [Route("Search-Api")]
+        [HttpPost]
+        public async Task<IActionResult> SearchApi(string accessToken, string Deal_Name,string City,string Assigned_CP, string Stage_Category)
+        {
+            var response = await _ConnectService.SearchApiAsync(accessToken, Deal_Name,City, Assigned_CP,Stage_Category);
+            return Ok(response);
+        }
     }
 }

@@ -18,5 +18,8 @@ namespace OBL_Zoho.Services.Interfaces
 
         Task<BaseResponse> SummaryCountAsync(string accessToken, string Assigned_CP_By_Agent);
 
+        Task<BaseResponse> SearchApiAsync(string accessToken, string Deal_Name, string City, string Assigned_CP, string Stage_Category);
+
+
     }
 }

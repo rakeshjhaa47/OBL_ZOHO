@@ -351,5 +351,65 @@ namespace OBL_Zoho.Services
 
             return JsonConvert.DeserializeObject<SummaryCountResponse>(result);
         }
+
+
+        private async Task<SearchApiResponse> ConnectSearchApiAsync(string accessToken, string Deal_Name, string City, string Assigned_CP, string Stage_Category, int offSet)
+        {
+            StringContent content;
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+            //var createdTimeThreshold = DateTime.Now.AddDays(-275).ToString("yyyy-MM-ddTHH:mm:ssK");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
+
+            //content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category,Assigned_CP_Name from Deals where (((Deal_Name = '" + Deal_Name+ "' or City = '"+City+ "') and (Created_Time > '"+createdTimeThreshold+"')) and (Stage_Category = '"+ Stage_Category + "')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset " + offSet+" \"}");
+            content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category,Assigned_CP_Name from Deals where (((Deal_Name = '"+Deal_Name+"' or City = '"+City+"') and (Assigned_CP_By_Agent = '"+Assigned_CP+"')) and (Stage_Category = '" +Stage_Category +"')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset " + offSet+" \"}");
+
+            request.Content = content;
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<SearchApiResponse>(result);
+
+        }
+
+        public async Task<BaseResponse> SearchApiAsync(string accessToken, string Deal_Name, string City, string Assigned_CP, string Stage_Category)
+        {
+            var response = new SearchApiResponse();
+            int offSet = 0;
+
+            while (true)
+            {
+                var dd = await ConnectSearchApiAsync(accessToken, Deal_Name, City, Assigned_CP, Stage_Category, offSet);
+                if (dd == null || dd?.data == null)
+                {
+                    break;
+                }
+
+                response.data.AddRange(dd.data);
+
+                if (dd.info?.more_records == true)
+                {
+                    offSet += 200;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            response.info = new InfoSearch
+            {
+                count = response.data.Count,
+                more_records = false
+            };
+
+            return new BaseResponse
+            {
+                Response = response
+            };
+        }
     }
 }
