@@ -550,15 +550,15 @@ namespace OBL_Zoho.Controllers
         [SwaggerOperation(Tags = new[] { "getLeadsByStage" })]
         [HttpPost]
         [Route("getLeadsByStage")]
-        public async Task<IActionResult> getLeadsByStage(string refreshToken, string Stage_Category, string Sales_Person_Email_ID,  string MaxAreasqft, string MinAreaSqFt, string Created_Time= "2020-01-01T00:00:00+05:30", bool isEmployee = false,int offSet =0, int limit =10)
+        public async Task<IActionResult> getLeadsByStage(string refreshToken, string Stage_Category, string Sales_Person_Email_ID, string MaxAreasqft, string MinAreaSqFt, string createdTime = "2020-01-01T00:00:00+05:30", bool isEmployee = false, int offSet = 0, int limit = 10)
         {
-            return Ok(await _zohoService.getLeadsByStageAsync(refreshToken, Stage_Category, Sales_Person_Email_ID ,  MaxAreasqft, MinAreaSqFt, Created_Time, isEmployee,offSet,limit));
+            return Ok(await _zohoService.getLeadsByStageAsync(refreshToken, Stage_Category, Sales_Person_Email_ID, MaxAreasqft, MinAreaSqFt, createdTime, isEmployee, offSet, limit));
         }
 
-        [SwaggerOperation(Tags = new[] { "Obl" })]
+        [SwaggerOperation(Tags = new[] { "Obl" })] 
         [HttpPost]
         [Route("OblSearch")]
-        public async Task<IActionResult> OblSearch(string refreshToken, string Deal_Name, string City, string Stage_Category,string SalesPersonEmailID, string PCHEmailId)
+        public async Task<IActionResult> OblSearch(string refreshToken, string Deal_Name, string City, string Stage_Category, string SalesPersonEmailID, string PCHEmailId)
         {
             return Ok(await _zohoService.OblSearchAsync(refreshToken, Deal_Name, City, Stage_Category, SalesPersonEmailID, PCHEmailId));
         }

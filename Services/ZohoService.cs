@@ -1761,7 +1761,7 @@ namespace OBL_Zoho.Services
             };
         }
 
-        private async Task<LeadBystageResponse> getLeadsByStageAsynclist(string refreshToken, string Stage_Category, string Sales_Person_Email_ID, string MaxAreasqft, string MinAreaSqFt, string Created_Time, bool isEmployee, int offSet, int limit)
+        private async Task<LeadBystageResponse> getLeadsByStageAsynclist(string refreshToken, string Stage_Category, string Sales_Person_Email_ID, string MaxAreasqft, string MinAreaSqFt, string createdTime, bool isEmployee, int offSet, int limit)
         {
             StringContent content;
             var client = new HttpClient();
@@ -1773,12 +1773,12 @@ namespace OBL_Zoho.Services
             if (isEmployee)
             {
                 //content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category,Assigned_CP_Name from Deals where ((((Sales_Person_Email_ID = '" + Sales_Person_Email_ID + "') and (Created_Time > '" + createdTime + "')) and (Stage_Category = '" + Stage_Category + "')) and (Tile_Requirement_in_Area_Sq_ft between '" + MinAreaSqFt + "' and '" + MaxAreasqft + "')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit " + limit + " offset " + offSet + "\"}");
-                content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category,Assigned_CP_Name from Deals where ((((Sales_Person_Email_ID = '"+Sales_Person_Email_ID+"') and (Created_Time > '"+Created_Time+"')) and (Stage_Category = '"+Stage_Category+"')) and (Tile_Requirement_in_Area_Sq_ft between '"+MinAreaSqFt+"' and '"+MaxAreasqft+"')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit "+limit+" offset "+offSet+"\"}");
+                content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category,Assigned_CP_Name from Deals where ((((Sales_Person_Email_ID = '"+Sales_Person_Email_ID+"') and (Created_Time > '"+ createdTime+ "')) and (Stage_Category = '"+Stage_Category+"')) and (Tile_Requirement_in_Area_Sq_ft between '"+MinAreaSqFt+"' and '"+MaxAreasqft+"')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit "+limit+" offset "+offSet+"\"}");
             }
             else
             {
                 //content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category,Assigned_CP_Name from Deals where ((((PCH_Email_ID = '" + Sales_Person_Email_ID + "') and (Created_Time > '" + createdTime + "')) and (Stage_Category = '" + Stage_Category + "')) and (Tile_Requirement_in_Area_Sq_ft between '" + MinAreaSqFt + "' and '" + MaxAreasqft + "')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit " + limit + " offset " + offSet + "\"}");
-                content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category,Assigned_CP_Name from Deals where ((((PCH_Email_ID = '"+Sales_Person_Email_ID+"') and (Created_Time > '"+Created_Time+"')) and (Stage_Category = '"+Stage_Category+"')) and (Tile_Requirement_in_Area_Sq_ft between '"+MinAreaSqFt+"' and '"+MaxAreasqft+"')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit "+limit+"  offset " +offSet +"\"}");
+                content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category,Assigned_CP_Name from Deals where ((((PCH_Email_ID = '"+Sales_Person_Email_ID+"') and (Created_Time > '"+ createdTime+ "')) and (Stage_Category = '"+Stage_Category+"')) and (Tile_Requirement_in_Area_Sq_ft between '"+MinAreaSqFt+"' and '"+MaxAreasqft+"')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit "+limit+"  offset " +offSet +"\"}");
             }
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -1797,10 +1797,10 @@ namespace OBL_Zoho.Services
             return JsonConvert.DeserializeObject<LeadBystageResponse>(result);
         }
 
-        public async Task<BaseResponse> getLeadsByStageAsync(string refreshToken, string Stage_Category,string Sales_Person_Email_ID, string MaxAreasqft, string MinAreaSqFt, string Created_Time, bool isEmployee, int offSet, int limit)
+        public async Task<BaseResponse> getLeadsByStageAsync(string refreshToken, string Stage_Category,string Sales_Person_Email_ID, string MaxAreasqft, string MinAreaSqFt, string createdTime, bool isEmployee, int offSet, int limit)
         {
             var response = new LeadBystageResponse();
-            var dd = await getLeadsByStageAsynclist(refreshToken, Stage_Category, Sales_Person_Email_ID, MaxAreasqft,MinAreaSqFt, Created_Time, isEmployee, offSet, limit);
+            var dd = await getLeadsByStageAsynclist(refreshToken, Stage_Category, Sales_Person_Email_ID, MaxAreasqft,MinAreaSqFt, createdTime, isEmployee, offSet, limit);
 
             if (dd?.data != null)
             {
