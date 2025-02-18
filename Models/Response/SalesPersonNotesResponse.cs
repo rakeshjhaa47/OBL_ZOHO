@@ -26,7 +26,7 @@ namespace OBL_Zoho.Models.Response
         public ParentId Parent_Id { get; set; }
         public int? Box { get; set; }
         public DateTime? Entry_Date { get; set; }
-        public int? Sq_Mt { get; set; }
+        public double? Sq_Mt { get; set; }
         public Layout Layout { get; set; }
 
         [JsonProperty("$in_merge")]
