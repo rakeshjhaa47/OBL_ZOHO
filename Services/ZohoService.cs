@@ -1799,6 +1799,15 @@ namespace OBL_Zoho.Services
 
         public async Task<BaseResponse> getLeadsByStageAsync(string refreshToken, string Stage_Category,string Sales_Person_Email_ID, string MaxAreasqft, string MinAreaSqFt, string createdTime, bool isEmployee, int offSet, int limit)
         {
+            if (string.IsNullOrEmpty(createdTime) && Stage_Category.ToLower() == "active")
+            {
+                createdTime = "2020-01-01T00:00:00+05:30";
+            }
+            else if (string.IsNullOrEmpty(createdTime) && Stage_Category.ToLower() != "active")
+            {
+                createdTime = DateTime.Now.AddDays(-90).ToString("yyyy-MM-ddTHH:mm:ssK");
+            }
+
             var response = new LeadBystageResponse();
             var dd = await getLeadsByStageAsynclist(refreshToken, Stage_Category, Sales_Person_Email_ID, MaxAreasqft,MinAreaSqFt, createdTime, isEmployee, offSet, limit);
 
