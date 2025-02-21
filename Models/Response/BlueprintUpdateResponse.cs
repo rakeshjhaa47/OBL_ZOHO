@@ -34,6 +34,7 @@ namespace OBL_Zoho.Models.Response
         public string Dealer_Type { get; set; }
         public string Notes { get; set; }
         public string Reason_of_Junk_Leads { get; set; }
+        public string Closed_By { get; set; }
     }
 
     /*Closed Lost*/

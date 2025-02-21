@@ -296,6 +296,7 @@ namespace OBL_Zoho.Services
             bdu.Lead_Response_Medium_Whatsapp_Email_B2B_L2_Calli = bur.blueprint[0].data.Lead_Response_Medium_Whatsapp_Email_B2B_L2_Calli;
             bdu.Dealer_Type = bur.blueprint[0].data.Dealer_Type;
             bdu.Notes = bur.blueprint[0].data.Notes;
+            bdu.Closed_By = bur.blueprint[0].data.Closed_By;
 
             var bu = new BlueprintUpdate_ClosedWon();
             bu.transition_id = bur.blueprint[0].transition_id;
@@ -1111,6 +1112,7 @@ namespace OBL_Zoho.Services
                         name = note.parent_Id.name,
                         id = note.parent_Id.id
                     },
+                    Stage  = note.Stage,
                     FLS_Notes = note.FLS_Notes,
                 }).ToList(),
                 id = obj.id
