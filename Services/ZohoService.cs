@@ -1951,24 +1951,23 @@ namespace OBL_Zoho.Services
         }
 
 
-        private async Task<PageLeadResponse> PageSummaryAsync(string refreshToken, string Stage_Category, string Created_Time, string PCH_Email_ID, int offSet, bool isEmployee = false)
+        private async Task<PageLeadResponse> PageSummaryAsync(string refreshToken, string PCH_Email_ID, int offSet, bool isEmployee = false)
         {
             StringContent content;
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
             var createdTimeThreshold = DateTime.Now.AddDays(-90).ToString("yyyy-MM-ddTHH:mm:ssK");
-            var closingDate = DateTime.Now.AddDays(-90).ToString("yyyy-MM-dd");
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
 
             if (isEmployee)
             {
-                content = new StringContent("{\"select_query\": \"select Deal_Name,Amount,City,Sales_Person_Email_ID,PCH_Email_ID from Deals where (((L2_Purchase_Value_if_purchased is not null and Stage_Category != '"+Stage_Category+"') and (Created_Time >= '"+Created_Time+"')) and (Sales_Person_Email_ID = '"+PCH_Email_ID+"')) limit 200 offset "+offSet+" \"}");
+                content = new StringContent("{\"select_query\": \"select Deal_Name,Amount,City,Sales_Person_Email_ID,PCH_Email_ID from Deals where (((L2_Purchase_Value_if_purchased is not null and Stage_Category != 'Closed') and (Created_Time >= '" + createdTimeThreshold + "')) and (Sales_Person_Email_ID = '"+PCH_Email_ID+"')) limit 200 offset "+offSet+" \"}");
             }
             else
             {
-                content = new StringContent("{\"select_query\": \"select Deal_Name,Amount,City,Sales_Person_Email_ID,PCH_Email_ID from Deals where (((L2_Purchase_Value_if_purchased is not null and Stage_Category != '"+Stage_Category+"') and (Created_Time >= '"+Created_Time+"')) and (PCH_Email_ID = '"+PCH_Email_ID+"')) limit 200 offset "+offSet+" \"}");
+                content = new StringContent("{\"select_query\": \"select Deal_Name,Amount,City,Sales_Person_Email_ID,PCH_Email_ID from Deals where (((L2_Purchase_Value_if_purchased is not null and Stage_Category != 'Closed') and (Created_Time >= '" + createdTimeThreshold + "')) and (PCH_Email_ID = '"+PCH_Email_ID+"')) limit 200 offset "+offSet+" \"}");
             }
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -1978,14 +1977,14 @@ namespace OBL_Zoho.Services
             return JsonConvert.DeserializeObject<PageLeadResponse>(result);
         }
 
-        public async Task<BaseResponse> HomePageLeadsAsync(string refreshToken, string Stage_Category, string Created_Time, string PCH_Email_ID, bool isEmployee = false)
+        public async Task<BaseResponse> HomePageLeadsAsync(string refreshToken, string PCH_Email_ID, bool isEmployee = false)
         {
             var response = new PageLeadResponse();
             int offSet = 0;
 
             while (true)
             {
-                var dd = await PageSummaryAsync(refreshToken, Stage_Category, Created_Time,PCH_Email_ID, offSet,isEmployee);
+                var dd = await PageSummaryAsync(refreshToken, PCH_Email_ID, offSet, isEmployee);
                 if (dd == null || dd?.data == null)
                 {
                     break;
@@ -2014,7 +2013,5 @@ namespace OBL_Zoho.Services
                 Response = response
             };
         }
-
-        
     }
 }

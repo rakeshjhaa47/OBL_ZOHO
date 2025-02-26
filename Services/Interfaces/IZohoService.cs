@@ -61,7 +61,7 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> getLeadsByStageAsync(string refreshToken, string Stage_Category , string Sales_Person_Email_ID , string createdTime, string MaxAreasqft, string MinAreaSqFt, bool isEmployee,int offSet,int limit);
 
         Task<BaseResponse> OblSearchAsync(string accessToken, string Deal_Name, string City, string Stage_Category, string SalesPersonEmailID, string PCHEmailId);
-        Task<BaseResponse> HomePageLeadsAsync(string refreshToken,  string Stage_Category, string Created_Time, string PCH_Email_ID, bool isEmployee = false);
+        Task<BaseResponse> HomePageLeadsAsync(string refreshToken, string PCH_Email_ID, bool isEmployee = false);
 
         Task<BaseResponse> OblSummaryAsync(string refreshToken, string Sales_Person_Emp_ID, bool isEmployee = false);
 

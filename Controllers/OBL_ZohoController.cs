@@ -576,9 +576,9 @@ namespace OBL_Zoho.Controllers
         [SwaggerOperation(Tags = new[] { "Obl" })]
         [HttpPost]
         [Route("HomePage-Leads")]
-        public async Task<IActionResult> HomePageLeads(string refreshToken, string Stage_Category, string Created_Time, string PCH_Email_ID, bool isEmployee = false)
+        public async Task<IActionResult> HomePageLeads(string refreshToken, string PCH_Email_ID, bool isEmployee = false)
         {
-            var response = await _zohoService.HomePageLeadsAsync(refreshToken, Stage_Category, Created_Time, PCH_Email_ID,isEmployee);
+            var response = await _zohoService.HomePageLeadsAsync(refreshToken, PCH_Email_ID, isEmployee);
             return Ok(response);
         }
     }
