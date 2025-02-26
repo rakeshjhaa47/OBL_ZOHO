@@ -2,6 +2,7 @@
 using OBL_Zoho.Models;
 using OBL_Zoho.Models.Request;
 using OBL_Zoho.Models.Response;
+using OBL_Zoho.Services;
 using OBL_Zoho.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Dynamic;
@@ -569,6 +570,16 @@ namespace OBL_Zoho.Controllers
         public async Task<IActionResult> OblSummary(string refreshToken, string Sales_Person_Emp_ID, bool isEmployee = false)
         {
             return Ok(await _zohoService.OblSummaryAsync(refreshToken, Sales_Person_Emp_ID, isEmployee));
+        }
+
+
+        [SwaggerOperation(Tags = new[] { "Obl" })]
+        [HttpPost]
+        [Route("HomePage-Leads")]
+        public async Task<IActionResult> HomePageLeads(string refreshToken, string Stage_Category, string Created_Time, string PCH_Email_ID, bool isEmployee = false)
+        {
+            var response = await _zohoService.HomePageLeadsAsync(refreshToken, Stage_Category, Created_Time, PCH_Email_ID,isEmployee);
+            return Ok(response);
         }
     }
 }
