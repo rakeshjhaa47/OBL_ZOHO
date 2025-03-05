@@ -31,6 +31,7 @@
         public string? Zip_Code { get; set; }
         public string id { get; set; }
         public string? Assigned_CP_Name { get; set; }
+        public string? Closed_By { get; set; }
     }
 
     public class Infodata
