@@ -18,6 +18,8 @@
         public object Amount { get; set; }
         public string id { get; set; }
         public string City { get; set; }
+        public string Sales_Person_Email_ID { get; set; }
+        public string PCH_Email_ID { get; set; }
     }
 
     public class InfoPage

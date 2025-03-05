@@ -76,6 +76,7 @@ namespace OBL_Zoho.Models.Response
         public bool? process_flow { get; set; }
         public string? Stage { get; set; }
         public object? KEYWORDID { get; set; }
+        public string? Remarks_of_Scheduled_a_Visit { get; set; }
 
         [JsonProperty("$approval")]
         public SalesPersonApproval approval { get; set; }
