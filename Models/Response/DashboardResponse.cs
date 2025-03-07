@@ -5,7 +5,7 @@
         public int Amount { get; set; }
         public string Stage { get; set; }
         public string id { get; set; }
-        public double Final_Tile_Requirement_in_Area_Sq_ft { get; set; }
+        public double? Final_Tile_Requirement_in_Area_Sq_ft { get; set; }
         public string Closing_Date { get; set; }
     }
 
