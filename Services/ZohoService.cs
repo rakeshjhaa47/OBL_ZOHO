@@ -11,6 +11,7 @@ using OBL_Zoho.Models.Response;
 using OBL_Zoho.Services.Interfaces;
 using System.Dynamic;
 using System.Net.Http.Headers;
+using static OBL_Zoho.Models.Response.UpdateJunkNonContactbleLead;
 namespace OBL_Zoho.Services
 {
     public class ZohoService : IZohoService
@@ -639,7 +640,36 @@ namespace OBL_Zoho.Services
                 Response = userResponse,
             };
         }
+        public async Task<BaseResponse> UpdateJunkNonContactbleLeadAsync(string accessToken, string id, UpdateRequestNonContactbleJunkLead bur)
+        {
+            var request = "https://www.zohoapis.com/crm/v4/Deals/" + id + "/actions/blueprint";
 
+            var bu = new UpdateNonContactbleJunkLead();
+            bu.transition_id = bur.blueprint[0].transition_id;
+            bu.data = bur.blueprint[0].data;
+
+            var xx = new List<UpdateNonContactbleJunkLead>();
+            xx.Add(bu);
+
+            var ddd = new UpdateRequestNonContactbleJunkLead();
+            ddd.blueprint = xx;
+
+            var dd = JsonConvert.SerializeObject(ddd);
+            var buffer = System.Text.Encoding.UTF8.GetBytes(dd);
+            var byteContent = new ByteArrayContent(buffer);
+            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+            var response = client.PutAsync(request, byteContent).Result;
+            var result = await response.Content.ReadAsStringAsync();
+            dynamic userResponse = JsonConvert.DeserializeObject<BlueprintUpdateResponse>(result);
+
+            return new BaseResponse
+            {
+                Response = userResponse,
+            };
+        }
         public async Task<BaseResponse> UpdateBlueprint_NonContactableLead(string accessToken, string id, BlueprintUpdateRequest_NonContactableLead bur)
         {
             var request = "https://www.zohoapis.com/crm/v4/Deals/" + id + "/actions/blueprint";

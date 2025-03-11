@@ -7,6 +7,7 @@ using OBL_Zoho.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Dynamic;
 using System.Net.Mime;
+using static OBL_Zoho.Models.Response.UpdateJunkNonContactbleLead;
 
 namespace OBL_Zoho.Controllers
 {
@@ -321,9 +322,9 @@ namespace OBL_Zoho.Controllers
         [Route("add-non-contactable-lead")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> AddJunkNonContactbleLead(string accessToken, string id, BlueprintUpdateRequest_JunkLead bur)
+        public async Task<IActionResult> AddJunkNonContactbleLead(string accessToken, string id, UpdateRequestNonContactbleJunkLead bur)
         {
-            return Ok(await _zohoService.UpdateBlueprint_JunkLead(accessToken, id, bur));
+            return Ok(await _zohoService.UpdateJunkNonContactbleLeadAsync(accessToken, id, bur));
         }
 
 

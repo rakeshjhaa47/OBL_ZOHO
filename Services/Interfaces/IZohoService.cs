@@ -2,6 +2,7 @@
 using OBL_Zoho.Models.Request;
 using OBL_Zoho.Models.Response;
 using System.Dynamic;
+using static OBL_Zoho.Models.Response.UpdateJunkNonContactbleLead;
 
 namespace OBL_Zoho.Services.Interfaces
 {
@@ -27,6 +28,7 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> GetRecordsWithEmail(string accessToken, string email);
         Task<BaseResponse> GetJunkData(string userId);
         Task<BaseResponse> UpdateBlueprint_JunkLead(string accessToken, string id, BlueprintUpdateRequest_JunkLead bur);
+        Task<BaseResponse> UpdateJunkNonContactbleLeadAsync(string accessToken, string id, UpdateRequestNonContactbleJunkLead bur);
         Task<BaseResponse> UpdateBlueprint_NonContactableLead(string accessToken, string id, BlueprintUpdateRequest_NonContactableLead bur);
         Task<BaseResponse> GetRecordsWithEms(string accessToken, string pchEmailId, bool isEmployee = false);
         //Task<BaseResponse> GetSalesEmployeeData(string accessToken, string salesPersonEmpID);
