@@ -560,9 +560,9 @@ namespace OBL_Zoho.Controllers
         [SwaggerOperation(Tags = new[] { "Obl" })] 
         [HttpPost]
         [Route("OblSearch")]
-        public async Task<IActionResult> OblSearch(string refreshToken, string Deal_Name, string City, string Stage_Category, string SalesPersonEmailID, string PCHEmailId)
+        public async Task<IActionResult> OblSearch(string refreshToken, string Deal_Name, string City, string? ZM_Code, string Stage_Category, string SalesPersonEmailID, string PCHEmailId)
         {
-            return Ok(await _zohoService.OblSearchAsync(refreshToken, Deal_Name, City, Stage_Category, SalesPersonEmailID, PCHEmailId));
+            return Ok(await _zohoService.OblSearchAsync(refreshToken, Deal_Name, City, ZM_Code, Stage_Category, SalesPersonEmailID, PCHEmailId));
         }
 
         [SwaggerOperation(Tags = new[] { "Obl" })]
