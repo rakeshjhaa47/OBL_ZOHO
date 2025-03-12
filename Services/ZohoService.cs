@@ -2051,5 +2051,63 @@ namespace OBL_Zoho.Services
                 Response = response
             };
         }
+
+        private async Task<CpConfirmResponse> CpConfirm(string refreshToken, string ZH_Code, string ZM_Code, string Sales_Person_Email_ID, string PCH_Email_ID, string Closing_Date, string CP_Confirmed_the_Sale, int offSet)
+        {
+            StringContent content;
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+            //var createdTimeThreshold = DateTime.Now.AddDays(-275).ToString("yyyy-MM-ddTHH:mm:ssK");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
+
+            content = new StringContent("{\"select_query\": \"select Assigned_CP_Name,Amount,Closing_Date from Deals where (((((ZH_Code = '"+ZH_Code+"' or ZM_Code = '"+ZM_Code+"') or (Sales_Person_Email_ID = '"+Sales_Person_Email_ID+"')) or (PCH_Email_ID = '"+PCH_Email_ID+"')) and (Closing_Date >= '"+Closing_Date+"')) and (CP_Confirmed_the_Sale = '"+CP_Confirmed_the_Sale+"')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset "+offSet+" \"}");
+
+            request.Content = content;
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<CpConfirmResponse>(result);
+
+        }
+
+        public async Task<BaseResponse> CpConfirmationAsync(string refreshToken, string ZH_Code, string ZM_Code, string Sales_Person_Email_ID, string PCH_Email_ID, string Closing_Date, string CP_Confirmed_the_Sale)
+        {
+            var response = new CpConfirmResponse();
+            int offSet = 0;
+
+            while (true)
+            {
+                var dd = await CpConfirm(refreshToken, ZH_Code, ZM_Code, Sales_Person_Email_ID, PCH_Email_ID, Closing_Date, CP_Confirmed_the_Sale, offSet);
+                if (dd == null || dd?.data == null)
+                {
+                    break;
+                }
+
+                response.data.AddRange(dd.data);
+
+                if (dd.info?.more_records == true)
+                {
+                    offSet += 200;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            response.info = new CpInfo
+            {
+                count = response.data.Count,
+                more_records = false
+            };
+
+            return new BaseResponse
+            {
+                Response = response
+            };
+        }
     }
 }
