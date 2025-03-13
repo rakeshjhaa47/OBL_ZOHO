@@ -586,9 +586,9 @@ namespace OBL_Zoho.Controllers
         [SwaggerOperation(Tags = new[] { "Obl" })]
         [HttpPost]
         [Route("Cp-Confirmation")]
-        public async Task<IActionResult> CpConfirmation(string refreshToken, string ZH_Code,string ZM_Code, string Sales_Person_Email_ID,string PCH_Email_ID,string Closing_Date,string CP_Confirmed_the_Sale)
+        public async Task<IActionResult> CpConfirmation(string refreshToken, string ZH_Code,string ZM_Code, string Sales_Person_Email_ID,string PCH_Email_ID,string Closing_Date)
         {
-            var response = await _zohoService.CpConfirmationAsync(refreshToken, ZH_Code, ZM_Code, Sales_Person_Email_ID, PCH_Email_ID, Closing_Date, CP_Confirmed_the_Sale);
+            var response = await _zohoService.CpConfirmationAsync(refreshToken, ZH_Code, ZM_Code, Sales_Person_Email_ID, PCH_Email_ID, Closing_Date);
             return Ok(response);
         }
 

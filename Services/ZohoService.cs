@@ -2052,7 +2052,7 @@ namespace OBL_Zoho.Services
             };
         }
 
-        private async Task<CpConfirmResponse> CpConfirm(string refreshToken, string ZH_Code, string ZM_Code, string Sales_Person_Email_ID, string PCH_Email_ID, string Closing_Date, string CP_Confirmed_the_Sale, int offSet)
+        private async Task<CpConfirmResponse> CpConfirm(string refreshToken, string ZH_Code, string ZM_Code, string Sales_Person_Email_ID, string PCH_Email_ID, string Closing_Date,  int offSet)
         {
             StringContent content;
             var client = new HttpClient();
@@ -2062,7 +2062,7 @@ namespace OBL_Zoho.Services
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
 
-            content = new StringContent("{\"select_query\": \"select Assigned_CP_Name,Amount,Closing_Date from Deals where (((((ZH_Code = '"+ZH_Code+"' or ZM_Code = '"+ZM_Code+"') or (Sales_Person_Email_ID = '"+Sales_Person_Email_ID+"')) or (PCH_Email_ID = '"+PCH_Email_ID+"')) and (Closing_Date >= '"+Closing_Date+"')) and (CP_Confirmed_the_Sale = '"+CP_Confirmed_the_Sale+"')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset "+offSet+" \"}");
+            content = new StringContent("{\"select_query\": \"select Assigned_CP_Name,Amount,Closing_Date from Deals where (((((ZH_Code = '"+ZH_Code+"' or ZM_Code = '"+ZM_Code+"') or (Sales_Person_Email_ID = '"+Sales_Person_Email_ID+"')) or (PCH_Email_ID = '"+PCH_Email_ID+"')) and (Closing_Date >= '"+Closing_Date+ "')) and (CP_Confirmed_the_Sale = 'Yes')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset " + offSet+" \"}");
 
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -2073,14 +2073,14 @@ namespace OBL_Zoho.Services
 
         }
 
-        public async Task<BaseResponse> CpConfirmationAsync(string refreshToken, string ZH_Code, string ZM_Code, string Sales_Person_Email_ID, string PCH_Email_ID, string Closing_Date, string CP_Confirmed_the_Sale)
+        public async Task<BaseResponse> CpConfirmationAsync(string refreshToken, string ZH_Code, string ZM_Code, string Sales_Person_Email_ID, string PCH_Email_ID, string Closing_Date)
         {
             var response = new CpConfirmResponse();
             int offSet = 0;
 
             while (true)
             {
-                var dd = await CpConfirm(refreshToken, ZH_Code, ZM_Code, Sales_Person_Email_ID, PCH_Email_ID, Closing_Date, CP_Confirmed_the_Sale, offSet);
+                var dd = await CpConfirm(refreshToken, ZH_Code, ZM_Code, Sales_Person_Email_ID, PCH_Email_ID, Closing_Date, offSet);
                 if (dd == null || dd?.data == null)
                 {
                     break;

@@ -66,7 +66,7 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> HomePageLeadsAsync(string refreshToken, string PCH_Email_ID, bool isEmployee = false);
 
         Task<BaseResponse> OblSummaryAsync(string refreshToken, string Sales_Person_Emp_ID, bool isEmployee = false);
-        Task<BaseResponse> CpConfirmationAsync(string refreshToken, string ZH_Code, string ZM_Code, string Sales_Person_Email_ID, string PCH_Email_ID, string Closing_Date, string CP_Confirmed_the_Sale);
+        Task<BaseResponse> CpConfirmationAsync(string refreshToken, string ZH_Code, string ZM_Code, string Sales_Person_Email_ID, string PCH_Email_ID, string Closing_Date);
 
 
     }
