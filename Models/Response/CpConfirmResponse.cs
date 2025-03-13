@@ -14,12 +14,12 @@
 
     public class CpData
     {
-        public string CP_Confirmed_the_Sale { get; set; }
-        public string Deal_Name { get; set; }
-        public int Amount { get; set; }
-        public string id { get; set; }
-        public string Assigned_CP_Name { get; set; }
-        public string Closing_Date { get; set; }
+        public string? CP_Confirmed_the_Sale { get; set; }
+        public string? Deal_Name { get; set; }
+        public int? Amount { get; set; }
+        public string? id { get; set; }
+        public string? Assigned_CP_Name { get; set; }
+        public string? Closing_Date { get; set; }
 
     }
 
