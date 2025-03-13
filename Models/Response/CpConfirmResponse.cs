@@ -14,10 +14,10 @@
 
     public class CpData
     {
-        public int Amount { get; set; }
-        public string id { get; set; }
-        public string Assigned_CP_Name { get; set; }
-        public string Closing_Date { get; set; }
+        public int? Amount { get; set; }
+        public string? id { get; set; }
+        public string? Assigned_CP_Name { get; set; }
+        public string? Closing_Date { get; set; }
     }
 
     public class CpInfo
