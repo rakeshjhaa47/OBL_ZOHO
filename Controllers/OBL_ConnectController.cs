@@ -87,9 +87,9 @@ namespace OBL_Zoho.Controllers
 
         [Route("CP-Confirm-List")]
         [HttpPost]
-        public async Task<IActionResult> CPConfirmList(string accessToken, string Assigned_CP_By_Agent,string Stage,string Closing_Date)
+        public async Task<IActionResult> CPConfirmList(string accessToken, string Assigned_CP_By_Agent,string Closing_Date)
         {
-            var response = await _ConnectService.CpConfirmationListAsync(accessToken, Assigned_CP_By_Agent,Stage,Closing_Date);
+            var response = await _ConnectService.CpConfirmationListAsync(accessToken, Assigned_CP_By_Agent,Closing_Date);
             return Ok(response);
         }
 
