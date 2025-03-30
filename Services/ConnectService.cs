@@ -413,7 +413,7 @@ namespace OBL_Zoho.Services
         }
 
 
-        private async Task<CpConfirmListResponse> ConfirmAsync(string accessToken, string Assigned_CP_By_Agent, string Closing_Date, int offSet)
+        private async Task<CpConfirmListResponse> ConfirmAsync(string accessToken, string Assigned_CP_By_Agent, string Stage, string Closing_Date, int offSet)
         {
             StringContent content;
             var client = new HttpClient();
@@ -423,25 +423,34 @@ namespace OBL_Zoho.Services
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
 
-            content = new StringContent("{\"select_query\": \"select Assigned_CP_Name,Amount,Closing_Date,Deal_Name,CP_Confirmed_the_Sale,Sales_Person_Name from Deals where ((Assigned_CP_By_Agent = '"+Assigned_CP_By_Agent+"' and Stage = 'Closed Won') and (Closing_Date >= '"+Closing_Date+"')) ORDER BY Closing_Date DESC limit 200 offset "+offSet+" \"}");
+            content = new StringContent("{\"select_query\": \"select Assigned_CP_Name,Amount,Closing_Date,Deal_Name,CP_Confirmed_the_Sale,Sales_Person_Name from Deals where ((Assigned_CP_By_Agent = '"+Assigned_CP_By_Agent+"' and Stage = '"+Stage+"') and (Closing_Date >= '"+Closing_Date+"')) ORDER BY Closing_Date DESC limit 200 offset "+offSet+" \"}");
 
             request.Content = content;
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
 
-            return JsonConvert.DeserializeObject<CpConfirmListResponse>(result);
+            var responseData =  JsonConvert.DeserializeObject<CpConfirmListResponse>(result);
+
+            if(responseData?.data != null)
+            {
+                foreach (var item in responseData.data)
+                {
+                    item.volumefield = item.Amount; 
+                }
+            }
+            return responseData;
 
         }
 
-        public async Task<BaseResponse> CpConfirmationListAsync(string accessToken, string Assigned_CP_By_Agent, string Closing_Date)
+        public async Task<BaseResponse> CpConfirmationListAsync(string accessToken, string Assigned_CP_By_Agent, string Stage, string Closing_Date)
         {
             var response = new CpConfirmListResponse();
             int offSet = 0;
 
             while (true)
             {
-                var dd = await ConfirmAsync(accessToken, Assigned_CP_By_Agent,Closing_Date, offSet);
+                var dd = await ConfirmAsync(accessToken, Assigned_CP_By_Agent,Stage,Closing_Date, offSet);
                 if (dd == null || dd?.data == null)
                 {
                     break;
