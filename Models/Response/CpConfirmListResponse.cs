@@ -16,7 +16,7 @@
         public object CP_Confirmed_the_Sale { get; set; }
         public string Deal_Name { get; set; }
         public int Amount { get; set; }
-        public int? volumefield { get; set; }
+       
         public string id { get; set; }
         public string Assigned_CP_Name { get; set; }
         public string Closing_Date { get; set; }

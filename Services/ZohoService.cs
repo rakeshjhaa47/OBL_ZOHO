@@ -2069,8 +2069,16 @@ namespace OBL_Zoho.Services
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
 
-            return JsonConvert.DeserializeObject<CpConfirmResponse>(result);
+            var responseData = JsonConvert.DeserializeObject<CpConfirmResponse>(result);
+            if (responseData?.data != null)
+            {
+                foreach (var item in responseData.data)
+                {
+                    item.Amount = item.Volume_In_Sq_Mtr;
+                }
+            }
 
+            return responseData;
         }
 
         public async Task<BaseResponse> CpConfirmationAsync(string refreshToken, string ZH_Code, string ZM_Code, string Sales_Person_Email_ID, string PCH_Email_ID, string Closing_Date)
