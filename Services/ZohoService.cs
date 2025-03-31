@@ -2062,7 +2062,7 @@ namespace OBL_Zoho.Services
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
 
-            content = new StringContent("{\"select_query\": \"select Assigned_CP_Name,Amount,Closing_Date,Deal_Name,CP_Confirmed_the_Sale from Deals where ((((((ZH_Code = '"+ZH_Code+"' or ZM_Code = '"+ZM_Code+"') or (Sales_Person_Email_ID = '"+Sales_Person_Email_ID+"')) or (PCH_Email_ID = '"+PCH_Email_ID+"')) and (Closing_Date >= '"+Closing_Date+"')) and (Assigned_CP_By_Agent is not null)) and (Stage = 'Closed Won')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset "+offSet+" \"}");
+            content = new StringContent("{\"select_query\": \"select Assigned_CP_Name,Amount,Closing_Date,Deal_Name,Volume_In_Sq_Mtr,CP_Confirmed_the_Sale from Deals where ((((((ZH_Code = '" + ZH_Code+"' or ZM_Code = '"+ZM_Code+"') or (Sales_Person_Email_ID = '"+Sales_Person_Email_ID+"')) or (PCH_Email_ID = '"+PCH_Email_ID+"')) and (Closing_Date >= '"+Closing_Date+"')) and (Assigned_CP_By_Agent is not null)) and (Stage = 'Closed Won')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset "+offSet+" \"}");
 
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -2070,13 +2070,6 @@ namespace OBL_Zoho.Services
             var result = await response.Content.ReadAsStringAsync();
 
             var responseData = JsonConvert.DeserializeObject<CpConfirmResponse>(result);
-            if (responseData?.data != null)
-            {
-                foreach (var item in responseData.data)
-                {
-                    item.Amount = item.Volume_In_Sq_Mtr;
-                }
-            }
 
             return responseData;
         }

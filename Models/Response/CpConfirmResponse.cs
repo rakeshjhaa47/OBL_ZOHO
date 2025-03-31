@@ -20,7 +20,7 @@
         public string? id { get; set; }
         public string? Assigned_CP_Name { get; set; }
         public string? Closing_Date { get; set; }
-        public int? Volume_In_Sq_Mtr { get; set; }
+        public decimal? Volume_In_Sq_Mtr { get; set; }
 
     }
 
