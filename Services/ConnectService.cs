@@ -222,7 +222,7 @@ namespace OBL_Zoho.Services
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
-            var content = new StringContent($@"{{""select_query"":""select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category,Assigned_CP_By_Agent from Deals where ((((Assigned_CP_By_Agent  = '{Assigned_CP_By_Agent}') and (Created_Time > '{Created_Time}')) and (Stage_Category = '{Stage_Category}')) and (Tile_Requirement_in_Area_Sq_ft between '{MinRequirement}' and '{MaxRequirement}')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit {limit} offset {offSet}""}}", null, "application/json");
+            var content = new StringContent($@"{{""select_query"":""select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category,Closed_By,Assigned_CP_By_Agent from Deals where ((((Assigned_CP_By_Agent  = '{Assigned_CP_By_Agent}') and (Created_Time > '{Created_Time}')) and (Stage_Category = '{Stage_Category}')) and (Tile_Requirement_in_Area_Sq_ft between '{MinRequirement}' and '{MaxRequirement}')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit {limit} offset {offSet}""}}", null, "application/json");
             request.Content = content;
 
             var response = await client.SendAsync(request);
