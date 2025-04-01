@@ -32,6 +32,7 @@
         public string Stage { get; set; }
         public string? Zip_Code { get; set; }
         public string id { get; set; }
+        public string? Closed_By { get; set; }
     }
 
     public class InfoAllData
