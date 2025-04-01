@@ -409,6 +409,8 @@ namespace OBL_Zoho.Models.Response
 
         [JsonProperty("$has_more")]
         public HasMore has_more { get; set; }
+        public string Quicklook_Design_Shared { get; set; }
+
 
     }
 
