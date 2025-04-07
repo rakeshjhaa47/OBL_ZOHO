@@ -298,6 +298,7 @@ namespace OBL_Zoho.Services
             bdu.Dealer_Type = bur.blueprint[0].data.Dealer_Type;
             bdu.Notes = bur.blueprint[0].data.Notes;
             bdu.Closed_By = bur.blueprint[0].data.Closed_By;
+            bdu.Dealer_Code = bur.blueprint[0].data.Dealer_Code;
 
             var bu = new BlueprintUpdate_ClosedWon();
             bu.transition_id = bur.blueprint[0].transition_id;
