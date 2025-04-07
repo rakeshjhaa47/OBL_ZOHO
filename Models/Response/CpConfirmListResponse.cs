@@ -21,6 +21,9 @@
         public string Assigned_CP_Name { get; set; }
         public string Closing_Date { get; set; }
         public string Sales_Person_Name { get; set; }
+
+        public decimal? Volume_In_Sq_Mtr { get; set; }
+
     }
 
     public class InfoCpList
