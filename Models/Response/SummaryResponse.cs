@@ -21,6 +21,9 @@
         public string Stage { get; set; }
         public string id { get; set; }
         public string Closing_Date { get; set; }
+
+        public decimal? Volume_In_Sq_Mtr { get; set; }
+
     }
 
     public class SummaryDataInfo
