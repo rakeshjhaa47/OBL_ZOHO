@@ -23,6 +23,7 @@
         public string Closing_Date { get; set; }
 
         public decimal? Volume_In_Sq_Mtr { get; set; }
+        public int? Tile_Requirement_in_Area_Sq_ft { get; set; }
 
     }
 

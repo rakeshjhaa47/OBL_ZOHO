@@ -7,6 +7,7 @@
         public string id { get; set; }
         public double? Final_Tile_Requirement_in_Area_Sq_ft { get; set; }
         public string Closing_Date { get; set; }
+        public int? Tile_Requirement_in_Area_Sq_ft { get; set; }
     }
 
     public class InfoDashboard
