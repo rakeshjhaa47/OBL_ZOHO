@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using OBL_Zoho.Models.Response;
 using OBL_Zoho.Services.Interfaces;
+using System.Net.Http;
 using System.Net.Http.Headers;
 
 namespace OBL_Zoho.Services
@@ -467,6 +468,58 @@ namespace OBL_Zoho.Services
             return new BaseResponse
             {
                 Response = response
+            };
+        }
+
+
+
+        public async Task<BaseResponse> GenerateRefreshTokenForFileUpload()
+        {
+            var request = "https://accounts.zoho.com/oauth/v2/token";
+
+            var client = new HttpClient();
+            Dictionary<string, string> pairs = new Dictionary<string, string>();
+            pairs.Add("refresh_token", "1000.c79d9997d08b87230f3b9a91c6510444.4e6c1d8df1408160db59759a41e2aaaa");
+            pairs.Add("client_id", "1000.CLKJQBSFMW6SANQRWQ64HKIVYC34VC");
+            pairs.Add("client_secret", "163b44b012c0cd6246a3c2716f55e3be00f5d344d9");
+            pairs.Add("grant_type", "refresh_token");
+            pairs.Add("redirect_uri", "https://www.google.com/");
+
+            var content = new FormUrlEncodedContent(pairs);
+            var response = client.PostAsync(request, content).Result;
+            var result = await response.Content.ReadAsStringAsync();
+            dynamic userResponse = JsonConvert.DeserializeObject<AccessTokenResponse>(result);
+            return new BaseResponse
+            {
+                Response = userResponse,
+            };
+        }
+
+
+        public async Task<BaseResponse> UploadFile(string accessToken, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return null;
+            }
+
+            using var fileStream = file.OpenReadStream();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v2/files");
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
+
+            var client = new HttpClient();
+
+            var content = new MultipartFormDataContent();
+            content.Add(new StreamContent(fileStream), "file", file.FileName);
+            request.Content = content;
+
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<FileUploadResponse>(responseContent);
+            return new BaseResponse
+            {
+                Response = result
             };
         }
     }

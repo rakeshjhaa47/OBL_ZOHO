@@ -20,7 +20,8 @@ namespace OBL_Zoho.Services.Interfaces
 
         Task<BaseResponse> SearchApiAsync(string accessToken, string Deal_Name, string City, string Assigned_CP, string Stage_Category);
         Task<BaseResponse> CpConfirmationListAsync(string accessToken, string Assigned_CP_By_Agent, string Closing_Date);
-
+        Task<BaseResponse> GenerateRefreshTokenForFileUpload();
+        Task<BaseResponse> UploadFile(string accessToken, IFormFile file);
 
     }
 }

@@ -2,6 +2,8 @@
 using OBL_Zoho.Services;
 using OBL_Zoho.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Net.Http.Headers;
+using System.Net.Http;
 using System.Net.Mime;
 
 namespace OBL_Zoho.Controllers
@@ -93,5 +95,27 @@ namespace OBL_Zoho.Controllers
             return Ok(response);
         }
 
+
+
+
+
+        [HttpPost]
+        [Route("generate-token-for-file-upload")]
+        public async Task<IActionResult> GenerateRefreshTokenForFileUpload()
+        {
+            return Ok(await _ConnectService.GenerateRefreshTokenForFileUpload());
+        }
+
+
+
+        [Route("UploadFile")]
+        [HttpPost]
+        public async Task<IActionResult> UploadFile(string accessToken,IFormFile file)
+        {
+
+            var result = await _ConnectService.UploadFile(accessToken,file);
+            if (result == null) return BadRequest("No file Selected");
+            return Ok(result);
+        }
     }
 }
