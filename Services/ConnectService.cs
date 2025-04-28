@@ -424,7 +424,7 @@ namespace OBL_Zoho.Services
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
 
-            content = new StringContent("{\"select_query\": \"select Assigned_CP_Name,Amount,Closing_Date,Deal_Name,Volume_In_Sq_Mtr,CP_Confirmed_the_Sale,Sales_Person_Name from Deals where ((Assigned_CP_By_Agent = '" + Assigned_CP_By_Agent+"' and Stage = 'Closed Won') and (Closing_Date >= '"+Closing_Date+"')) ORDER BY Closing_Date DESC limit 200 offset "+offSet+" \"}");
+            content = new StringContent("{\"select_query\": \"select Assigned_CP_Name,Amount,Closing_Date,Deal_Name,CP_Confirmed_the_Sale,Sales_Person_Name from Deals where (((Assigned_CP_By_Agent = '"+Assigned_CP_By_Agent+"' and Stage = 'Closed Won') and (Closing_Date >= '"+Closing_Date+"')) and (Closed_By_FLS_CP = 'FLS')) ORDER BY Closing_Date DESC limit 200 offset "+offSet+"\"}");
 
             request.Content = content;
             var response = await client.SendAsync(request);
