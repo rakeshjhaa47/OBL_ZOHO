@@ -2111,5 +2111,64 @@ namespace OBL_Zoho.Services
                 Response = response
             };
         }
+
+        public async Task<BaseResponse> CpConfirmationLeadsAsync(string refreshToken, string ZH_Code, string ZM_Code, string Sales_Person_Email_ID, string PCH_Email_ID, string Closing_Date)
+        {
+            var response = new CpConfirmLeadResponse();
+            int offSet = 0;
+
+            while (true)
+            {
+                var dd = await CpConfirmLeads(refreshToken, ZH_Code, ZM_Code, Sales_Person_Email_ID, PCH_Email_ID, Closing_Date, offSet);
+                if (dd == null || dd?.data == null)
+                {
+                    break;
+                }
+
+                response.data.AddRange(dd.data);
+
+                if (dd.info?.more_records == true)
+                {
+                    offSet += 200;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            response.info = new CpLeadInfo
+            {
+                count = response.data.Count,
+                more_records = false
+            };
+
+            return new BaseResponse
+            {
+                Response = response
+            };
+        }
+
+        private async Task<CpConfirmLeadResponse> CpConfirmLeads(string refreshToken, string ZH_Code, string ZM_Code, string Sales_Person_Email_ID, string PCH_Email_ID, string Closing_Date, int offSet)
+        {
+            StringContent content;
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+            //var createdTimeThreshold = DateTime.Now.AddDays(-275).ToString("yyyy-MM-ddTHH:mm:ssK");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
+
+            content = new StringContent("{\"select_query\": \"select Assigned_CP_Name,Amount,Closing_Date,Deal_Name,CP_Confirmed_the_Sale,Sales_Person_Name from Deals where ((((Stage = 'Closed Won') and (((ZH_Code = '"+ZH_Code+"' or ZM_Code = '"+ZM_Code+"') or (Sales_Person_Email_ID = '"+Sales_Person_Email_ID+"')) or (PCH_Email_ID = '"+PCH_Email_ID+"'))) and (Closing_Date >= '"+Closing_Date+"')) and (Assigned_CP_By_Agent is not null)) ORDER BY Closing_Date DESC limit 200 offset "+offSet+" \"}");
+
+            request.Content = content;
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+
+            var responseData = JsonConvert.DeserializeObject<CpConfirmLeadResponse>(result);
+
+            return responseData;
+        }
     }
 }

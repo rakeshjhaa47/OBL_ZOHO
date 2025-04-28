@@ -592,5 +592,14 @@ namespace OBL_Zoho.Controllers
             return Ok(response);
         }
 
+        [SwaggerOperation(Tags = new[] { "Obl" })]
+        [HttpPost]
+        [Route("CpConfirmationLeads")]
+        public async Task<IActionResult> CpConfirmationLeads(string refreshToken, string ZH_Code, string ZM_Code, string Sales_Person_Email_ID, string PCH_Email_ID, string Closing_Date)
+        {
+            var response = await _zohoService.CpConfirmationLeadsAsync(refreshToken, ZH_Code, ZM_Code, Sales_Person_Email_ID, PCH_Email_ID, Closing_Date);
+            return Ok(response);
+        }
+
     }
 }
