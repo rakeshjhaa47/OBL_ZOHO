@@ -413,7 +413,6 @@ namespace OBL_Zoho.Services
             };
         }
 
-
         private async Task<CpConfirmListResponse> ConfirmAsync(string accessToken, string Assigned_CP_By_Agent, string Closing_Date, int offSet)
         {
             StringContent content;

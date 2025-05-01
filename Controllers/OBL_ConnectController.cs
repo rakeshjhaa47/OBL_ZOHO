@@ -95,18 +95,12 @@ namespace OBL_Zoho.Controllers
             return Ok(response);
         }
 
-
-
-
-
         [HttpPost]
         [Route("generate-token-for-file-upload")]
         public async Task<IActionResult> GenerateRefreshTokenForFileUpload()
         {
             return Ok(await _ConnectService.GenerateRefreshTokenForFileUpload());
         }
-
-
 
         [Route("UploadFile")]
         [HttpPost]

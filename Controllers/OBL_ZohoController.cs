@@ -601,5 +601,13 @@ namespace OBL_Zoho.Controllers
             return Ok(response);
         }
 
+        [SwaggerOperation(Tags = new[] { "Obl" })]
+        [HttpPost]
+        [Route("CpPendingConfirmation")]
+        public async Task<IActionResult> CpPendingConfirmation(string token,string Sales_Person_Email_ID)
+        {
+            var response = await _zohoService.CpPendingConfirmationAsync(token, Sales_Person_Email_ID);
+            return Ok(response);
+        }
     }
 }

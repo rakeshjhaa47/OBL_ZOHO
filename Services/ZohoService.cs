@@ -2170,5 +2170,63 @@ namespace OBL_Zoho.Services
 
             return responseData;
         }
+
+        public async Task<BaseResponse> CpPendingConfirmationAsync(string token, string Sales_Person_Email_ID)
+        {
+            var response = new CpPendingConfirmationResponse();
+            int offSet = 0;
+
+            while (true)
+            {
+                var dd = await CpPendingConfirmation(token, Sales_Person_Email_ID, offSet);
+                if (dd == null || dd?.Data == null)
+                {
+                    break;
+                }
+
+                response.Data.AddRange(dd.Data);
+
+                if (dd.Info?.More_Records == true)
+                {
+                    offSet += 200;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            response.Info = new CpPendingConfirmationInfo
+            {
+                Count = response.Data.Count,
+                More_Records = false
+            };
+
+            return new BaseResponse
+            {
+                Response = response
+            };
+        }
+
+        private async Task<CpPendingConfirmationResponse> CpPendingConfirmation(string token, string Sales_Person_Email_ID,int offSet)
+        {
+            StringContent content;
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+            var Closing_Date = DateTime.Now.AddDays(-90).ToString("yyyy-MM-dd");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
+
+            content = new StringContent("{\"select_query\": \"select Assigned_CP_Name,Amount,Closing_Date,Deal_Name,CP_Confirmed_the_Sale,Sales_Person_Name from Deals where ((((((Stage = 'Closed Won') and (Sales_Person_Email_ID = '"+Sales_Person_Email_ID+"')) and (Closing_Date >= '"+Closing_Date+"')) and (Assigned_CP_By_Agent is not null)) and (Closed_By_FLS_CP = 'CP')) and (CP_Confirmed_the_Sale = 'Pending')) ORDER BY Closing_Date DESC limit 200 offset "+offSet+" \"}");
+
+            request.Content = content;
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+
+            var responseData = JsonConvert.DeserializeObject<CpPendingConfirmationResponse>(result);
+            return responseData;
+        }
     }
 }
