@@ -21,6 +21,7 @@ namespace OBL_Zoho.Models.Response
         public string Assigned_CP_Name { get; set; }
         public DateTime? Closing_Date { get; set; }
         public string Sales_Person_Name { get; set; }
+        public decimal? Volume_In_Sq_Mtr { get; set; }
     }
 
     public class CpPendingConfirmationInfo

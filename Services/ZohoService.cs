@@ -2218,7 +2218,7 @@ namespace OBL_Zoho.Services
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
 
-            content = new StringContent("{\"select_query\": \"select Assigned_CP_Name,Amount,Closing_Date,Deal_Name,CP_Confirmed_the_Sale,Sales_Person_Name from Deals where ((((((Stage = 'Closed Won') and (Sales_Person_Email_ID = '"+Sales_Person_Email_ID+"')) and (Closing_Date >= '"+Closing_Date+"')) and (Assigned_CP_By_Agent is not null)) and (Closed_By_FLS_CP = 'CP')) and (CP_Confirmed_the_Sale = 'Pending')) ORDER BY Closing_Date DESC limit 200 offset "+offSet+" \"}");
+            content = new StringContent("{\"select_query\": \"select Assigned_CP_Name,Amount,Closing_Date,Deal_Name,CP_Confirmed_the_Sale,Sales_Person_Name,Volume_In_Sq_Mtr from Deals where ((((((Stage = 'Closed Won') and (Sales_Person_Email_ID = '"+Sales_Person_Email_ID+"')) and (Closing_Date >= '"+Closing_Date+"')) and (Assigned_CP_By_Agent is not null)) and (Closed_By_FLS_CP = 'CP')) and (CP_Confirmed_the_Sale = 'Pending')) ORDER BY Closing_Date DESC limit 200 offset "+offSet+" \"}");
 
             request.Content = content;
             var response = await client.SendAsync(request);
