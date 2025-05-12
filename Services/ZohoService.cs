@@ -2213,7 +2213,7 @@ namespace OBL_Zoho.Services
             StringContent content;
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
-            var Closing_Date = DateTime.Now.AddDays(-90).ToString("yyyy-MM-dd");
+            var Closing_Date = DateTime.Now.AddDays(-30).ToString("yyyy-MM-dd");
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
