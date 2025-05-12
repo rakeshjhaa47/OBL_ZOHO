@@ -609,5 +609,23 @@ namespace OBL_Zoho.Controllers
             var response = await _zohoService.CpPendingConfirmationAsync(token, Sales_Person_Email_ID);
             return Ok(response);
         }
+
+        [SwaggerOperation(Tags = new[] { "Obl" })]
+        [HttpPost]
+        [Route("CPList")]
+        public async Task<IActionResult> CpList(string token, string Sales_Person_BH_Emp_ID)
+        {
+            var response = await _zohoService.CpListAsync(token, Sales_Person_BH_Emp_ID);
+            return Ok(response);
+        }
+
+        [SwaggerOperation(Tags = new[] { "Obl" })]
+        [HttpPut]
+        [Route("CPAssign")]
+        public async Task<IActionResult> CpAsign(string token, CpAssignRequest cpAssignRequest)
+        {
+            var response = await _zohoService.CpAssignAsync(token, cpAssignRequest);
+            return Ok(response) ;
+        }
     }
 }

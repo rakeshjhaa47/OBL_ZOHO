@@ -2112,7 +2112,7 @@ namespace OBL_Zoho.Services
             };
         }
 
-        public async Task<BaseResponse> CpConfirmationLeadsAsync(string refreshToken, string ZH_Code, string ZM_Code, string Sales_Person_Email_ID, string PCH_Email_ID, string Closing_Date)
+        public async Task<BaseResponse>         CpConfirmationLeadsAsync(string refreshToken, string ZH_Code, string ZM_Code, string Sales_Person_Email_ID, string PCH_Email_ID, string Closing_Date)
         {
             var response = new CpConfirmLeadResponse();
             int offSet = 0;
@@ -2228,5 +2228,90 @@ namespace OBL_Zoho.Services
             var responseData = JsonConvert.DeserializeObject<CpPendingConfirmationResponse>(result);
             return responseData;
         }
+
+        public async Task<BaseResponse> CpListAsync(string token, string Sales_Person_BH_Emp_ID)
+        {
+            var response = new CpListResponse();
+            int offSet = 0;
+
+            while (true)
+            {
+                var dd = await CpList(token, Sales_Person_BH_Emp_ID, offSet);
+                if (dd == null || dd?.Data == null)
+                {
+                    break;
+                }
+
+                response.Data.AddRange(dd.Data);
+
+                if (dd.Info?.More_Records == true)
+                {
+                    offSet += 200;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            response.Info = new CpListInfo
+            {
+                Count = response.Data.Count,
+                More_Records = false
+            };
+
+            return new BaseResponse
+            {
+                Response = response
+            };
+        }
+
+        private async Task<CpListResponse> CpList(string token, string Sales_Person_BH_Emp_ID, int offSet)
+        {
+            StringContent content;
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+            var Closing_Date = DateTime.Now.AddDays(-90).ToString("yyyy-MM-dd");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
+
+            content = new StringContent("{\"select_query\": \"select Name from Channel_Partners where (Sales_Person.Name = '' or Sales_Person.BH_Emp_ID = '"+Sales_Person_BH_Emp_ID+"') limit 200 offset " + offSet+" \"}");
+
+            request.Content = content;
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+
+            var responseData = JsonConvert.DeserializeObject<CpListResponse>(result);
+            return responseData;
+        }
+
+
+        public async Task<BaseResponse> CpAssignAsync(string accessToken, CpAssignRequest cpAssignRequest)
+        {
+            var request = "https://www.zohoapis.com/crm/v6/Deals";
+
+            var bdu = new CpAssignDetails();
+            bdu.id = cpAssignRequest.Data[0].Id;
+
+            var dd = JsonConvert.SerializeObject(bdu);
+            var buffer = System.Text.Encoding.UTF8.GetBytes(dd);
+            var byteContent = new ByteArrayContent(buffer);
+            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+            var response = client.PutAsync(request, byteContent).Result;
+            var result = await response.Content.ReadAsStringAsync();
+            dynamic userResponse = JsonConvert.DeserializeObject<CpAssignResponse>(result);
+
+            return new BaseResponse
+            {
+                Response = userResponse,
+            };
+        }
+
+        
     }
 }
