@@ -613,9 +613,9 @@ namespace OBL_Zoho.Controllers
         [SwaggerOperation(Tags = new[] { "Obl" })]
         [HttpPost]
         [Route("CPList")]
-        public async Task<IActionResult> CpList(string token, string Sales_Person_BH_Emp_ID)
+        public async Task<IActionResult> CpList(string token, string? Sales_Person_BH_Emp_ID, string? Sales_Person_Name)
         {
-            var response = await _zohoService.CpListAsync(token, Sales_Person_BH_Emp_ID);
+            var response = await _zohoService.CpListAsync(token, Sales_Person_BH_Emp_ID, Sales_Person_Name);
             return Ok(response);
         }
 
@@ -625,7 +625,7 @@ namespace OBL_Zoho.Controllers
         public async Task<IActionResult> CpAsign(string token, CpAssignRequest cpAssignRequest)
         {
             var response = await _zohoService.CpAssignAsync(token, cpAssignRequest);
-            return Ok(response) ;
+            return Ok(response);
         }
     }
 }

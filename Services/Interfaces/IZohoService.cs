@@ -69,7 +69,7 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> CpConfirmationAsync(string refreshToken, string ZH_Code, string ZM_Code, string Sales_Person_Email_ID, string PCH_Email_ID, string Closing_Date);
         Task<BaseResponse> CpConfirmationLeadsAsync(string refreshToken, string ZH_Code, string ZM_Code, string Sales_Person_Email_ID, string PCH_Email_ID, string Closing_Date);
         Task<BaseResponse> CpPendingConfirmationAsync(string token, string Sales_Person_Email_ID);
-        Task<BaseResponse> CpListAsync(string token, string Sales_Person_BH_Emp_ID);
+        Task<BaseResponse> CpListAsync(string token, string? Sales_Person_BH_Emp_ID, string? Sales_Person_Name);
         Task<BaseResponse> CpAssignAsync(string token, CpAssignRequest cpAssignRequest);
 
 

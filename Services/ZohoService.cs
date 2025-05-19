@@ -2229,14 +2229,14 @@ namespace OBL_Zoho.Services
             return responseData;
         }
 
-        public async Task<BaseResponse> CpListAsync(string token, string Sales_Person_BH_Emp_ID)
+        public async Task<BaseResponse> CpListAsync(string token, string? Sales_Person_BH_Emp_ID, string? Sales_Person_Name)
         {
             var response = new CpListResponse();
             int offSet = 0;
 
             while (true)
             {
-                var dd = await CpList(token, Sales_Person_BH_Emp_ID, offSet);
+                var dd = await CpList(token, Sales_Person_BH_Emp_ID, Sales_Person_Name, offSet);
                 if (dd == null || dd?.Data == null)
                 {
                     break;
@@ -2266,7 +2266,7 @@ namespace OBL_Zoho.Services
             };
         }
 
-        private async Task<CpListResponse> CpList(string token, string Sales_Person_BH_Emp_ID, int offSet)
+        private async Task<CpListResponse> CpList(string token, string Sales_Person_BH_Emp_ID,string Sales_Person_Name, int offSet)
         {
             StringContent content;
             var client = new HttpClient();
@@ -2276,7 +2276,7 @@ namespace OBL_Zoho.Services
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
 
-            content = new StringContent("{\"select_query\": \"select Name from Channel_Partners where (Sales_Person.Name = '' or Sales_Person.BH_Emp_ID = '"+Sales_Person_BH_Emp_ID+"') limit 200 offset " + offSet+" \"}");
+            content = new StringContent("{\"select_query\": \"select Name from Channel_Partners where (Sales_Person.Name = '"+ Sales_Person_Name + "' or Sales_Person.BH_Emp_ID = '"+Sales_Person_BH_Emp_ID+"') limit 200 offset " + offSet+" \"}");
 
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -2292,10 +2292,17 @@ namespace OBL_Zoho.Services
         {
             var request = "https://www.zohoapis.com/crm/v6/Deals";
 
-            var bdu = new CpAssignDetails();
-            bdu.id = cpAssignRequest.Data[0].Id;
+            var bdu = new CpAssignRequestData();
+            bdu.id = cpAssignRequest.data[0].id;
+            bdu.assigned_CP_By_Agent = cpAssignRequest.data[0].assigned_CP_By_Agent;
+            bdu.assigned_CP_Name = cpAssignRequest.data[0].assigned_CP_Name;
 
-            var dd = JsonConvert.SerializeObject(bdu);
+            var ab = new CpAssignRequest
+            {
+                data = new List<CpAssignRequestData> { bdu }
+            };
+
+            var dd = JsonConvert.SerializeObject(ab);
             var buffer = System.Text.Encoding.UTF8.GetBytes(dd);
             var byteContent = new ByteArrayContent(buffer);
             byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -2311,7 +2318,5 @@ namespace OBL_Zoho.Services
                 Response = userResponse,
             };
         }
-
-        
     }
 }
