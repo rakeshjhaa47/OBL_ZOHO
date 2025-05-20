@@ -2296,6 +2296,10 @@ namespace OBL_Zoho.Services
             bdu.id = cpAssignRequest.data[0].id;
             bdu.assigned_CP_By_Agent = cpAssignRequest.data[0].assigned_CP_By_Agent;
             bdu.assigned_CP_Name = cpAssignRequest.data[0].assigned_CP_Name;
+            bdu.CP_Assigned_1 =  cpAssignRequest.data[0].CP_Assigned_1;
+            bdu.CP_Assigned_By_1 = cpAssignRequest.data[0].CP_Assigned_By_1;
+            bdu.CP_Assigned_2 = cpAssignRequest.data[0].CP_Assigned_By_2;
+            bdu.CP_Assigned_By_2 = cpAssignRequest.data[0].CP_Assigned_By_2;
 
             var ab = new CpAssignRequest
             {
@@ -2317,6 +2321,63 @@ namespace OBL_Zoho.Services
             {
                 Response = userResponse,
             };
+        }
+
+        public async Task<BaseResponse> CpLeaderBoardAsync(string token)
+        {
+            var response = new CpLeaderBoardResponse();
+            int offSet = 0;
+
+            while (true)
+            {
+                var dd = await CpLeaderBoard(token, offSet);
+                if (dd == null || dd?.Data == null)
+                {
+                    break;
+                }
+
+                response.Data.AddRange(dd.Data);
+
+                if (dd.Info?.More_Records == true)
+                {
+                    offSet += 200;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            response.Info = new CpLeaderBoardDataInfo
+            {
+                Count = response.Data.Count,
+                More_Records = false
+            };
+
+            return new BaseResponse
+            {
+                Response = response
+            };
+        }
+
+        private async Task<CpLeaderBoardResponse> CpLeaderBoard(string token, int offSet)
+        {
+            StringContent content;
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
+
+            content = new StringContent("{\"select_query\": \"select CP_Name,Name,Ranking from Channel_Partners where Ranking is not null limit 200 offset "+offSet+" \"}");
+
+            request.Content = content;
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+
+            var responseData = JsonConvert.DeserializeObject<CpLeaderBoardResponse>(result);
+            return responseData;
         }
     }
 }

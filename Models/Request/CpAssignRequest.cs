@@ -2,10 +2,6 @@
 {
     public class CpAssignRequest
     {
-        //public CpAssignRequest()
-        //{
-        //    Data = new List<CpAssignRequestData>();
-        //}
         public List<CpAssignRequestData> data { get; set; }
     }
 
@@ -14,5 +10,9 @@
         public string id { get; set; }
         public string assigned_CP_By_Agent { get; set; }
         public string assigned_CP_Name { get; set; }
+        public string CP_Assigned_1 { get; set; }
+        public string CP_Assigned_By_1 { get; set; }
+        public string CP_Assigned_2 { get; set; }
+        public string CP_Assigned_By_2 { get; set; }
     }
 }

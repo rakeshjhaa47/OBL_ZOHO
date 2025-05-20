@@ -71,7 +71,6 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> CpPendingConfirmationAsync(string token, string Sales_Person_Email_ID);
         Task<BaseResponse> CpListAsync(string token, string? Sales_Person_BH_Emp_ID, string? Sales_Person_Name);
         Task<BaseResponse> CpAssignAsync(string token, CpAssignRequest cpAssignRequest);
-
-
+        Task<BaseResponse> CpLeaderBoardAsync(string token);
     }
 }

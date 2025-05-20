@@ -627,5 +627,14 @@ namespace OBL_Zoho.Controllers
             var response = await _zohoService.CpAssignAsync(token, cpAssignRequest);
             return Ok(response);
         }
+
+        [SwaggerOperation(Tags = new[] { "Obl" })]
+        [HttpGet]
+        [Route("CPLeaderboard ")]
+        public async Task<IActionResult> CpLeaderBoard(string token)
+        {
+            var response = await _zohoService.CpLeaderBoardAsync(token);
+            return Ok(response);
+        }
     }
 }
