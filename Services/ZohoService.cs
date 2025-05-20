@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Drawing;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using OBL_Zoho.Models;
 using OBL_Zoho.Models.Helper;
@@ -1867,6 +1868,11 @@ namespace OBL_Zoho.Services
 
         private async Task<Rootdeal> GetOblSearchAsync(string refreshToken, string Deal_Name, string City, string? ZM_Code, string Stage_Category,string SalesPersonEmailID,string PCHEmailId, int offSet)
         {
+            if(!Deal_Name.IsNullOrEmpty() && !City.IsNullOrEmpty())
+            {
+                Deal_Name = Deal_Name + "%";
+                City = City + "%";
+            }
             StringContent content;
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
@@ -1891,7 +1897,6 @@ namespace OBL_Zoho.Services
         {
             var response = new Rootdeal();
             int offSet = 0;
-
             while (true)
             {
                 var dd = await GetOblSearchAsync(refreshToken, Deal_Name, City, ZM_Code, Stage_Category, SalesPersonEmailID, PCHEmailId, offSet);
@@ -2276,14 +2281,21 @@ namespace OBL_Zoho.Services
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
 
-            content = new StringContent("{\"select_query\": \"select Name from Channel_Partners where (Sales_Person.Name = '"+ Sales_Person_Name + "' or Sales_Person.BH_Emp_ID = '"+Sales_Person_BH_Emp_ID+"') limit 200 offset " + offSet+" \"}");
+            content = new StringContent("{\"select_query\": \"select Name, CP_Name from Channel_Partners where (Sales_Person.Name = '" + Sales_Person_Name + "' or Sales_Person.BH_Emp_ID = '"+Sales_Person_BH_Emp_ID+"') limit 200 offset " + offSet+" \"}");
 
             request.Content = content;
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
+         
 
             var responseData = JsonConvert.DeserializeObject<CpListResponse>(result);
+
+            foreach (var item in responseData.Data)
+            {
+                item.Cp_Code = item.Name;
+                item.Assigned_CP_Name = item.CP_Name;
+            }
             return responseData;
         }
 

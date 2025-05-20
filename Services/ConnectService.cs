@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Math;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using OBL_Zoho.Models.Response;
 using OBL_Zoho.Services.Interfaces;
@@ -356,6 +357,14 @@ namespace OBL_Zoho.Services
 
         private async Task<SearchApiResponse> ConnectSearchApiAsync(string accessToken, string Deal_Name, string City, string Assigned_CP, string Stage_Category, int offSet)
         {
+            if (!Deal_Name.IsNullOrEmpty())
+            {
+                Deal_Name = Deal_Name + "%";
+            }
+            if (!City.IsNullOrEmpty())
+            {
+                City = City + "%";
+            }
             StringContent content;
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");

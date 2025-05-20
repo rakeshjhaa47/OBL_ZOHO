@@ -1,4 +1,6 @@
-﻿namespace OBL_Zoho.Models.Response
+﻿using System.Text.Json.Serialization;
+
+namespace OBL_Zoho.Models.Response
 {
     public class CpListResponse
     {
@@ -14,7 +16,12 @@
     public class CpList
     {
         public string Id { get; set; }
+        [JsonIgnore]
         public string Name { get; set; }
+        public string Cp_Code { get; set; }
+        [JsonIgnore]
+        public string CP_Name { get; set; }
+        public string Assigned_CP_Name { get; set; }
 
     }
     public class CpListInfo
