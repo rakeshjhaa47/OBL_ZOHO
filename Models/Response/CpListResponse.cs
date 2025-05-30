@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace OBL_Zoho.Models.Response
 {
@@ -15,13 +16,17 @@ namespace OBL_Zoho.Models.Response
 
     public class CpList
     {
+        [JsonProperty("id")]
         public string Id { get; set; }
-        [JsonIgnore]
-        public string Name { get; set; }
+
+        [JsonProperty("Name")]
         public string Cp_Code { get; set; }
-        [JsonIgnore]
-        public string CP_Name { get; set; }
+
+        [JsonProperty("CP_Name")]
         public string Assigned_CP_Name { get; set; }
+
+        [JsonProperty("Sales_Person.Name")]
+        public string Sales_Person_Name { get; set; }
 
     }
     public class CpListInfo

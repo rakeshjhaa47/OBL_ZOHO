@@ -8,8 +8,8 @@
     public class CpAssignRequestData
     {
         public string id { get; set; }
-        public string assigned_CP_By_Agent { get; set; }
-        public string assigned_CP_Name { get; set; }
+        public string Assigned_CP_By_Agent { get; set; }
+        public string Assigned_CP_Name { get; set; }
         public string CP_Assigned_1 { get; set; }
         public string CP_Assigned_By_1 { get; set; }
         public string CP_Assigned_2 { get; set; }

@@ -1868,9 +1868,12 @@ namespace OBL_Zoho.Services
 
         private async Task<Rootdeal> GetOblSearchAsync(string refreshToken, string Deal_Name, string City, string? ZM_Code, string Stage_Category,string SalesPersonEmailID,string PCHEmailId, int offSet)
         {
-            if(!Deal_Name.IsNullOrEmpty() && !City.IsNullOrEmpty())
+            if(!Deal_Name.IsNullOrEmpty())
             {
                 Deal_Name = Deal_Name + "%";
+            }
+            if (!City.IsNullOrEmpty())
+            {
                 City = City + "%";
             }
             StringContent content;
@@ -2281,7 +2284,7 @@ namespace OBL_Zoho.Services
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
 
-            content = new StringContent("{\"select_query\": \"select Name, CP_Name from Channel_Partners where (Sales_Person.Name = '" + Sales_Person_Name + "' or Sales_Person.BH_Emp_ID = '"+Sales_Person_BH_Emp_ID+"') limit 200 offset " + offSet+" \"}");
+            content = new StringContent("{\"select_query\": \"select Name, CP_Name,Sales_Person.Name from Channel_Partners where (Sales_Person.Name = '" + Sales_Person_Name + "' or Sales_Person.BH_Emp_ID = '"+Sales_Person_BH_Emp_ID+"') limit 200 offset " + offSet+" \"}");
 
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -2290,12 +2293,6 @@ namespace OBL_Zoho.Services
          
 
             var responseData = JsonConvert.DeserializeObject<CpListResponse>(result);
-
-            foreach (var item in responseData.Data)
-            {
-                item.Cp_Code = item.Name;
-                item.Assigned_CP_Name = item.CP_Name;
-            }
             return responseData;
         }
 
@@ -2306,8 +2303,8 @@ namespace OBL_Zoho.Services
 
             var bdu = new CpAssignRequestData();
             bdu.id = cpAssignRequest.data[0].id;
-            bdu.assigned_CP_By_Agent = cpAssignRequest.data[0].assigned_CP_By_Agent;
-            bdu.assigned_CP_Name = cpAssignRequest.data[0].assigned_CP_Name;
+            bdu.Assigned_CP_By_Agent = cpAssignRequest.data[0].Assigned_CP_By_Agent;
+            bdu.Assigned_CP_Name = cpAssignRequest.data[0].Assigned_CP_Name;
             bdu.CP_Assigned_1 =  cpAssignRequest.data[0].CP_Assigned_1;
             bdu.CP_Assigned_By_1 = cpAssignRequest.data[0].CP_Assigned_By_1;
             bdu.CP_Assigned_2 = cpAssignRequest.data[0].CP_Assigned_By_2;
@@ -2381,7 +2378,7 @@ namespace OBL_Zoho.Services
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
 
-            content = new StringContent("{\"select_query\": \"select CP_Name,Name,Ranking from Channel_Partners where Ranking is not null limit 200 offset "+offSet+" \"}");
+            content = new StringContent("{\"select_query\": \"select CP_Name,Name,Ranking from Channel_Partners where Ranking is not null ORDER BY Ranking ASC limit 200 offset " + offSet+" \"}");
 
             request.Content = content;
             var response = await client.SendAsync(request);

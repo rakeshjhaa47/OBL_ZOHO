@@ -630,7 +630,7 @@ namespace OBL_Zoho.Controllers
 
         [SwaggerOperation(Tags = new[] { "Obl" })]
         [HttpGet]
-        [Route("CPLeaderboard ")]
+        [Route("CPLeaderboard")]
         public async Task<IActionResult> CpLeaderBoard(string token)
         {
             var response = await _zohoService.CpLeaderBoardAsync(token);
