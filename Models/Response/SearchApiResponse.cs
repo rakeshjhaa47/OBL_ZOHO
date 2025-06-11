@@ -17,7 +17,7 @@
         public int Tile_Requirement_in_Area_Sq_ft { get; set; }
         public DateTime Created_Time { get; set; }
         public int? Amount { get; set; }
-        public DateTime Recent_Stage_Update_Date_Time { get; set; }
+        public DateTime? Recent_Stage_Update_Date_Time { get; set; }
         public string Stage_Category { get; set; }
         public string City { get; set; }
         public string Tiling_Date_Likely_Purchase_Date { get; set; }

@@ -1,5 +1,5 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Drawing;
+
 using Google.Apis.Auth.OAuth2;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -1884,8 +1884,7 @@ namespace OBL_Zoho.Services
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
 
-            //content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category,Assigned_CP_Name from Deals where (((Deal_Name = '" + Deal_Name+ "' or City = '"+City+ "') and (Created_Time > '"+createdTimeThreshold+"')) and (Stage_Category = '"+ Stage_Category + "')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset " + offSet+" \"}");
-            content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category,Assigned_CP_Name from Deals where (((((Deal_Name = '"+Deal_Name+"' or City = '"+City+"') and (ZH_Code = '' or ZM_Code = '"+ZM_Code+"')) or (Sales_Person_Email_ID = '"+SalesPersonEmailID+"')) or (PCH_Email_ID = '"+PCHEmailId+"')) and (Stage_Category = '"+Stage_Category+"')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset "+offSet+" \"}");
+            content = new StringContent("{\"select_query\": \"select Closing_Date, Final_Tile_Requirement_in_Area_Sq_ft, Tile_Requirement_in_Area_Sq_ft, Stage, Amount, Deal_Name, PCH_Email_ID, Sales_Person_Email_ID, City, Zip_Code, Tiling_Date_Likely_Purchase_Date, Mobile, Dealer_Name, Created_Time, Recent_Stage_Update_Date_Time, Stage_Category, Assigned_CP_Name from Deals where (((Deal_Name like '" + Deal_Name + "' or City like '" + City + "') and((((ZH_Code = '' or ZM_Code = '" + ZM_Code + "')) or(Sales_Person_Email_ID = '" + SalesPersonEmailID + "')) or(PCH_Email_ID = '" + PCHEmailId + "'))) and(Stage_Category = '" + Stage_Category + "')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset " + offSet + "\"}");
 
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -1893,7 +1892,6 @@ namespace OBL_Zoho.Services
             var result = await response.Content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<Rootdeal>(result);
-
         }
 
         public async Task<BaseResponse> OblSearchAsync(string refreshToken, string Deal_Name, string City, string? ZM_Code, string Stage_Category, string SalesPersonEmailID, string PCHEmailId)
@@ -2120,7 +2118,7 @@ namespace OBL_Zoho.Services
             };
         }
 
-        public async Task<BaseResponse>         CpConfirmationLeadsAsync(string refreshToken, string ZH_Code, string ZM_Code, string Sales_Person_Email_ID, string PCH_Email_ID, string Closing_Date)
+        public async Task<BaseResponse>CpConfirmationLeadsAsync(string refreshToken, string ZH_Code, string ZM_Code, string Sales_Person_Email_ID, string PCH_Email_ID, string Closing_Date)
         {
             var response = new CpConfirmLeadResponse();
             int offSet = 0;

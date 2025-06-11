@@ -368,13 +368,11 @@ namespace OBL_Zoho.Services
             StringContent content;
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
-            //var createdTimeThreshold = DateTime.Now.AddDays(-275).ToString("yyyy-MM-ddTHH:mm:ssK");
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
 
-            //content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category,Assigned_CP_Name from Deals where (((Deal_Name = '" + Deal_Name+ "' or City = '"+City+ "') and (Created_Time > '"+createdTimeThreshold+"')) and (Stage_Category = '"+ Stage_Category + "')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset " + offSet+" \"}");
-            content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category,Assigned_CP_Name from Deals where (((Deal_Name = '"+Deal_Name+"' or City = '"+City+"') and (Assigned_CP_By_Agent = '"+Assigned_CP+"')) and (Stage_Category = '" +Stage_Category +"')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset " + offSet+" \"}");
+            content = new StringContent("{\"select_query\": \"select Closing_Date,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Stage,Amount,Deal_Name,PCH_Email_ID,Sales_Person_Email_ID,City,Zip_Code,Tiling_Date_Likely_Purchase_Date,Mobile,Dealer_Name,Created_Time,Recent_Stage_Update_Date_Time,Stage_Category,Assigned_CP_Name from Deals where (((Deal_Name like '"+Deal_Name+"' or City like '"+City+"') and (Assigned_CP_By_Agent = '"+Assigned_CP+"')) and (Stage_Category = '"+Stage_Category+"')) ORDER BY Tile_Requirement_in_Area_Sq_ft DESC limit 200 offset "+offSet+"\"}");
 
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -382,7 +380,6 @@ namespace OBL_Zoho.Services
             var result = await response.Content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<SearchApiResponse>(result);
-
         }
 
         public async Task<BaseResponse> SearchApiAsync(string accessToken, string Deal_Name, string City, string Assigned_CP, string Stage_Category)
