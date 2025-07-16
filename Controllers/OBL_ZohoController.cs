@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.Drawing;
+using Microsoft.AspNetCore.Mvc;
 using OBL_Zoho.Models;
 using OBL_Zoho.Models.Request;
 using OBL_Zoho.Models.Response;
@@ -552,12 +553,12 @@ namespace OBL_Zoho.Controllers
         [SwaggerOperation(Tags = new[] { "getLeadsByStage" })]
         [HttpPost]
         [Route("getLeadsByStage")]
-        public async Task<IActionResult> getLeadsByStage(string refreshToken, string Stage_Category, string Sales_Person_Email_ID, string MaxAreasqft, string MinAreaSqFt, string createdTime = "2020-01-01T00:00:00+05:30", bool isEmployee = false, int offSet = 0, int limit = 10)
+        public async Task<IActionResult> getLeadsByStage(string refreshToken, string Stage_Category, string Sales_Person_Email_ID, string MaxAreasqft, string MinAreaSqFt, string createdTime = "2020-01-01T00:00:00+05:30", bool isEmployee = false, int offSet = 0, int limit = 10,bool filterByTileRequirementArea = true)
         {
-            return Ok(await _zohoService.getLeadsByStageAsync(refreshToken, Stage_Category, Sales_Person_Email_ID, MaxAreasqft, MinAreaSqFt, createdTime, isEmployee, offSet, limit));
+            return Ok(await _zohoService.getLeadsByStageAsync(refreshToken, Stage_Category, Sales_Person_Email_ID, MaxAreasqft, MinAreaSqFt, createdTime, isEmployee, offSet, limit, filterByTileRequirementArea));
         }
 
-        [SwaggerOperation(Tags = new[] { "Obl" })] 
+        [SwaggerOperation(Tags = new[] { "Obl" })]
         [HttpPost]
         [Route("OblSearch")]
         public async Task<IActionResult> OblSearch(string refreshToken, string Deal_Name, string City, string? ZM_Code, string Stage_Category, string SalesPersonEmailID, string PCHEmailId)
@@ -634,6 +635,24 @@ namespace OBL_Zoho.Controllers
         public async Task<IActionResult> CpLeaderBoard(string token)
         {
             var response = await _zohoService.CpLeaderBoardAsync(token);
+            return Ok(response);
+        }
+
+        [SwaggerOperation(Tags = new[] { "ChatBot" })]
+        [HttpGet]
+        [Route("ChatBotDeals")]
+        public async Task<IActionResult> ChatBotDeals(string token, string startDate,string endDate)
+        {
+            var response = await _zohoService.ChatBotDeals(token, startDate,endDate);
+            return Ok(response);
+        }
+
+        [SwaggerOperation(Tags = new[] { "ChatBot" })]
+        [HttpGet]
+        [Route("ChatBot_Analytics_Refresh_Token")]
+        public async Task<IActionResult> ChatBot_Analytics_Refresh_Token()
+        {
+            var response = await _zohoService.ChatBot_Analytics_Refresh_Token();
             return Ok(response);
         }
     }

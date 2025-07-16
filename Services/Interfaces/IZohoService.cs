@@ -60,7 +60,7 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> CreateFireBaseToken();
         Task<BaseResponse> UpdateStageVisitedStoreAsync(string accessToken, string id, BlueprintRequest bur);
 
-        Task<BaseResponse> getLeadsByStageAsync(string refreshToken, string Stage_Category , string Sales_Person_Email_ID , string createdTime, string MaxAreasqft, string MinAreaSqFt, bool isEmployee,int offSet,int limit);
+        Task<BaseResponse> getLeadsByStageAsync(string refreshToken, string Stage_Category , string Sales_Person_Email_ID , string createdTime, string MaxAreasqft, string MinAreaSqFt, bool isEmployee,int offSet,int limit, bool filterByTileRequirementArea);
 
         Task<BaseResponse> OblSearchAsync(string accessToken, string Deal_Name, string City, string? ZM_Code, string Stage_Category, string SalesPersonEmailID, string PCHEmailId);
         Task<BaseResponse> HomePageLeadsAsync(string refreshToken, string PCH_Email_ID, bool isEmployee = false);
@@ -72,5 +72,7 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> CpListAsync(string token, string? Sales_Person_BH_Emp_ID, string? Sales_Person_Name);
         Task<BaseResponse> CpAssignAsync(string token, CpAssignRequest cpAssignRequest);
         Task<BaseResponse> CpLeaderBoardAsync(string token);
+        Task<BaseResponse> ChatBotDeals(string token, string startDate,string endDate);
+        Task<BaseResponse> ChatBot_Analytics_Refresh_Token();
     }
 }

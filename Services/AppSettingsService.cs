@@ -33,5 +33,10 @@ namespace OBL_Zoho.Services
             return this.Configuration.GetSection("AppSettings")["ClientSecret"];
             //return _appSettings.ClientSecret;
         }
+
+        public string GetChatBotRefreshToken()
+        {
+            return this.Configuration.GetSection("AppSettings")["ClientSecret"];
+        }
     }
 }
