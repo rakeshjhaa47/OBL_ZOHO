@@ -37,6 +37,8 @@
         public string id { get; set; }
         public List<string>? Tile_Category { get; set; }
         public string? Closed_By { get; set; }
+        public string? L2_Remarks { get; set; }
+        public DateTime? Modified_time_crmMasters { get; set; }
     }
 
     public class Infodata

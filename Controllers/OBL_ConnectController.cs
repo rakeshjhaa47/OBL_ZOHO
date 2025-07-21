@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OBL_Zoho.Services;
 using OBL_Zoho.Services.Interfaces;
-using Swashbuckle.AspNetCore.Annotations;
-using System.Net.Http.Headers;
-using System.Net.Http;
 using System.Net.Mime;
 
 namespace OBL_Zoho.Controllers
