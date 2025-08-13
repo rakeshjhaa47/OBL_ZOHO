@@ -33,6 +33,12 @@
         public string? Zip_Code { get; set; }
         public string id { get; set; }
         public string? Closed_By { get; set; }
+        public DateTime? Modified_time_crmMasters { get; set; }
+        public decimal? Tile_Requirement_in_Area_Sq_Mtr { get; set; }
+        public string? Design_Selection { get; set; }
+        public string? Lead_Category { get; set; }
+        public List<string>? Tile_Category { get; set; }
+        public string? L2_Remarks { get; set; }
     }
 
     public class InfoAllData

@@ -303,7 +303,7 @@ namespace OBL_Zoho.Services
             bdu.Dealer_Code = bur.blueprint[0].data.Dealer_Code;
 
             var bu = new BlueprintUpdate_ClosedWon();
-            bu.transition_id = bur.blueprint[0].transition_id;
+            bu.transition_id = "3765105000573601654";//bur.blueprint[0].transition_id;
             bu.data = bdu;
 
             var xx = new List<BlueprintUpdate_ClosedWon>();
@@ -913,7 +913,7 @@ namespace OBL_Zoho.Services
 
         public async Task<BaseResponse> GenerateRefreshToken()
         {
-            int randomNumber = _random.Next(1, 6); // Generates a number between 1 and 5
+            int randomNumber = _random.Next(1, 11); // Generates a number between 1 and 10
 
             switch (randomNumber)
             {
@@ -927,6 +927,16 @@ namespace OBL_Zoho.Services
                     return await GenerateRefreshTokens("1000.6c9db8373d723b608792640c45624ffa.40af308c31db605706cd487e1d6ecdc9");
                 case 5:
                     return await GenerateRefreshTokens("1000.a4ddac67df3e375eed4264bad1c421eb.018367a79f2249319dbc0d2b60c3565b");
+                case 6:
+                    return await GenerateRefreshTokens("1000.deded8d6375e8a51f87c8f32d8a3d731.322b9e4751f0a7fd40fd86f65c776a79");
+                case 7:
+                    return await GenerateRefreshTokens("1000.d84bbab74572d5d00e368510859bbc61.2dd60f7dc5c29b81c67c5ff016b95be2");
+                case 8:
+                    return await GenerateRefreshTokens("1000.d77af199ee88c85810b07186f8e7d12d.4633f528ada4bd84b5ea83234f595ff7");
+                case 9:
+                    return await GenerateRefreshTokens("1000.beabdecf637b92dcb89a5b347d71a152.7c1d89af8d069c8371d3c7bd07f3bb92");
+                case 10:
+                    return await GenerateRefreshTokens("1000.1e53c44668f44518f20263749ccd80e7.1c0d381cfc9711f4d84924fff148fc84");
                 default:
                     throw new InvalidOperationException("Invalid random number generated.");
             }

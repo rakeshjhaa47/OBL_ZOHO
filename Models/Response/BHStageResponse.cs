@@ -2,7 +2,7 @@
 {
     public class DataBH
     {
-        public int? Total_Amount { get; set; }
+        public decimal? Total_Amount { get; set; }
         public string? Stage { get; set; }
         public int? Total_Count { get; set; }
         public int? Tile_Total { get; set; }

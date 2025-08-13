@@ -12,7 +12,7 @@ namespace OBL_Zoho.Services.Interfaces
 
         Task<BaseResponse> CreateFireBaseTokenForConnect();
 
-        Task<BaseResponse> ConnectAllStageAsync(string accessToken, string Assigned_CP_By_Agent, string Created_Time, string Stage_Category, string MaxRequirement, string MinRequirement, int limit, int offSet);
+        Task<BaseResponse> ConnectAllStageAsync(string accessToken, string Assigned_CP_By_Agent, string Created_Time, string Stage_Category, string MaxRequirement, string MinRequirement, int limit, int offSet, bool filterByTileRequirementArea = true);
 
         Task<BaseResponse> ConnectDashboardAsync(string accessToken, string Assigned_CP_By_Agent, string Start_Date, string End_Date);
 

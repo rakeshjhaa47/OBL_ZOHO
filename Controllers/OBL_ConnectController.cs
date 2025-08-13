@@ -52,9 +52,9 @@ namespace OBL_Zoho.Controllers
 
         [Route("ConnectAll-Stage")]
         [HttpPost]
-        public async Task<IActionResult> ConnectAllStage(string accessToken, string Assigned_CP, string Created_Time, string Stage_Category, string MaxRequirement, string MinRequirement, int limit, int offSet)
+        public async Task<IActionResult> ConnectAllStage(string accessToken, string Assigned_CP, string Created_Time, string Stage_Category, string MaxRequirement, string MinRequirement, int limit, int offSet, bool filterByTileRequirementArea = true)
         {
-            var response = await _ConnectService.ConnectAllStageAsync(accessToken, Assigned_CP, Created_Time, Stage_Category, MaxRequirement, MinRequirement, limit, offSet);
+            var response = await _ConnectService.ConnectAllStageAsync(accessToken, Assigned_CP, Created_Time, Stage_Category, MaxRequirement, MinRequirement, limit, offSet, filterByTileRequirementArea);
             return Ok(response);
         }
 
