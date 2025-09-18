@@ -374,6 +374,7 @@ namespace OBL_Zoho.Services
             var bdu = new BlueprintDataUpdate_QuotationShared();
             bdu.Remarks_of_quotation_shared = bur.blueprint[0].data.Remarks_of_quotation_shared;
             bdu.Notes = bur.blueprint[0].data.Notes;
+            bdu.Next_Follow_up = bur.blueprint[0].data.Next_Follow_up;
 
             var bu = new BlueprintUpdate_QuotationShared();
             bu.transition_id = bur.blueprint[0].transition_id;
@@ -409,6 +410,7 @@ namespace OBL_Zoho.Services
             var bdu = new BlueprintDataUpdate_SampleShared();
             bdu.Remarks_of_Sample_shared = bur.blueprint[0].data.Remarks_of_Sample_shared;
             bdu.Notes = bur.blueprint[0].data.Notes;
+            bdu.Next_Follow_up = bur.blueprint[0].data.Next_Follow_up;
 
             var bu = new BlueprintUpdate_SampleShared();
             bu.transition_id = bur.blueprint[0].transition_id;
@@ -444,6 +446,7 @@ namespace OBL_Zoho.Services
             var bdu = new BlueprintDataUpdate_VisitedStore();
             bdu.Remarks_spoken_to_customer = bur.blueprint[0].data.Remarks_spoken_to_customer;
             bdu.Notes = bur.blueprint[0].data.Notes;
+            bdu.Next_Follow_up = bur.blueprint[0].data.Next_Follow_up;
 
             var bu = new BlueprintUpdate_VisitedStore();
             bu.transition_id = bur.blueprint[0].transition_id;
@@ -479,6 +482,7 @@ namespace OBL_Zoho.Services
             var bdu = new BlueprintDataUpdate_VisitedStore();
             bdu.Notes = bur.blueprint[0].data.Notes;
             bdu.Remarks_spoken_to_customer = bur.blueprint[0].data.Notes;
+            bdu.Next_Follow_up = bur.blueprint[0].data.Next_Follow_up;
             var bu = new BlueprintUpdate_VisitedStore();
             bu.transition_id = bur.blueprint[0].transition_id;
             bu.data = bdu;
@@ -512,6 +516,7 @@ namespace OBL_Zoho.Services
 
             var bdu = new BlueprintDataUpdate_VisitedStore();
             bdu.Remarks_of_Scheduled_a_Visit = bur.blueprint[0].data.Notes;
+            bdu.Next_Follow_up = bur.blueprint[0].data.Next_Follow_up;
 
             var bu = new BlueprintUpdate_VisitedStore();
             bu.transition_id = bur.blueprint[0].transition_id;
@@ -1114,8 +1119,11 @@ namespace OBL_Zoho.Services
 
             return new DataByCodeResponse
             {
-                ZH = zonalHeads,
-                ZM = zonalManagers,
+                ZH = (zonalHeads == null || !zonalHeads.Any())
+                    ? zonalManagers : zonalHeads,
+
+                ZM = (zonalManagers == null || !zonalManagers.Any())
+                    ? zonalHeads : zonalManagers,
                 BM = branchManagers,
                 Employees = employees
             };
@@ -1784,6 +1792,7 @@ namespace OBL_Zoho.Services
 
             var bdu = new BlueprintStoreData();
             bdu.Remarks_of_visit_store = bur.blueprint[0].data.Remarks_of_visit_store;
+            bdu.Next_Follow_up = bur.blueprint[0].data.Next_Follow_up;
 
             var bu = new BlueprintData();
             bu.transition_id = bur.blueprint[0].transition_id;
@@ -2412,6 +2421,79 @@ namespace OBL_Zoho.Services
             var result = await response.Content.ReadAsStringAsync();
 
             var responseData = JsonConvert.DeserializeObject<CpLeaderBoardResponse>(result);
+            return responseData;
+        }
+
+        public async Task<BaseResponse> FLSLeaderboardAsync(string token, bool isEmployee, string startDate, string endDate)
+        {
+            var allData = new FLSLeaderboardResponse();
+            int offSet = 0;
+
+            while (true)
+            {
+                var dd = await FLSLeaderboard(token, isEmployee, startDate, endDate, offSet);
+                if (dd == null || dd?.Data == null)
+                {
+                    break;
+                }
+
+                allData.Data.AddRange(dd.Data);
+
+                if (dd.Info?.More_Records == true)
+                {
+                    offSet += 200;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            // Get top 20 by Total_Amount
+            var top20 = allData.Data
+                        .OrderByDescending(x => x.Total_Amount)
+                        .Take(20)
+                        .ToList();
+
+            var response = new FLSLeaderboardResponse
+            {
+                Data = top20,
+                Info = new FLSLeaderboardDataInfo
+                {
+                    Count = top20.Count,
+                    More_Records = false
+                }
+            };
+
+            return new BaseResponse
+            {
+                Response = response
+            };
+        }
+
+        private async Task<FLSLeaderboardResponse> FLSLeaderboard(string token, bool isEmployee, string startDate, string endDate, int offSet)
+        {
+            StringContent content;
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
+            if (isEmployee)
+            {
+                content = new StringContent("{\"select_query\": \"SELECT SUM(Amount) AS Total_Amount,Sales_Person_Emp_ID,Sales_Person_Name AS Name FROM Deals Where ((Stage = 'Closed Won') AND (Closing_Date between '"+startDate+"' and '"+endDate+"')) GROUP BY Sales_Person_Emp_ID,Sales_Person_Name LIMIT 200 OFFSET "+offSet+" \"}");
+            }
+            else
+            {
+                content = new StringContent("{\"select_query\": \"SELECT SUM(Amount) AS Total_Amount,BM_Code,Branch_Manager As Name FROM Deals Where ((Stage = 'Closed Won') AND (Closing_Date between '"+startDate+"' and '"+endDate+"')) GROUP BY BM_Code,Branch_Manager LIMIT 200 OFFSET "+offSet+" \"}");
+            }
+
+            request.Content = content;
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+
+            var responseData = JsonConvert.DeserializeObject<FLSLeaderboardResponse>(result);
             return responseData;
         }
 

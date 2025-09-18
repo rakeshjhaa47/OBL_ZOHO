@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OBL_Zoho.Models.Response
 {
@@ -14,6 +15,7 @@ namespace OBL_Zoho.Models.Response
     {
         public string transition_id { get; set; }
         public BlueprintDataUpdate_ClosedWon data { get; set; }
+    
     }
     public class Attachment
     {
@@ -75,6 +77,7 @@ namespace OBL_Zoho.Models.Response
     {
         public string Remarks_of_quotation_shared { get; set; }
         public string Notes { get; set; }
+        public DateOnly? Next_Follow_up { get; set; }
     }
 
     /*Sample shared*/
@@ -87,12 +90,14 @@ namespace OBL_Zoho.Models.Response
     {
         public string transition_id { get; set; }
         public BlueprintDataUpdate_SampleShared data { get; set; }
+       
     }
 
     public class BlueprintDataUpdate_SampleShared
     {
         public string Remarks_of_Sample_shared { get; set; }
         public string Notes { get; set; }
+        public DateOnly? Next_Follow_up { get; set; }
     }
 
     /*Visited store*/
@@ -112,6 +117,7 @@ namespace OBL_Zoho.Models.Response
         public string Remarks_spoken_to_customer { get; set; }
         public string Notes { get; set; }
         public string? Remarks_of_Scheduled_a_Visit { get; set; }
+        public DateOnly? Next_Follow_up { get; set; }
     }
 
     /*Sales person pitch*/
@@ -130,6 +136,7 @@ namespace OBL_Zoho.Models.Response
     {
         public string Notes { get; set; }
         public string Remarks_spoken_to_customer { get; set; }
+        public DateOnly? Next_Follow_up { get; set; }
     }
 
     /*Schedule visit*/
@@ -147,6 +154,7 @@ namespace OBL_Zoho.Models.Response
     public class BlueprintDataUpdate_ScheduleVisit
     {
         public string Notes { get; set; }
+        public DateOnly? Next_Follow_up { get; set; }
     }
 
 

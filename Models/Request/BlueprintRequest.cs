@@ -16,6 +16,7 @@ namespace OBL_Zoho.Models.Request
     public class BlueprintStoreData
     {
         public string Remarks_of_visit_store { get; set; }
+        public DateOnly? Next_Follow_up { get; set; }
     }
 
 }

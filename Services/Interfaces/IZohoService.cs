@@ -72,6 +72,7 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> CpListAsync(string token, string? Sales_Person_BH_Emp_ID, string? Sales_Person_Name);
         Task<BaseResponse> CpAssignAsync(string token, CpAssignRequest cpAssignRequest);
         Task<BaseResponse> CpLeaderBoardAsync(string token);
+        Task<BaseResponse> FLSLeaderboardAsync(string token, bool isEmployee, string startDate, string endDate);
         Task<BaseResponse> ChatBotDeals(string token, string startDate,string endDate);
         Task<BaseResponse> ChatBot_Analytics_Refresh_Token();
     }

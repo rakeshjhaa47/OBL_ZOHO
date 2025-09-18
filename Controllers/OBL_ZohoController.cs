@@ -638,6 +638,15 @@ namespace OBL_Zoho.Controllers
             return Ok(response);
         }
 
+        [SwaggerOperation(Tags = new[] { "Obl" })]
+        [HttpGet]
+        [Route("FLSLeaderboard")]
+        public async Task<IActionResult> FLSLeaderboard(string token, string startDate, string endDate, bool isEmployee = true)
+        {
+            var response = await _zohoService.FLSLeaderboardAsync(token,isEmployee,startDate,endDate);
+            return Ok(response);
+        }
+
         [SwaggerOperation(Tags = new[] { "ChatBot" })]
         [HttpGet]
         [Route("ChatBotDeals")]

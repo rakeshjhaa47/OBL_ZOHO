@@ -14,7 +14,7 @@
     public class CpLeaderBoardData
     {
         public string Ranking { get; set; }
-        public string CP_Name { get; set; }
+        public string CP_Name { get; set; } 
         public string Id { get; set; }
         public string Name { get; set; }
     }
