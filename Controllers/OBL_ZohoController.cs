@@ -553,7 +553,7 @@ namespace OBL_Zoho.Controllers
         [SwaggerOperation(Tags = new[] { "getLeadsByStage" })]
         [HttpPost]
         [Route("getLeadsByStage")]
-        public async Task<IActionResult> getLeadsByStage(string refreshToken, string Stage_Category, string Sales_Person_Email_ID, string MaxAreasqft, string MinAreaSqFt, string createdTime = "2020-01-01T00:00:00+05:30", bool isEmployee = false, int offSet = 0, int limit = 10,bool filterByTileRequirementArea = true)
+        public async Task<IActionResult> getLeadsByStage(string refreshToken, string Stage_Category, string Sales_Person_Email_ID, string MaxAreasqft, string MinAreaSqFt, string? createdTime, bool isEmployee = false, int offSet = 0, int limit = 10,bool filterByTileRequirementArea = true)
         {
             return Ok(await _zohoService.getLeadsByStageAsync(refreshToken, Stage_Category, Sales_Person_Email_ID, MaxAreasqft, MinAreaSqFt, createdTime, isEmployee, offSet, limit, filterByTileRequirementArea));
         }

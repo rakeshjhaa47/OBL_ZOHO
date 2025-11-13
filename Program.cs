@@ -20,6 +20,7 @@ builder.Services.AddDbContext<OblZohoContext>(opts =>
 builder.Services.AddScoped<IAppSettingsService, AppSettingsService>();
 builder.Services.AddScoped<IZohoService, ZohoService>();
 builder.Services.AddScoped<IConnectService, ConnectService>();
+builder.Services.AddScoped<IOblservice, OblService>();
 
 builder.Services.AddControllers();
 
