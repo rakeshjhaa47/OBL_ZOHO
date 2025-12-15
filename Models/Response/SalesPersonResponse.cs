@@ -1,94 +1,173 @@
 ﻿using Newtonsoft.Json;
 
-namespace OBL_Zoho.Models.Response
+public class Approval
 {
-    public class SalesPersonResponse
-    {
-        public string Types { get; set; }
-        public string L1_Notes { get; set; }
+    public bool @delegate { get; set; }
+    public bool takeover { get; set; }
+    public bool approve { get; set; }
+    public bool reject { get; set; }
+    public bool recall { get; set; }
+    public bool resubmit { get; set; }
+}
 
-        [JsonProperty("Parent_Id.Project_Name")]
-        public string Parent_IdProject_Name { get; set; }
+public class GetLeadDetailsDatum
+{
+    public GetLeadDetailsOwner? Owner { get; set; }
 
-        [JsonProperty("Parent_Id.Salesperson_Zone")]
-        public string Parent_IdSalesperson_Zone { get; set; }
+    [JsonProperty("$currency_symbol")]
+    public string? currency_symbol { get; set; }
+    public int? Recieved_Amount { get; set; }
+    public object? Final_Requirement_Closed { get; set; }
 
-        [JsonProperty("Parent_Id.Tile_Requirment_in_sqmt")]
-        public int Parent_IdTile_Requirment_in_sqmt { get; set; }
-        public string Remarks { get; set; }
+    [JsonProperty("$field_states")]
+    public object? field_states { get; set; }
+    public string? Stage_Category { get; set; }
+    public string? Contact_City { get; set; }
 
-        [JsonProperty("Parent_Id.Sales_Person_Emp_Id")]
-        public string Parent_IdSales_Person_Emp_Id { get; set; }
+    [JsonProperty("$sharing_permission")]
+    public string? sharing_permission { get; set; }
+    public string? Project_Name { get; set; }
+    public string? Name { get; set; }
+    public DateTime? Last_Activity_Time { get; set; }
+    public string? Sales_person_Branch { get; set; }
+    public object? Unsubscribed_Mode { get; set; }
 
-        [JsonProperty("Parent_Id.Owner")]
-        public ParentIdOwner Parent_IdOwner { get; set; }
-        public string id { get; set; }
-        public string Name1 { get; set; }
+    [JsonProperty("$process_flow")]
+    public bool? process_flow { get; set; }
+    public string? Lost_to { get; set; }
 
-        [JsonProperty("Parent_Id.Contact_Number")]
-        public string Parent_IdContact_Number { get; set; }
+    [JsonProperty("$locked_for_me")]
+    public bool? locked_for_me { get; set; }
+    public string? id { get; set; }
+    public string? Salesperson_Zone { get; set; }
 
-        [JsonProperty("Parent_Id.Contact_Person_Details")]
-        public string Parent_IdContact_Person_Details { get; set; }
+    [JsonProperty("$approval")]
+    public Approval? approval { get; set; }
+    public DateTime? Created_Time { get; set; }
+    public bool? IsConverted { get; set; }
+    public string? Lost_Lead { get; set; }
+    public int? Tile_Requirment_in_sqmt { get; set; }
 
-        [JsonProperty("Parent_Id.Sales_person_Branch")]
-        public string Parent_IdSales_person_Branch { get; set; }
-        public DateTime Created_Time { get; set; }
+    [JsonProperty("$wizard_connection_path")]
+    public object? wizard_connection_path { get; set; }
 
-        [JsonProperty("Parent_Id.Name")]
-        public string Parent_IdName { get; set; }
+    [JsonProperty("$editable")]
+    public bool? editable { get; set; }
+    public string? City { get; set; }
+    public string? Contact_Person_Details { get; set; }
+    public int? Contact_Pin_Code { get; set; }
+    public string? State { get; set; }
+    public string? Tiling_Month { get; set; }
+    public string? Lead_Updation_Stage { get; set; }
 
-        [JsonProperty("Parent_Id.Contact_Person_Name")]
-        public string Parent_IdContact_Person_Name { get; set; }
+    [JsonProperty("$zia_owner_assignment")]
+    public string? zia_owner_assignment { get; set; }
+    public int? Pincode { get; set; }
+    public string? Sales_Person_Email { get; set; }
 
-        [JsonProperty("Parent_Id.Tiling_Month")]
-        public string Parent_IdTiling_Month { get; set; }
+    [JsonProperty("$review_process")]
+    public GetLeadDetailsReviewProcess? review_process { get; set; }
 
-        [JsonProperty("Parent_Id.Project_Category")]
-        public string Parent_IdProject_Category { get; set; }
+    [JsonProperty("$layout_id")]
+    public GetLeadDetailsLayoutId? layout_id { get; set; }
+    public string? Closing_Date { get; set; }
+    public object? Record_Image { get; set; }
 
-        [JsonProperty("Parent_Id.Contact_State")]
-        public string Parent_IdContact_State { get; set; }
+    [JsonProperty("$review")]
+    public object? review { get; set; }
+    public string? Contact_Number { get; set; }
 
-        [JsonProperty("Parent_Id.State")]
-        public string Parent_IdState { get; set; }
+    [JsonProperty("$zia_visions")]
+    public object? zia_visions { get; set; }
+    public List<GetLeadDetailsTimeline>? Timelines { get; set; }
+    public DateTime? Modified_Time { get; set; }
+    public string? Project_Category { get; set; }
+    public string? Contact_State { get; set; }
+    public object? Unsubscribed_Time { get; set; }
+    public string? Salesperson_Name { get; set; }
+    public int? Amount { get; set; }
+    public string? Contact_Person_Name { get; set; }
+    public string? Record_Status__s { get; set; }
 
-        [JsonProperty("Parent_Id.City")]
-        public string Parent_IdCity { get; set; }
+    [JsonProperty("$orchestration")]
+    public bool? orchestration { get; set; }
+    public string? Sales_Person_Emp_Id { get; set; }
 
-        [JsonProperty("Parent_Id.Contact_City")]
-        public string Parent_IdContact_City { get; set; }
+    [JsonProperty("$in_merge")]
+    public bool? in_merge { get; set; }
+    public bool? Locked__s { get; set; }
+    public List<object>? Tag { get; set; }
 
-        [JsonProperty("Parent_Id.Sales_Person_Email")]
-        public string Parent_IdSales_Person_Email { get; set; }
+    [JsonProperty("$approval_state")]
+    public string? approval_state { get; set; }
 
-        [JsonProperty("Parent_Id.Pincode")]
-        public int Parent_IdPincode { get; set; }
+    [JsonProperty("$pathfinder")]
+    public bool? pathfinder { get; set; }
 
-        [JsonProperty("Parent_Id.Contact_Pin_Code")]
-        public int Parent_IdContact_Pin_Code { get; set; }
-    }
+    [JsonProperty("$has_more")]
+    public GetLeadDetailsHasMore? has_more { get; set; }
+}
 
-    public class SalesPersonInfo
-    {
-        public int count { get; set; }
-        public bool more_records { get; set; }
-    }
+public class GetLeadDetailsHasMore
+{
+    public bool Timelines { get; set; }
+}
 
-    public class ParentIdOwner
-    {
-        public string id { get; set; }
-    }
+public class GetLeadDetailsLayoutId
+{
+    public string? display_label { get; set; }
+    public string? name { get; set; }
+    public string? id { get; set; }
+}
 
-    public class SalesPersonRoot
-    {
-        public SalesPersonRoot()
-        {
-            data = new List<SalesPersonResponse>();
-            info = new SalesPersonInfo();
-        }
-        public List<SalesPersonResponse> data { get; set; }
-        public SalesPersonInfo info { get; set; }
-    }
+public class GetLeadDetailsOwner
+{
+    public string? name { get; set; }
+    public string? id { get; set; }
+    public string? email { get; set; }
+}
 
+public class GetLeadDetailsParentId
+{
+    public string? name { get; set; }
+    public string? id { get; set; }
+}
+
+public class GetLeadDetailsReviewProcess
+{
+    public bool? approve { get; set; }
+    public bool? reject { get; set; }
+    public bool? resubmit { get; set; }
+}
+
+public class GetLeadDetailsRoot
+{
+    public List<GetLeadDetailsDatum> data { get; set; }
+}
+
+public class GetLeadDetailsTimeline
+{
+    public string? Types { get; set; }
+    public string? L1_Notes { get; set; }
+    public DateTime? Modified_Time { get; set; }
+    public string? Remarks { get; set; }
+    public string? Updated_Stage { get; set; }
+
+    [JsonProperty("$in_merge")]
+    public bool? in_merge { get; set; }
+
+    [JsonProperty("$field_states")]
+    public object? field_states { get; set; }
+    public DateTime? Created_Time { get; set; }
+    public DateTime? nextFollowUpDate { get; set; }
+    public GetLeadDetailsParentId? Parent_Id { get; set; }
+    public string? id { get; set; }
+
+    [JsonProperty("$layout_id")]
+    public GetLeadDetailsLayoutId? layout_id { get; set; }
+
+    [JsonProperty("$zia_visions")]
+    public object? zia_visions { get; set; }
+    public string? Name1 { get; set; }
+    public string? timelineType { get; set; }
 }

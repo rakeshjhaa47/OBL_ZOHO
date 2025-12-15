@@ -1879,8 +1879,6 @@ namespace OBL_Zoho.Services
 
         public async Task<BaseResponse> getLeadsByStageAsync(string refreshToken, string Stage_Category,string Sales_Person_Email_ID, string MaxAreasqft, string MinAreaSqFt, string createdTime, bool isEmployee, int offSet, int limit, bool filterByTileRequirementArea)
         {
-           
-
             var response = new LeadBystageResponse();
             var dd = await getLeadsByStageAsynclist(refreshToken, Stage_Category, Sales_Person_Email_ID, MaxAreasqft,MinAreaSqFt, createdTime, isEmployee, offSet, limit, filterByTileRequirementArea);
 
