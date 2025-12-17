@@ -72,5 +72,12 @@ namespace OBL_Zoho.Controllers
         {
             return Ok(await _oblservice.AddProjectInstallmentAsync(accessToken, model));
         }
+
+        [HttpPost]
+        [Route("update-pmt")]
+        public async Task<IActionResult> UpdatePmt(string accessToken, UpdatePmtRequest model)
+        {
+            return Ok(await _oblservice.UpdatePmtAsync(accessToken, model));
+        }
     }
 }

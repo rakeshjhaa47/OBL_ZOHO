@@ -12,5 +12,6 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> GetLeadByStageAsync(string accessToken, string SalesPersonEmpId, string createdTime, int minSqmt, int maxSqmt, string stageCategory,string closingDate, int offSet, int limit);
         Task<BaseResponse> DashboardAsync(string accessToken, string salesPersonEmpId, string closingDate, string createdTime);
         Task<BaseResponse> AddProjectInstallmentAsync(string accessToken, ProjectInstallmentRequest model);
+        Task<BaseResponse> UpdatePmtAsync(string accessToken, UpdatePmtRequest obj);
     }
 }

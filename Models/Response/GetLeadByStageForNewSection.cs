@@ -22,11 +22,12 @@
         public string? City { get; set; }
         public string? Sales_Person_Emp_Id { get; set; }
         public string? Contact_Person_Details { get; set; }
-        public int? Contact_Pin_Code { get; set; }
+        public int? Contact_Pin_Code { get; set; }  
         public string? State { get; set; }
         public int? estimated_amount { get; set; }
         public string? Lead_Updation_Stage { get; set; }
         public string? Tiling_Month { get; set; }
+        public decimal? Final_Requirement_Closed { get; set; }
         public int? Pincode { get; set; }
     }
     public class GetLeadByStageForNewSectionInfo

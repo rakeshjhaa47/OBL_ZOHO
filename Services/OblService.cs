@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using Newtonsoft.Json;
 using OBL_Zoho.Models.Request;
 using OBL_Zoho.Models.Response;
 using OBL_Zoho.Services.Interfaces;
@@ -289,5 +290,42 @@ namespace OBL_Zoho.Services
                 };
             }
         }
+
+        public async Task<BaseResponse> UpdatePmtAsync(string accessToken, UpdatePmtRequest obj)
+        {
+            var request = "https://www.zohoapis.com/crm/v6/Project_Opp/" + obj.Id;
+
+            var requestData = new
+            {
+                data = new List<object>
+                {
+                    new
+                    {
+                        PMT_No = obj.pmtData,
+                    }
+                }
+            };
+
+            var serializedData = JsonConvert.SerializeObject(requestData);
+            var buffer = Encoding.UTF8.GetBytes(serializedData);
+
+            var byteContent = new ByteArrayContent(buffer);
+            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            using var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+
+            var response = await client.PutAsync(request, byteContent);
+            var result = await response.Content.ReadAsStringAsync();
+
+            var userResponse = JsonConvert.DeserializeObject<PmtResponse>(result);
+
+            return new BaseResponse
+            {
+                Response = userResponse
+            };
+        }
+
     }
 }
