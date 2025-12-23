@@ -4,11 +4,11 @@ namespace OBL_Zoho.Models.Response
 {
         public class NewSectionDashboardResponse
         {
-            public string stage { get; set; }
+            public string? stage { get; set; }
             public int? Total_Amount { get; set; }
-            public object delivered_tile_area { get; set; }
-            public int Leads_Count { get; set; }
-            public int req_tile_area { get; set; }
+            public decimal? delivered_tile_area { get; set; }
+            public int? Leads_Count { get; set; }
+            public decimal? req_tile_area { get; set; }
         }
 
         public class NewSectionDashboardInfo

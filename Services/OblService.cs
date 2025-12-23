@@ -84,7 +84,7 @@ namespace OBL_Zoho.Services
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
 
-            content = new StringContent("{\"select_query\": \"select COUNT(id) as Leads_Count, Lead_Updation_Stage as stage, SUM(Recieved_Amount) as Total_Amount,SUM(Tile_Requirment_in_sqmt) as req_tile_area, SUM(Final_Requirement_Closed) as delivered_tile_area from Project_Opp  where ((((Lead_Updation_Stage = 'Closed Won') and ((Tile_Requirment_in_sqmt >= 500 and Closing_Date >='"+ oneYearBeforeClosingDate + "') or (Tile_Requirment_in_sqmt < 500 and Closing_Date >='"+closingDate+"'))) or ((Lead_Updation_Stage in ('Qualification','Spoken to customer', 'Not Contactable', 'Requirement Delayed', 'Meeting Done', 'Sampling Stage', 'Quotation Shared/Rate Negotiation', 'Won & Supplied', 'Project Lost')) and ((Tile_Requirment_in_sqmt >= 500 and Created_Time > '"+ oneYearCreatedTime + "') or (Tile_Requirment_in_sqmt < 500 and Created_Time > '"+createdTime+"')))) and (Sales_Person_Emp_Id = '"+SalesPersonEmpId+"')) group by Lead_Updation_Stage limit 200 offset "+offSet+"\"}");
+            content = new StringContent("{\"select_query\": \"select COUNT(id) as Leads_Count, Lead_Updation_Stage as stage, SUM(Recieved_Amount) as Total_Amount,SUM(Tile_Requirment_in_sqmt) as req_tile_area, SUM(Final_Requirement_Closed) as delivered_tile_area from Project_Opp  where ((((Lead_Updation_Stage = 'Closed Won'  or Lead_Updation_Stage = 'Won in Progress') and ((Tile_Requirment_in_sqmt >= 500 and Closing_Date >='"+oneYearBeforeClosingDate+"') or (Tile_Requirment_in_sqmt < 500 and Closing_Date >='"+closingDate+"'))) or ((Lead_Updation_Stage in ('Qualification','Spoken to customer', 'Not Contactable', 'Requirement Delayed', 'Meeting Done', 'Sampling Stage', 'Quotation Shared/Rate Negotiation', 'Won & Supplied', 'Project Lost')) and ((Tile_Requirment_in_sqmt >= 500 and Created_Time > '"+oneYearCreatedTime+"') or (Tile_Requirment_in_sqmt < 500 and Created_Time > '"+createdTime+"')))) and (Sales_Person_Emp_Id = '"+SalesPersonEmpId+"')) group by Lead_Updation_Stage limit 200 offset "+offSet+"\"}");
 
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -190,7 +190,7 @@ namespace OBL_Zoho.Services
             };
         }
 
-        private async Task<GetLeadByStageForNewSectionRoot> GetLeadByStage(string accessToken, string SalesPersonEmpId, string createdTime, int minSqmt, int maxSqmt,string stageCategory, string closingDate, int offSet, int limit)
+        private async Task<GetLeadByStageForNewSectionRoot> GetLeadByStage(string accessToken, string SalesPersonEmpId, string createdTime, int minSqmt, int maxSqmt,string stageCategory, string closingDate, string nhCode, string zmCode, int offSet, int limit)
         {
             StringContent content;
             var client = new HttpClient();
@@ -204,11 +204,11 @@ namespace OBL_Zoho.Services
 
             if (isClosed)
             {
-                content = new StringContent("{\"select_query\": \"select Closing_Date, Tile_Requirment_in_sqmt, Final_Requirement_Closed, Contact_Person_Name, Lead_Updation_Stage, Amount, City, Sales_Person_Emp_Id, Contact_City, Contact_Number, Contact_Person_Details, Contact_Pin_Code, Contact_State, Name, Pincode, Project_Category, Project_Name, Salesperson_Name, Salesperson_Zone, State, Tiling_Month, Lost_to, Lost_Lead, Stage_Category from Project_Opp where ( ( (Tile_Requirment_in_sqmt between '"+minSqmt+"' and '"+maxSqmt+"') AND ( (Stage_Category = '"+stageCategory+"') AND ( ( (Tile_Requirment_in_sqmt >= 500 AND Closing_Date > '"+oneYearBeforeClosingDate+"') OR (Tile_Requirment_in_sqmt < 500 AND Closing_Date > '"+closingDate+"') ) ) ) ) AND (Sales_Person_Emp_Id = '"+SalesPersonEmpId+"') ) limit "+limit+" offset "+offSet+"\"}");
+                content = new StringContent("{\"select_query\": \"select Closing_Date, Tile_Requirment_in_sqmt, Final_Requirement_Closed, Contact_Person_Name, Lead_Updation_Stage, Amount, City, Sales_Person_Emp_Id, Contact_City, Contact_Number, Contact_Person_Details, Contact_Pin_Code, Contact_State, Name, Pincode, Project_Category, Project_Name, Salesperson_Name, Salesperson_Zone, State, Tiling_Month, Lost_to, Lost_Lead, Stage_Category from Project_Opp where ( ( (Tile_Requirment_in_sqmt between '"+minSqmt+"' and '"+maxSqmt+"') AND ( (Stage_Category = '"+stageCategory+"') AND ( ( (Tile_Requirment_in_sqmt >= 500 AND Closing_Date > '"+oneYearBeforeClosingDate+"') OR (Tile_Requirment_in_sqmt < 500 AND Closing_Date > '"+closingDate+"') ) ) ) ) AND ((NHCode = '"+nhCode+"' or ZM_code = '"+zmCode+"') or (Sales_Person_Emp_Id = '"+SalesPersonEmpId+"')) ) limit "+limit+" offset "+offSet+"\"}");
             }
             else
             {
-                content = new StringContent("{\"select_query\": \"select Closing_Date, Tile_Requirment_in_sqmt, Final_Requirement_Closed, Contact_Person_Name, Lead_Updation_Stage, Amount, City, Sales_Person_Emp_Id, Contact_City, Contact_Number, Contact_Person_Details, Contact_Pin_Code, Contact_State, Name, Pincode, Project_Category, Project_Name, Salesperson_Name, Salesperson_Zone, State, Tiling_Month, Lost_to, Lost_Lead, Stage_Category from Project_Opp where ( ( (Tile_Requirment_in_sqmt between '"+minSqmt+"' and '"+maxSqmt+"') AND ( (Stage_Category in ('"+stageCategory+"')) AND ( ( (Tile_Requirment_in_sqmt >= 500 AND Created_Time > '"+oneYearCreatedTime+"') OR (Tile_Requirment_in_sqmt < 500 AND Created_Time > '"+createdTime+"') ) ) ) ) AND (Sales_Person_Emp_Id = '"+SalesPersonEmpId+"') ) limit "+limit+" offset "+offSet+"\"}");
+                content = new StringContent("{\"select_query\": \"select Closing_Date, Tile_Requirment_in_sqmt, Final_Requirement_Closed, Contact_Person_Name, Lead_Updation_Stage, Amount, City, Sales_Person_Emp_Id, Contact_City, Contact_Number, Contact_Person_Details, Contact_Pin_Code, Contact_State, Name, Pincode, Project_Category, Project_Name, Salesperson_Name, Salesperson_Zone, State, Tiling_Month, Lost_to, Lost_Lead, Stage_Category from Project_Opp where ( ( (Tile_Requirment_in_sqmt between '"+minSqmt+"' and '"+maxSqmt+"') AND ( (Stage_Category in ('"+stageCategory+"')) AND ( ( (Tile_Requirment_in_sqmt >= 500 AND Created_Time > '"+oneYearCreatedTime+"') OR (Tile_Requirment_in_sqmt < 500 AND Created_Time > '"+createdTime+"') ) ) ) ) AND ((NHCode = '"+nhCode+"' or ZM_code = '"+zmCode+"') or  (Sales_Person_Emp_Id = '"+SalesPersonEmpId+"')) ) limit "+limit+" offset "+offSet+"\"}");
             }
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -218,11 +218,11 @@ namespace OBL_Zoho.Services
             return JsonConvert.DeserializeObject<GetLeadByStageForNewSectionRoot>(result);
         }
 
-        public async Task<BaseResponse> GetLeadByStageAsync(string accessToken, string SalesPersonEmpId, string createdTime, int minSqmt, int maxSqmt, string stageCategory, string closingDate, int offSet, int limit)
+        public async Task<BaseResponse> GetLeadByStageAsync(string accessToken, string SalesPersonEmpId, string createdTime, int minSqmt, int maxSqmt, string stageCategory, string closingDate, string nhCode, string zmCode, int offSet, int limit)
         {
             var response = new GetLeadByStageForNewSectionRoot();
             
-            var dd = await GetLeadByStage(accessToken, SalesPersonEmpId, createdTime, minSqmt, maxSqmt, stageCategory,closingDate, offSet, limit);
+            var dd = await GetLeadByStage(accessToken, SalesPersonEmpId, createdTime, minSqmt, maxSqmt, stageCategory,closingDate,nhCode,zmCode, offSet, limit);
             if (dd?.data != null)
             {
                response.data.AddRange(dd.data);

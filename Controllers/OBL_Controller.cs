@@ -54,9 +54,9 @@ namespace OBL_Zoho.Controllers
 
         [HttpGet]
         [Route("get-lead-by-stage")]
-        public async Task<IActionResult> GetLeadByStage(string accessToken, string SalesPersonEmpId, string createdTime, int minSqmt, int maxSqmt, string stageCategory,string closingDate, int offSet, int limit)
+        public async Task<IActionResult> GetLeadByStage(string accessToken, string SalesPersonEmpId, string createdTime, int minSqmt, int maxSqmt, string stageCategory,string closingDate,string nhCode,string zmCode, int offSet, int limit)
         {
-            return Ok(await _oblservice.GetLeadByStageAsync(accessToken, SalesPersonEmpId, createdTime, minSqmt, maxSqmt, stageCategory, closingDate, offSet, limit));
+            return Ok(await _oblservice.GetLeadByStageAsync(accessToken, SalesPersonEmpId, createdTime, minSqmt, maxSqmt, stageCategory, closingDate,nhCode,zmCode, offSet, limit));
         }
 
         [HttpGet]
