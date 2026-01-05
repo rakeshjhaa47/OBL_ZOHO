@@ -39,9 +39,9 @@ namespace OBL_Zoho.Controllers
 
         [Route("dashboard")]
         [HttpPost]
-        public async Task<IActionResult> dashboard(string accessToken ,string salesPersonEmpId,string closingDate, string createdTime)
+        public async Task<IActionResult> dashboard(string accessToken ,string salesPersonEmpId,string closingDate, string createdTime, string nhCode, string zmCode)
         {
-            var response = await _oblservice.DashboardAsync(accessToken, salesPersonEmpId,closingDate,createdTime);
+            var response = await _oblservice.DashboardAsync(accessToken, salesPersonEmpId,closingDate,createdTime,nhCode,zmCode);
             return Ok(response);
         }
 

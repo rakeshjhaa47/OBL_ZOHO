@@ -73,7 +73,7 @@ namespace OBL_Zoho.Services
             };
         }
 
-        private async Task<NewSectionDashboardRoot> Dashboard(string accessToken, string SalesPersonEmpId, string closingDate, string createdTime,int offSet)
+        private async Task<NewSectionDashboardRoot> Dashboard(string accessToken, string SalesPersonEmpId, string closingDate, string createdTime,string nhCode,string zmCode,int offSet)
         {
             StringContent content;
             var client = new HttpClient();
@@ -84,7 +84,7 @@ namespace OBL_Zoho.Services
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
 
-            content = new StringContent("{\"select_query\": \"select COUNT(id) as Leads_Count, Lead_Updation_Stage as stage, SUM(Recieved_Amount) as Total_Amount,SUM(Tile_Requirment_in_sqmt) as req_tile_area, SUM(Final_Requirement_Closed) as delivered_tile_area from Project_Opp  where ((((Lead_Updation_Stage = 'Closed Won'  or Lead_Updation_Stage = 'Won in Progress') and ((Tile_Requirment_in_sqmt >= 500 and Closing_Date >='"+oneYearBeforeClosingDate+"') or (Tile_Requirment_in_sqmt < 500 and Closing_Date >='"+closingDate+"'))) or ((Lead_Updation_Stage in ('Qualification','Spoken to customer', 'Not Contactable', 'Requirement Delayed', 'Meeting Done', 'Sampling Stage', 'Quotation Shared/Rate Negotiation', 'Won & Supplied', 'Project Lost')) and ((Tile_Requirment_in_sqmt >= 500 and Created_Time > '"+oneYearCreatedTime+"') or (Tile_Requirment_in_sqmt < 500 and Created_Time > '"+createdTime+"')))) and (Sales_Person_Emp_Id = '"+SalesPersonEmpId+"')) group by Lead_Updation_Stage limit 200 offset "+offSet+"\"}");
+            content = new StringContent("{\"select_query\": \"select COUNT(id) as Leads_Count, Lead_Updation_Stage as stage, SUM(Recieved_Amount) as Total_Amount,SUM(Tile_Requirment_in_sqmt) as req_tile_area, SUM(Final_Requirement_Closed) as delivered_tile_area from Project_Opp  where ((((Lead_Updation_Stage = 'Closed Won'  or Lead_Updation_Stage = 'Won in Progress') and ((Tile_Requirment_in_sqmt >= 500 and Closing_Date >='"+oneYearBeforeClosingDate+"') or (Tile_Requirment_in_sqmt < 500 and Closing_Date >='"+closingDate+"'))) or ((Lead_Updation_Stage in ('Qualification','Spoken to customer', 'Not Contactable', 'Requirement Delayed', 'Meeting Done', 'Sampling Stage', 'Quotation Shared/Rate Negotiation', 'Won & Supplied', 'Project Lost')) and ((Tile_Requirment_in_sqmt >= 500 and Created_Time > '"+oneYearCreatedTime+"') or (Tile_Requirment_in_sqmt < 500 and Created_Time > '"+createdTime+"')))) and ((NHCode = '"+nhCode+"' or ZM_code = '"+zmCode+"') or (Sales_Person_Emp_Id = '"+SalesPersonEmpId+"'))) group by Lead_Updation_Stage limit 200 offset "+offSet+"\"}");
 
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -94,13 +94,13 @@ namespace OBL_Zoho.Services
             return JsonConvert.DeserializeObject<NewSectionDashboardRoot>(result);
         }
 
-        public async Task<BaseResponse> DashboardAsync(string accessToken, string SalesPersonEmpId, string closingDate, string createdTime)
+        public async Task<BaseResponse> DashboardAsync(string accessToken, string SalesPersonEmpId, string closingDate, string createdTime, string nhCode, string zmCode)
         {
             var response = new NewSectionDashboardRoot();
             int offSet = 0;
             while (true)
             {
-                var dd = await Dashboard(accessToken, SalesPersonEmpId, closingDate, createdTime, offSet);
+                var dd = await Dashboard(accessToken, SalesPersonEmpId, closingDate, createdTime,nhCode,zmCode, offSet);
                 if (dd == null || dd?.data == null)
                 {
                     break;
