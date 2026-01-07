@@ -29,6 +29,7 @@
         public string? Tiling_Month { get; set; }
         public decimal? Final_Requirement_Closed { get; set; }
         public int? Pincode { get; set; }
+        public string? Contact_Person_Name { get; set; }
     }
     public class GetLeadByStageForNewSectionInfo
     {

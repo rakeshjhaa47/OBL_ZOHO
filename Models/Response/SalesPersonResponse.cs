@@ -106,6 +106,8 @@ public class GetLeadDetailsDatum
 
     [JsonProperty("$has_more")]
     public GetLeadDetailsHasMore? has_more { get; set; }
+    [JsonProperty("PMT_No")]
+    public string? Pmt_No { get; set; }
 }
 
 public class GetLeadDetailsHasMore
