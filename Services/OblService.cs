@@ -171,23 +171,34 @@ namespace OBL_Zoho.Services
             };
         }
 
-        public async Task<BaseResponse> GetHierarchyAsync(string accessToken,int empCode)
+        public async Task<BaseResponse> GetHierarchyAsync(string accessToken, string empCode)
         {
-            var requestUrl = $"https://www.zohoapis.com/crm/v7/functions/test8/actions/execute?auth_type=apikey&zapikey=1003.6ceb2d2934296e02f21ffe5a9adfaf29.155d45a2b6938e2e9c3e20e3caac7d92&EmpCode={empCode}";
-
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
-
-            var response = await client.GetAsync(requestUrl);
-            response.EnsureSuccessStatusCode();
-
-            var result = await response.Content.ReadAsStringAsync();
-            dynamic userResponse = JsonConvert.DeserializeObject<HierarchyResponse>(result);
-
-            return new BaseResponse
+            var requestUrl = $"https://www.zohoapis.com/crm/v7/functions/hh/actions/execute?auth_type=apikey&zapikey=1003.6ceb2d2934296e02f21ffe5a9adfaf29.155d45a2b6938e2e9c3e20e3caac7d92";
+            
+            var requestData = new
             {
-                Response = userResponse,
+                EmpCode = empCode,
+               
             };
+
+            var serializedData = JsonConvert.SerializeObject(requestData);
+            var content = new StringContent(serializedData, Encoding.UTF8, "application/json");
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+
+                var response = await client.PostAsync(requestUrl, content);
+                var result = await response.Content.ReadAsStringAsync();
+
+                var responseObj = JsonConvert.DeserializeObject<HierarchyResponse>(result);
+
+                return new BaseResponse
+                {
+                    Response = responseObj,
+                };
+            }
         }
 
         private async Task<GetLeadByStageForNewSectionRoot> GetLeadByStage(string accessToken, string SalesPersonEmpId, string createdTime, int minSqmt, int maxSqmt,string stageCategory, string closingDate, string nhCode, string zmCode, int offSet, int limit)
@@ -204,11 +215,11 @@ namespace OBL_Zoho.Services
 
             if (isClosed)
             {
-                content = new StringContent("{\"select_query\": \"select Closing_Date, Tile_Requirment_in_sqmt, Final_Requirement_Closed, Contact_Person_Name, Lead_Updation_Stage, Amount, City, Sales_Person_Emp_Id, Contact_City, Contact_Number, Contact_Person_Details, Contact_Pin_Code, Contact_State, Name, Pincode, Project_Category, Project_Name, Salesperson_Name, Salesperson_Zone, State, Tiling_Month, Lost_to, Lost_Lead, Stage_Category from Project_Opp where ( ( (Tile_Requirment_in_sqmt between '"+minSqmt+"' and '"+maxSqmt+"') AND ( (Stage_Category = '"+stageCategory+"') AND ( ( (Tile_Requirment_in_sqmt >= 500 AND Closing_Date > '"+oneYearBeforeClosingDate+"') OR (Tile_Requirment_in_sqmt < 500 AND Closing_Date > '"+closingDate+"') ) ) ) ) AND ((NHCode = '"+nhCode+"' or ZM_code = '"+zmCode+"') or (Sales_Person_Emp_Id = '"+SalesPersonEmpId+"')) ) limit "+limit+" offset "+offSet+"\"}");
+                content = new StringContent("{\"select_query\": \"select Closing_Date, Created_Time, Tile_Requirment_in_sqmt, Final_Requirement_Closed, Contact_Person_Name, Lead_Updation_Stage, Amount, City, Sales_Person_Emp_Id, Contact_City, Contact_Number, Contact_Person_Details, Contact_Pin_Code, Contact_State, Name, Pincode, Project_Category, Project_Name, Salesperson_Name, Salesperson_Zone, State, Tiling_Month, Lost_to, Lost_Lead, Stage_Category from Project_Opp where ( ( (Tile_Requirment_in_sqmt between '" + minSqmt+"' and '"+maxSqmt+"') AND ( (Stage_Category = '"+stageCategory+"') AND ( ( (Tile_Requirment_in_sqmt >= 500 AND Closing_Date > '"+oneYearBeforeClosingDate+"') OR (Tile_Requirment_in_sqmt < 500 AND Closing_Date > '"+closingDate+"') ) ) ) ) AND ((NHCode = '"+nhCode+"' or ZM_code = '"+zmCode+"') or (Sales_Person_Emp_Id = '"+SalesPersonEmpId+"')) ) limit "+limit+" offset "+offSet+"\"}");
             }
             else
             {
-                content = new StringContent("{\"select_query\": \"select Closing_Date, Tile_Requirment_in_sqmt, Final_Requirement_Closed, Contact_Person_Name, Lead_Updation_Stage, Amount, City, Sales_Person_Emp_Id, Contact_City, Contact_Number, Contact_Person_Details, Contact_Pin_Code, Contact_State, Name, Pincode, Project_Category, Project_Name, Salesperson_Name, Salesperson_Zone, State, Tiling_Month, Lost_to, Lost_Lead, Stage_Category from Project_Opp where ( ( (Tile_Requirment_in_sqmt between '"+minSqmt+"' and '"+maxSqmt+"') AND ( (Stage_Category in ('"+stageCategory+"')) AND ( ( (Tile_Requirment_in_sqmt >= 500 AND Created_Time > '"+oneYearCreatedTime+"') OR (Tile_Requirment_in_sqmt < 500 AND Created_Time > '"+createdTime+"') ) ) ) ) AND ((NHCode = '"+nhCode+"' or ZM_code = '"+zmCode+"') or  (Sales_Person_Emp_Id = '"+SalesPersonEmpId+"')) ) limit "+limit+" offset "+offSet+"\"}");
+                content = new StringContent("{\"select_query\": \"select Closing_Date, Created_Time, Tile_Requirment_in_sqmt, Final_Requirement_Closed, Contact_Person_Name, Lead_Updation_Stage, Amount, City, Sales_Person_Emp_Id, Contact_City, Contact_Number, Contact_Person_Details, Contact_Pin_Code, Contact_State, Name, Pincode, Project_Category, Project_Name, Salesperson_Name, Salesperson_Zone, State, Tiling_Month, Lost_to, Lost_Lead, Stage_Category from Project_Opp where ( ( (Tile_Requirment_in_sqmt between '" + minSqmt+"' and '"+maxSqmt+"') AND ( (Stage_Category in ('"+stageCategory+"')) AND ( ( (Tile_Requirment_in_sqmt >= 500 AND Created_Time > '"+oneYearCreatedTime+"') OR (Tile_Requirment_in_sqmt < 500 AND Created_Time > '"+createdTime+"') ) ) ) ) AND ((NHCode = '"+nhCode+"' or ZM_code = '"+zmCode+"') or  (Sales_Person_Emp_Id = '"+SalesPersonEmpId+"')) ) limit "+limit+" offset "+offSet+"\"}");
             }
             request.Content = content;
             var response = await client.SendAsync(request);

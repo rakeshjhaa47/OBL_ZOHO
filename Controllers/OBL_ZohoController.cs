@@ -647,6 +647,15 @@ namespace OBL_Zoho.Controllers
             return Ok(response);
         }
 
+        [SwaggerOperation(Tags = new[] { "Obl" })]
+        [HttpPost]
+        [Route("SaveFcmToken")]
+        public async Task<IActionResult> SaveFcmToken(string accessToken,DeviceIdAndPlatformRequest request)
+        {
+            var response = await _zohoService.SaveFcmTokenAsync(accessToken,request);
+            return Ok(response);
+        }
+
         [SwaggerOperation(Tags = new[] { "ChatBot" })]
         [HttpGet]
         [Route("ChatBotDeals")]

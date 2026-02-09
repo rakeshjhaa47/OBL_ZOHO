@@ -61,7 +61,7 @@ namespace OBL_Zoho.Controllers
 
         [HttpGet]
         [Route("get-hierarchy-data")]
-        public async Task<IActionResult> GetHierarchy(string accessToken,int empCode)
+        public async Task<IActionResult> GetHierarchy(string accessToken,string empCode)
         {
             return Ok(await _oblservice.GetHierarchyAsync(accessToken, empCode));
         }

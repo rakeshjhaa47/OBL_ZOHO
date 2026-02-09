@@ -1,4 +1,5 @@
-﻿using ClosedXML.Excel;
+﻿using Azure.Core;
+using ClosedXML.Excel;
 
 using Google.Apis.Auth.OAuth2;
 using Irony.Parsing;
@@ -13,6 +14,7 @@ using OBL_Zoho.Models.Response;
 using OBL_Zoho.Services.Interfaces;
 using System.Dynamic;
 using System.Net.Http.Headers;
+using System.Text;
 using static OBL_Zoho.Models.Response.UpdateJunkNonContactbleLead;
 namespace OBL_Zoho.Services
 {
@@ -2599,6 +2601,38 @@ namespace OBL_Zoho.Services
                     return await GenerateChatBotRefreshTokens("1000.ddf5eebbedca3398d590d630c525a474.a544480f23d30aa97ba546e138a7fa3f");
                 default:
                     throw new InvalidOperationException("Invalid random number generated.");
+            }
+        }
+
+        public async Task<DeviceIdAndPlatformResponse> SaveFcmTokenAsync(string accessToken,DeviceIdAndPlatformRequest model)
+        {
+            var url = "https://www.zohoapis.com/crm/v7/functions/deviceidandplatform/actions/execute?auth_type=apikey&zapikey=1003.6ceb2d2934296e02f21ffe5a9adfaf29.155d45a2b6938e2e9c3e20e3caac7d92";
+
+            var requestData = new
+            {
+                userName = model.UserName,
+                userId = model.UserId,
+                userEmail = model.UserEmail,
+                fcmToken = model.FcmToken
+            };
+
+            var serializedData = JsonConvert.SerializeObject(requestData);
+            var content = new StringContent(serializedData, Encoding.UTF8, "application/json");
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+
+                var response = await client.PostAsync(url, content);
+                var result = await response.Content.ReadAsStringAsync();
+
+                return JsonConvert.DeserializeObject<DeviceIdAndPlatformResponse>(result);
+
+                //return new BaseResponse
+                //{
+                //    Response = responseObj,
+                //};
             }
         }
 
