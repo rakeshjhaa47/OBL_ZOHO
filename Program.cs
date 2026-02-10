@@ -21,6 +21,7 @@ builder.Services.AddScoped<IAppSettingsService, AppSettingsService>();
 builder.Services.AddScoped<IZohoService, ZohoService>();
 builder.Services.AddScoped<IConnectService, ConnectService>();
 builder.Services.AddScoped<IOblservice, OblService>();
+builder.Services.AddScoped<IOblAdhesiveService, OblAdhesiveService>();
 
 builder.Services.AddControllers();
 
