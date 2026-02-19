@@ -5,9 +5,9 @@ namespace OBL_Zoho.Services.Interfaces
 {
     public interface IOblAdhesiveService
     {
-        Task<BaseResponse> GetHierarchyAsync(string accessToken, AdhesiveHierarchyRequest request);
-        Task<BaseResponse> GetDashboardAsync(string accessToken, AdhesiveDashboardRequest request);
-        Task<BaseResponse> GetLeadsAsync(string accessToken, AdhesiveLeadsRequest request);
+        Task<BaseResponse> GetHierarchyAsync(string accessToken, string empCode);
+        Task<BaseResponse> GetDashboardAsync(string accessToken, string adhesiveBhCode, string adhesiveNhCode, string adhesiveSalesPersonEmpId, string closingDate, string createdTime);
+        Task<BaseResponse> GetLeadsAsync(string accessToken, string adhesiveBhCode, string adhesiveNhCode, string adhesiveSalesPersonEmpId, int minQty, int maxQty, string createdTime);
 
         Task<BaseResponse> UpdateDealTimelineAsync(string accessToken, AdhesiveDealTimelineRequest request);
     }

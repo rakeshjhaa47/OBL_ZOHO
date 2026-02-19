@@ -16,27 +16,21 @@ namespace OBL_Zoho.Controllers
         }
 
         [HttpPost("hierarchy")]
-        public async Task<IActionResult> Hierarchy(
-            string accessToken,
-            [FromBody] AdhesiveHierarchyRequest request)
+        public async Task<IActionResult> Hierarchy(string accessToken, string empCode)
         {
-            return Ok(await _service.GetHierarchyAsync(accessToken, request));
+            return Ok(await _service.GetHierarchyAsync(accessToken, empCode));
         }
 
         [HttpPost("dashboard")]
-        public async Task<IActionResult> Dashboard(
-            string accessToken,
-            [FromBody] AdhesiveDashboardRequest request)
+        public async Task<IActionResult> Dashboard(string accessToken, string adhesiveBhCode, string adhesiveNhCode, string adhesiveSalesPersonEmpId, string closingDate, string createdTime)
         {
-            return Ok(await _service.GetDashboardAsync(accessToken, request));
+            return Ok(await _service.GetDashboardAsync(accessToken, adhesiveBhCode,adhesiveNhCode,adhesiveSalesPersonEmpId,closingDate,createdTime));
         }
 
         [HttpPost("Getleads")]
-        public async Task<IActionResult> Leads(
-            string accessToken,
-            [FromBody] AdhesiveLeadsRequest request)
+        public async Task<IActionResult> Leads(string accessToken, string adhesiveBhCode, string adhesiveNhCode, string adhesiveSalesPersonEmpId, int minQty, int maxQty, string createdTime)
         {
-            return Ok(await _service.GetLeadsAsync(accessToken, request));
+            return Ok(await _service.GetLeadsAsync(accessToken, adhesiveBhCode,adhesiveNhCode,adhesiveSalesPersonEmpId,minQty,maxQty,createdTime));
         }
 
         [HttpPut("update-deal-timeline")]
