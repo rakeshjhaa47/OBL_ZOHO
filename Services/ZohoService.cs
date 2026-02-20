@@ -11,7 +11,6 @@ using OBL_Zoho.Models;
 using OBL_Zoho.Models.Helper;
 using OBL_Zoho.Models.Request;
 using OBL_Zoho.Models.Response;
-using OBL_Zoho.Models.Response.OBL_Zoho.Models.Response;
 using OBL_Zoho.Services.Interfaces;
 using System.Dynamic;
 using System.Net.Http.Headers;
@@ -2659,35 +2658,5 @@ namespace OBL_Zoho.Services
                 Response = userResponse,
             };
         }
-
-        public async Task<BaseResponse> GetZohoSurveyAsync(string accessToken, string empCode)
-        {
-
-            var requestUrl = "https://www.zohoapis.com/crm/v7/functions/zoho_survey/actions/execute" +
-                             "?auth_type=apikey" +
-                             "&zapikey=1003.6ceb2d2934296e02f21ffe5a9adfaf29.155d45a2b6938e2e9c3e20e3caac7d92";
-            var requestData = new
-            {
-                Emp_code = empCode
-            };
-            var serializedData = JsonConvert.SerializeObject(requestData);
-            var content = new StringContent(serializedData, Encoding.UTF8, "application/json");
-
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
-                var response = await client.PostAsync(requestUrl, content);
-
-                var result = await response.Content.ReadAsStringAsync();
-                var responseObj = JsonConvert.DeserializeObject<ZohoSurveyResponse>(result);
-                return new BaseResponse
-                {
-                    Response = responseObj
-                };
-            }
-        }
-
-       
     }
 }
