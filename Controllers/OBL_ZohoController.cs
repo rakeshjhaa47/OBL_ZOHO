@@ -673,5 +673,23 @@ namespace OBL_Zoho.Controllers
             var response = await _zohoService.ChatBot_Analytics_Refresh_Token();
             return Ok(response);
         }
+
+        [SwaggerOperation(Tags = new[] { "ZohoSurvey" })]
+        [HttpPost]
+        [Route("get-zoho-survey")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> GetZohoSurvey(string accessToken, string empCode)
+        {
+           
+            if (string.IsNullOrWhiteSpace(accessToken))
+                return Unauthorized(new { Message = "Access token is required." });
+
+            if (string.IsNullOrWhiteSpace(empCode))
+                return BadRequest(new { Message = "Employee code is required." });
+
+            var response = await _zohoService.GetZohoSurveyAsync(accessToken, empCode);
+            return Ok(response);
+        }
     }
 }
