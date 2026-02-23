@@ -8,7 +8,7 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> GetHierarchyAsync(string accessToken, string empCode);
         Task<BaseResponse> GetDashboardAsync(string accessToken, string adhesiveBhCode, string adhesiveNhCode, string adhesiveSalesPersonEmpId, string closingDate, string createdTime);
         Task<BaseResponse> GetLeadsAsync(string accessToken, string adhesiveBhCode, string adhesiveNhCode, string adhesiveSalesPersonEmpId, int minQty, int maxQty, string createdTime);
-
         Task<BaseResponse> UpdateDealTimelineAsync(string accessToken, AdhesiveDealTimelineRequest request);
+        Task<BaseResponse> GenerateRefreshToken();
     }
 }

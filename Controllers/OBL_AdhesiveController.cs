@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OBL_Zoho.Models.Request;
+using OBL_Zoho.Services;
 using OBL_Zoho.Services.Interfaces;
+using System.Net.Mime;
 
 namespace OBL_Zoho.Controllers
 {
@@ -14,6 +16,17 @@ namespace OBL_Zoho.Controllers
         {
             _service = service;
         }
+
+
+        [HttpPost]
+        [Route("generate-access-token")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> GenerateRefreshToken()
+        {
+            return Ok(await _service.GenerateRefreshToken());
+        }
+
 
         [HttpPost("hierarchy")]
         public async Task<IActionResult> Hierarchy(string accessToken, string empCode)
@@ -41,6 +54,8 @@ namespace OBL_Zoho.Controllers
             return Ok(await _service.UpdateDealTimelineAsync(accessToken, request));
         }
 
+
+      
 
     }
 }

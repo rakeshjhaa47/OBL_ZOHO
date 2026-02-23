@@ -2,6 +2,7 @@
 using OBL_Zoho.Models.Request;
 using OBL_Zoho.Models.Response;
 using OBL_Zoho.Services.Interfaces;
+using System;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -9,6 +10,49 @@ namespace OBL_Zoho.Services
 {
     public class OblAdhesiveService : IOblAdhesiveService
     {
+        private readonly Random _random;
+        public OblAdhesiveService()
+        {
+            _random = new Random();
+        }
+
+        public async Task<BaseResponse> GenerateRefreshToken()
+        {
+           
+            int randomNumber = _random.Next(1, 3); // Generates a number between 1 and 3
+            switch (randomNumber)
+            {
+                case 1:
+                    return await GenerateRefreshTokens("1000.78d886945811640cc8896fd2ccb8edfb.2ffacb3b4513da63b6adca590ed1cd2b");
+                case 2:
+                    return await GenerateRefreshTokens("1000.9a5744cd5d81e9459f20646843c7489a.c19e166a4341a6119d3811ed55dc0e7e");
+                default:
+                    throw new InvalidOperationException("Invalid random number generated.");
+            }
+        }
+
+        public async Task<BaseResponse> GenerateRefreshTokens(string token)
+        {
+            var request = "https://accounts.zoho.com/oauth/v2/token";
+
+            var client = new HttpClient();
+            Dictionary<string, string> pairs = new Dictionary<string, string>();
+            pairs.Add("refresh_token", token);
+            pairs.Add("client_id", "1000.CLKJQBSFMW6SANQRWQ64HKIVYC34VC");
+            pairs.Add("client_secret", "163b44b012c0cd6246a3c2716f55e3be00f5d344d9");
+            pairs.Add("grant_type", "refresh_token");
+            pairs.Add("redirect_uri", "https://www.google.com/");
+
+            var content = new FormUrlEncodedContent(pairs);
+            var response = client.PostAsync(request, content).Result;
+            var result = await response.Content.ReadAsStringAsync();
+            dynamic userResponse = JsonConvert.DeserializeObject<AccessTokenResponse>(result);
+            return new BaseResponse
+            {
+                Response = userResponse,
+            };
+        }
+
         public async Task<BaseResponse> GetHierarchyAsync(string accessToken, string empCode)
         {
             var requestUrl = $"https://www.zohoapis.com/crm/v7/functions/heiarchy_adhesive/actions/execute?auth_type=apikey&zapikey=1003.6ceb2d2934296e02f21ffe5a9adfaf29.155d45a2b6938e2e9c3e20e3caac7d92";
