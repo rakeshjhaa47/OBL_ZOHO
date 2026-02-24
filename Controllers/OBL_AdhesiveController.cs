@@ -47,15 +47,22 @@ namespace OBL_Zoho.Controllers
         }
 
         [HttpPut("update-deal-timeline")]
-        public async Task<IActionResult> UpdateDealTimeline(
-          string accessToken,
-          [FromBody] AdhesiveDealTimelineRequest request)
+        public async Task<IActionResult> UpdateDealTimeline( string accessToken, [FromBody] AdhesiveDealTimelineRequest request)
         {
             return Ok(await _service.UpdateDealTimelineAsync(accessToken, request));
         }
 
+        [HttpGet("GetDealById")]
+        public async Task<IActionResult> GetDealById(string accessToken, string dealId)
+        {
+            return Ok(await _service.GetDealByIdAsync(accessToken, dealId));
+        }
 
-      
+        [HttpPost("AdhesiveStageChange")]
+        public async Task<IActionResult> AdhesiveStageChange(string accessToken, [FromBody] AdhesiveStageChange stageChangeRequest)
+        {
+            return Ok(await _service.AdhesiveStageChangeAsync(accessToken, stageChangeRequest));
+        }
 
     }
 }

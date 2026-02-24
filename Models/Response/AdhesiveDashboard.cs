@@ -2,17 +2,16 @@
 {
     public class AdhesiveDashboardDatum
     {
-        public string Stage { get; set; }
-        public int Qty_Total { get; set; }
-        public int Total_Count { get; set; }
+        public string stage { get; set; }
+        public int? qtyReq { get; set; }
+        public int? totalCount { get; set; }
+        public int? qtyDelivered { get; set; }
     }
-
     public class AdhesivesDashboardInfo
     {
         public int count { get; set; }
         public bool more_records { get; set; }
     }
-
     public class AdhesiveDashboard
     {
         public AdhesiveDashboard()
