@@ -145,7 +145,7 @@ public class GetLeadDetailsReviewProcess
 public class GetLeadDetailsRoot
 {
     public List<GetLeadDetailsDatum> data { get; set; }
-    public object Data { get; internal set; }
+    //public object Data { get; internal set; }
 }
 
 public class GetLeadDetailsTimeline
