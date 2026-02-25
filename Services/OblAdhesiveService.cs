@@ -130,26 +130,14 @@ namespace OBL_Zoho.Services
             return JsonConvert.DeserializeObject<AdhesiveDashboard>(result);
         }
 
-        public async Task<BaseResponse> GetLeadsAsync(string accessToken, string adhesiveBhCode, string adhesiveNhCode, string adhesiveSalesPersonEmpId, int minQty, int maxQty, string createdTime, string stageCategory)
+        public async Task<BaseResponse> GetLeadsAsync(string accessToken, string adhesiveBhCode, string adhesiveNhCode, string adhesiveSalesPersonEmpId, int minQty, int maxQty, string createdTime, string stageCategory,int limit, int offSet)
         {
-            var response = new AdheshivGetLeadByStageResponse();
-            int offSet = 0;
-            while (true)
+            var response = new AdheshivGetLeadByStage();
+     
+            var dd = await GetLead(accessToken, adhesiveBhCode, adhesiveNhCode, adhesiveSalesPersonEmpId, minQty, maxQty, createdTime, offSet, stageCategory, limit);
+            if (dd?.data != null)
             {
-                var dd = await GetLead(accessToken, adhesiveBhCode, adhesiveNhCode, adhesiveSalesPersonEmpId, minQty, maxQty, createdTime, offSet, stageCategory);
-                if (dd == null || dd?.data == null)
-                {
-                    break;
-                }
                 response.data.AddRange(dd?.data);
-                if (dd.info?.more_records == true)
-                {
-                    offSet += 200;
-                }
-                else
-                {
-                    break;
-                }
             }
             response.info = new AdheshivGetLeadByStageInfo
             {
@@ -162,18 +150,20 @@ namespace OBL_Zoho.Services
             };
         }
 
-        private async Task<AdheshivGetLeadByStageResponse> GetLead(string accessToken, string adhesiveBhCode, string adhesiveNhCode, string adhesiveSalesPersonEmpId, int minQty, int maxQty, string createdTime, int offSet, string stageCategory)
+        private async Task<AdheshivGetLeadByStage> GetLead(string accessToken, string adhesiveBhCode, string adhesiveNhCode, string adhesiveSalesPersonEmpId, int minQty, int maxQty, string createdTime, int offSet, string stageCategory,int limit)
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v8/coql");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
-            var content = new StringContent($@"{{""select_query"":""select Deal_Name as contactName,City,Mobile,Adhesive_Type,Adhesive_Sales_Person_Name,Stage,Stage_Category,Closing_Date,Qty_required,Adhesive_Sales_Person_Emp_ID,Created_Time from Deals where ((Qty_required between '{minQty}' and '{maxQty}') and (((Qty_required >= 500 and Created_Time > '{createdTime}') or (Qty_required < 500 and Created_Time > '{createdTime}')) and (((Adhesive_Sales_Person_Emp_ID = '{adhesiveSalesPersonEmpId}' or Adhesive_NH_Code = '{adhesiveNhCode}') or Adhesive_BH_Code = '{adhesiveBhCode}') and (Stage_Category = '{stageCategory}')))) limit 200 offset {offSet}""}}", null, "application/json");
+            string oneYearCreatedTime = DateTime.Now.AddYears(-1).ToString("yyyy-MM-ddTHH:mm:ssK");
+            var content = new StringContent($@"{{""select_query"":""select Deal_Name as contactName,City,Mobile,Adhesive_Type,Adhesive_Sales_Person_Name,Stage,Stage_Category,Closing_Date,Qty_required,Adhesive_Sales_Person_Emp_ID,Created_Time from Deals where ((Qty_required between '{minQty}' and '{maxQty}') and (((Qty_required >= 500 and Created_Time > '{oneYearCreatedTime}') or (Qty_required < 500 and Created_Time > '{createdTime}')) and (((Adhesive_Sales_Person_Emp_ID = '{adhesiveSalesPersonEmpId}' or Adhesive_NH_Code = '{adhesiveNhCode}') or Adhesive_BH_Code = '{adhesiveBhCode}') and (Stage_Category = '{stageCategory}')))) limit {limit} offset {offSet}""}}", null, "application/json");
             request.Content = content;
+           
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<AdheshivGetLeadByStageResponse>(result);
+            return JsonConvert.DeserializeObject<AdheshivGetLeadByStage>(result);
         }
 
         public async Task<BaseResponse> UpdateDealTimelineAsync( string accessToken, AdhesiveDealTimelineRequest request)

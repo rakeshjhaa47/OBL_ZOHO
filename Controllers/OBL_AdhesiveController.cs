@@ -41,9 +41,9 @@ namespace OBL_Zoho.Controllers
         }
 
         [HttpPost("Getleads")]
-        public async Task<IActionResult> Leads(string accessToken, string adhesiveBhCode, string adhesiveNhCode, string adhesiveSalesPersonEmpId, int minQty, int maxQty, string createdTime, string stageCategory)
+        public async Task<IActionResult> Leads(string accessToken, string adhesiveBhCode, string adhesiveNhCode, string adhesiveSalesPersonEmpId, int minQty, int maxQty, string createdTime, string stageCategory, int limit, int offSet)
         {
-            return Ok(await _service.GetLeadsAsync(accessToken, adhesiveBhCode,adhesiveNhCode,adhesiveSalesPersonEmpId,minQty,maxQty,createdTime,stageCategory));
+            return Ok(await _service.GetLeadsAsync(accessToken, adhesiveBhCode,adhesiveNhCode,adhesiveSalesPersonEmpId,minQty,maxQty,createdTime,stageCategory, limit,offSet));
         }
 
         [HttpPut("update-deal-timeline")]
