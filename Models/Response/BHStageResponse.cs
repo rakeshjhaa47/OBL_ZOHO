@@ -1,11 +1,13 @@
-﻿namespace OBL_Zoho.Models.Response
+﻿using System.Text.Json.Serialization;
+
+namespace OBL_Zoho.Models.Response
 {
     public class DataBH
     {
         public decimal? Total_Amount { get; set; }
         public string? Stage { get; set; }
         public int? Total_Count { get; set; }
-        public int? Tile_Total { get; set; }
+        public double? Tile_Total { get; set; }
         public double? Final_Tile_Total { get; set; }
     }
 

@@ -2027,7 +2027,22 @@ namespace OBL_Zoho.Services
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
 
-            return JsonConvert.DeserializeObject<RootBHData>(result);
+            var data = JsonConvert.DeserializeObject<RootBHData>(result);
+            if (data?.data != null)
+            {
+                data.data.ForEach(item =>
+                {
+                    item.Tile_Total = item.Tile_Total.HasValue
+                        ? Math.Truncate(item.Tile_Total.Value)
+                        : null;
+
+                    item.Final_Tile_Total = item.Final_Tile_Total.HasValue
+                        ? Math.Truncate(item.Final_Tile_Total.Value)
+                        : null;
+                });
+            }
+
+            return data;
         }
 
         public async Task<BaseResponse> OblSummaryAsync(string refreshToken, string Sales_Person_Emp_ID,  bool isEmployee)
@@ -2514,14 +2529,14 @@ namespace OBL_Zoho.Services
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
-            if (isEmployee)
-            {
-                content = new StringContent("{\"select_query\": \"SELECT SUM(Amount) AS Total_Amount,Sales_Person_Emp_ID,Sales_Person_Name AS Name FROM Deals Where ((Stage = 'Closed Won') AND (Closing_Date between '"+startDate+"' and '"+endDate+"')) GROUP BY Sales_Person_Emp_ID,Sales_Person_Name LIMIT 200 OFFSET "+offSet+" \"}");
-            }
-            else
-            {
-                content = new StringContent("{\"select_query\": \"SELECT SUM(Amount) AS Total_Amount,BM_Code,Branch_Manager As Name FROM Deals Where ((Stage = 'Closed Won') AND (Closing_Date between '"+startDate+"' and '"+endDate+"')) GROUP BY BM_Code,Branch_Manager LIMIT 200 OFFSET "+offSet+" \"}");
-            }
+            //if (isEmployee)
+            //{
+                content = new StringContent("{\"select_query\": \"SELECT SUM(Volume_In_Sq_Mtr) AS Total_Amount,Sales_Person_Emp_ID,Sales_Person_Name AS Name FROM Deals Where ((Stage = 'Closed Won') AND (Closing_Date between '" + startDate+"' and '"+endDate+"')) GROUP BY Sales_Person_Emp_ID,Sales_Person_Name LIMIT 200 OFFSET "+offSet+" \"}");
+            //}
+            //else
+            //{
+            //    content = new StringContent("{\"select_query\": \"SELECT SUM(Amount) AS Total_Amount,BM_Code,Branch_Manager As Name FROM Deals Where ((Stage = 'Closed Won') AND (Closing_Date between '"+startDate+"' and '"+endDate+"')) GROUP BY BM_Code,Branch_Manager LIMIT 200 OFFSET "+offSet+" \"}");
+            //}
 
             request.Content = content;
             var response = await client.SendAsync(request);
