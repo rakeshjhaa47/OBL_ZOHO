@@ -232,6 +232,8 @@ public class Datum
 
     public List<object>? Tile_Category { get; set; }
 
+    public string Mobile { get; set; }
+
     [JsonProperty("$locked_for_me")]
     public bool? locked_for_me { get; set; }
 
