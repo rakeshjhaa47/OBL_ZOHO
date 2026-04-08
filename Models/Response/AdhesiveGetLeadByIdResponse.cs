@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using OBL_Zoho.Models.Response;
 
 public class AdhesiveSalesPersonID
 {
@@ -245,7 +246,16 @@ public class Datum
 
     [JsonProperty("$has_more")]
     public HasMore? has_more { get; set; }
+    public string Zip_Code { get; set; }
+    public string city { get; set; }
+    public AdhesiveContactName Contact_Name { get; set; }
 }
+public class AdhesiveContactName
+{
+    public string name { get; set; }
+    public string id { get; set; }
+}
+
 
 public class AdhesiveGetLeadByIdResponse
 {
