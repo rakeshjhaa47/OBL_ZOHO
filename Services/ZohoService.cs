@@ -852,7 +852,8 @@ namespace OBL_Zoho.Services
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
-            var content = new StringContent("{\"select_query\": \"select ZH_Code,ZH_Name,ZH_Email_ID,ZM_Code,ZM_Name,ZM_Mail_ID,BH_Emp_ID,BH_Name,BH_mail_ID from Dealer where Sales_Person_Email  = '" + emailId + "' limit 200 offset 0\"\r\n}", null, "application/json");
+          //var content = new StringContent("{\"select_query\": \"select ZH_Code,ZH_Name,ZH_Email_ID,ZM_Code,ZM_Name,ZM_Mail_ID,BH_Emp_ID,BH_Name,BH_mail_ID from Dealer where Sales_Person_Email  = '" + emailId + "' limit 200 offset 0\"\r\n}", null, "application/json");
+           var content = new StringContent("{\"select_query\": \"select ZH_Code,ZH_Name,ZH_Email_ID,ZM_Code,ZM_Name,ZM_Mail_ID,BH_Emp_ID,BH_Name,BH_mail_ID from Dealer where Name = '" + emailId + "' limit 200 offset 0\"\r\n}", null, "application/json"); 
             request.Content = content;
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();

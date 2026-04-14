@@ -14,6 +14,7 @@
         public object Mobile { get; set; }
         public string Adhesive_Sales_Person_Emp_ID { get; set; }
         public string Closing_Date { get; set; }
+        public object Closed_By { get; set; }
     }
 
     public class AdheshivGetLeadByStageInfo
