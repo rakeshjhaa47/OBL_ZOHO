@@ -2,7 +2,8 @@
 {
     public class AdheshivGetLeadByStageDatum
     {
-        public string Adhesive_Type { get; set; }
+       // public string Adhesive_Type { get; set; }
+        public List<string> Adhesive_Type1 { get; set; }
         public string contactName { get; set; }
         public DateTime Created_Time { get; set; }
         public string Adhesive_Sales_Person_Name { get; set; }
