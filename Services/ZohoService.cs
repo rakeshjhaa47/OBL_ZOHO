@@ -1742,8 +1742,20 @@ namespace OBL_Zoho.Services
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<SummaryResponse>(result);
+            if (data?.data != null)
+            {
+                foreach (var item in data.data)
+                {
+                    if (item.Final_Tile_Requirement_in_Area_Sq_ft.HasValue)
+                    {
+                        item.Final_Tile_Requirement_in_Area_Sq_ft =
+                        Convert.ToInt32(Math.Round(item.Final_Tile_Requirement_in_Area_Sq_ft.Value));
+                    }
+                }
+            }
 
-            return JsonConvert.DeserializeObject<SummaryResponse>(result);
+            return data;
         }
 
         public async Task<BaseResponse> CreateFireBaseToken()
