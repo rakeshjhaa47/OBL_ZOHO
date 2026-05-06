@@ -12,5 +12,6 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> GenerateRefreshToken();
         Task<BaseResponse> GetDealByIdAsync(string accessToken, string dealId);
         Task<BaseResponse> AdhesiveStageChangeAsync(string accessToken, AdhesiveStageChange stageChangeRequest);
+        Task<BaseResponse> GetLeadDetailsByIdAsync(string accessToken, string id);
     }
 }

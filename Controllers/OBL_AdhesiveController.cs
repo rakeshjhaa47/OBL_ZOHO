@@ -64,5 +64,12 @@ namespace OBL_Zoho.Controllers
             return Ok(await _service.AdhesiveStageChangeAsync(accessToken, stageChangeRequest));
         }
 
+        [Route("GetLeadDetailsById")]
+        [HttpPost]
+        public async Task<IActionResult> GetLeadDetailsById(string accessToken, string id)
+        {
+            var response = await _service.GetLeadDetailsByIdAsync(accessToken, id);
+            return Ok(response);
+        }
     }
 }

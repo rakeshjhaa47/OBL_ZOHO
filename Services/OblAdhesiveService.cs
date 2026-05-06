@@ -251,5 +251,51 @@ namespace OBL_Zoho.Services
 
             return JsonConvert.DeserializeObject<AdhesiveStageChangeResponse>(result);
         }
+
+
+        public async Task<BaseResponse> GetLeadDetailsByIdAsync(string accessToken, string id)
+        {
+            var result = await GetLeadDetailsById(accessToken, id);
+
+            return new BaseResponse
+            {
+                Response = result
+            };
+        }
+
+        private async Task<AdhesiveLeadDetailResponse> GetLeadDetailsById(string accessToken, string id)
+        {
+            var client = new HttpClient();
+
+            var request = new HttpRequestMessage(HttpMethod.Post,"https://www.zohoapis.com/crm/v7/functions/getleaddeatail_adhesive/actions/execute?auth_type=apikey&zapikey=1003.6ceb2d2934296e02f21ffe5a9adfaf29.155d45a2b6938e2e9c3e20e3caac7d92");
+
+            client.DefaultRequestHeaders.Authorization =new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
+
+            var body = JsonConvert.SerializeObject(new
+            {
+                id = id
+            });
+
+            request.Content = new StringContent(body,Encoding.UTF8,"application/json");
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+            var rawResponse =JsonConvert.DeserializeObject<RawAdhesiveLeadDetailResponse>(result);
+            var finalResponse = new AdhesiveLeadDetailResponse
+            {
+                code = rawResponse.code,
+                message = rawResponse.message,
+                details = new AdhesiveDetails
+                {
+                    output = JsonConvert.DeserializeObject<LeadDetailOutput>( rawResponse.details.output),
+                    userMessage = rawResponse.details.userMessage,
+                    output_type = rawResponse.details.output_type,
+                    id = rawResponse.details.id
+                }
+            };
+            return finalResponse;
+        }
     }
 }
