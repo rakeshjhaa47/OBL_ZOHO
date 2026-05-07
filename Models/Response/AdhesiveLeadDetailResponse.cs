@@ -1,4 +1,6 @@
-﻿namespace OBL_Zoho.Models.Response
+﻿using Newtonsoft.Json;
+
+namespace OBL_Zoho.Models.Response
 {
     public class AccountName
     {
@@ -54,6 +56,8 @@
     public class LeadDetailOutput
     {
         public AccountName Account_Name { get; set; }
+        [JsonProperty("Opportunity Id")]
+        public string OpportunityId { get; set; }
         public string Adhesive_BH_Code { get; set; }
         public string Adhesive_Sales_Person_Emp_ID { get; set; }
         public string Adhesive_Sales_Person_Name { get; set; }
@@ -88,6 +92,7 @@
         public string Zip_Code { get; set; }
         public DateTime? Modified_Time { get; set; }
         public DateTime? Created_Time { get; set; }
+    
     }
 
     public class AdhesiveDetails
