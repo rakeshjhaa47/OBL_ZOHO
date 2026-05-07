@@ -85,6 +85,9 @@
         public AdhesiveSalesPersonId Adhesive_SalesPerson_ID { get; set; }
         public string Contact_Phone { get; set; }
         public List<AdhesiveTimeline> Timleline { get; set; }
+        public string Zip_Code { get; set; }
+        public DateTime? Modified_Time { get; set; }
+        public DateTime? Created_Time { get; set; }
     }
 
     public class AdhesiveDetails
