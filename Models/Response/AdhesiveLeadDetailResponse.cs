@@ -46,7 +46,7 @@
         public string Name1 { get; set; }
         public string nextFollowUpDate { get; set; }
         public string Remarks { get; set; }
-        public int timelineType { get; set; }
+        public int? timelineType { get; set; }
         public string Types { get; set; }
         public string Updated_Stage { get; set; }
     }
@@ -63,7 +63,7 @@
         public string Closed_By { get; set; }
         public string Closing_Date { get; set; }
         public string Contact_Email { get; set; }
-        public decimal Final_Amount { get; set; }
+        public decimal? Final_Amount { get; set; }
         public AdhesiveLayout Layout { get; set; }
         public string Lead_Category { get; set; }
         public string Lead_Source { get; set; }
@@ -71,13 +71,13 @@
         public AdhesiveModifiedBy Modified_By { get; set; }
         public string Adhesive_NH_Code { get; set; }
         public string Deal_Name { get; set; }
-        public int Qty_required { get; set; }
-        public int Qty_delivered { get; set; }
+        public int? Qty_required { get; set; }
+        public int? Qty_delivered { get; set; }
         public string Sales_Person_Email_ID { get; set; }
         public string Stage { get; set; }
         public string Stage_Category { get; set; }
         public string Sub_source { get; set; }
-        public List<object> Tag { get; set; }
+        public List<object?> Tag { get; set; }
         public string All_Traffic_Sources { get; set; }
         public string Browser { get; set; }
         public AdhesiveOwner Owner { get; set; }
