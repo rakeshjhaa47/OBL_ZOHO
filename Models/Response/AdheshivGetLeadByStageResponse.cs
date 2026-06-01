@@ -11,7 +11,8 @@
         public string Stage_Category { get; set; }
         public string id { get; set; }
         public object City { get; set; }
-        public int Qty_required { get; set; }
+        public int? Qty_required { get; set; }
+        public int? Qty_delivered { get; set; }
         public object Mobile { get; set; }
         public string Adhesive_Sales_Person_Emp_ID { get; set; }
         public string Closing_Date { get; set; }

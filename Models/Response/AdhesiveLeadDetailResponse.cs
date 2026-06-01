@@ -51,6 +51,8 @@ namespace OBL_Zoho.Models.Response
         public int? timelineType { get; set; }
         public string Types { get; set; }
         public string Updated_Stage { get; set; }
+        public DateTime? Modified_Time { get; set; }
+        public DateTime? Created_Time { get; set; }
     }
 
     public class LeadDetailOutput
@@ -92,7 +94,7 @@ namespace OBL_Zoho.Models.Response
         public string Zip_Code { get; set; }
         public DateTime? Modified_Time { get; set; }
         public DateTime? Created_Time { get; set; }
-    
+
     }
 
     public class AdhesiveDetails

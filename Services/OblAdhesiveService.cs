@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Bibliography;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using OBL_Zoho.Models.Request;
 using OBL_Zoho.Models.Response;
 using OBL_Zoho.Services.Interfaces;
@@ -19,7 +20,7 @@ namespace OBL_Zoho.Services
 
         public async Task<BaseResponse> GenerateRefreshToken()
         {
-           
+
             int randomNumber = _random.Next(1, 3); // Generates a number between 1 and 3
             switch (randomNumber)
             {
@@ -130,10 +131,10 @@ namespace OBL_Zoho.Services
             return JsonConvert.DeserializeObject<AdhesiveDashboard>(result);
         }
 
-        public async Task<BaseResponse> GetLeadsAsync(string accessToken, string adhesiveBhCode, string adhesiveNhCode, string adhesiveSalesPersonEmpId, int minQty, int maxQty, string createdTime, string stageCategory,int limit, int offSet)
+        public async Task<BaseResponse> GetLeadsAsync(string accessToken, string adhesiveBhCode, string adhesiveNhCode, string adhesiveSalesPersonEmpId, int minQty, int maxQty, string createdTime, string stageCategory, int limit, int offSet)
         {
             var response = new AdheshivGetLeadByStage();
-     
+
             var dd = await GetLead(accessToken, adhesiveBhCode, adhesiveNhCode, adhesiveSalesPersonEmpId, minQty, maxQty, createdTime, offSet, stageCategory, limit);
             if (dd?.data != null)
             {
@@ -150,24 +151,24 @@ namespace OBL_Zoho.Services
             };
         }
 
-        private async Task<AdheshivGetLeadByStage> GetLead(string accessToken, string adhesiveBhCode, string adhesiveNhCode, string adhesiveSalesPersonEmpId, int minQty, int maxQty, string createdTime, int offSet, string stageCategory,int limit)
+        private async Task<AdheshivGetLeadByStage> GetLead(string accessToken, string adhesiveBhCode, string adhesiveNhCode, string adhesiveSalesPersonEmpId, int minQty, int maxQty, string createdTime, int offSet, string stageCategory, int limit)
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v8/coql");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
             string oneYearCreatedTime = DateTime.Now.AddYears(-1).ToString("yyyy-MM-ddTHH:mm:ssK");
-           // var content = new StringContent($@"{{""select_query"":""select Deal_Name as contactName,City,Mobile,Adhesive_Type,Adhesive_Sales_Person_Name,Stage,Stage_Category,Closing_Date,Qty_required,Adhesive_Sales_Person_Emp_ID,Created_Time from Deals where ((Qty_required between '{minQty}' and '{maxQty}') and (((Qty_required >= 500 and Created_Time > '{oneYearCreatedTime}') or (Qty_required < 500 and Created_Time > '{createdTime}')) and (((Adhesive_Sales_Person_Emp_ID = '{adhesiveSalesPersonEmpId}' or Adhesive_NH_Code = '{adhesiveNhCode}') or Adhesive_BH_Code = '{adhesiveBhCode}') and (Stage_Category = '{stageCategory}')))) limit {limit} offset {offSet}""}}", null, "application/json");
-            var content = new StringContent($@"{{""select_query"":""select Deal_Name as contactName,City,Mobile,Adhesive_Type1,Adhesive_Sales_Person_Name,Stage,Stage_Category,Closing_Date,Qty_required,Adhesive_Sales_Person_Emp_ID,Created_Time,Closed_By from Deals where ((Qty_required between '{minQty}' and '{maxQty}') and (((Qty_required >= 500 and Created_Time > '{oneYearCreatedTime}') or (Qty_required < 500 and Created_Time > '{createdTime}')) and (((Adhesive_Sales_Person_Emp_ID = '{adhesiveSalesPersonEmpId}' or Adhesive_NH_Code = '{adhesiveNhCode}') or Adhesive_BH_Code = '{adhesiveBhCode}') and (Stage_Category = '{stageCategory}')))) limit {limit} offset {offSet}""}}", null, "application/json");
+            // var content = new StringContent($@"{{""select_query"":""select Deal_Name as contactName,City,Mobile,Adhesive_Type,Adhesive_Sales_Person_Name,Stage,Stage_Category,Closing_Date,Qty_required,Adhesive_Sales_Person_Emp_ID,Created_Time from Deals where ((Qty_required between '{minQty}' and '{maxQty}') and (((Qty_required >= 500 and Created_Time > '{oneYearCreatedTime}') or (Qty_required < 500 and Created_Time > '{createdTime}')) and (((Adhesive_Sales_Person_Emp_ID = '{adhesiveSalesPersonEmpId}' or Adhesive_NH_Code = '{adhesiveNhCode}') or Adhesive_BH_Code = '{adhesiveBhCode}') and (Stage_Category = '{stageCategory}')))) limit {limit} offset {offSet}""}}", null, "application/json");
+            var content = new StringContent($@"{{""select_query"":""select Deal_Name as contactName,City,Mobile,Adhesive_Type1,Adhesive_Sales_Person_Name,Stage,Stage_Category,Closing_Date,Qty_required,Qty_delivered,Adhesive_Sales_Person_Emp_ID,Created_Time,Closed_By from Deals where ((Qty_required between '{minQty}' and '{maxQty}') and (((Qty_required >= 500 and Created_Time > '{oneYearCreatedTime}') or (Qty_required < 500 and Created_Time > '{createdTime}')) and (((Adhesive_Sales_Person_Emp_ID = '{adhesiveSalesPersonEmpId}' or Adhesive_NH_Code = '{adhesiveNhCode}') or Adhesive_BH_Code = '{adhesiveBhCode}') and (Stage_Category = '{stageCategory}')))) limit {limit} offset {offSet}""}}", null, "application/json");
             request.Content = content;
-           
+
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<AdheshivGetLeadByStage>(result);
         }
 
-        public async Task<BaseResponse> UpdateDealTimelineAsync( string accessToken, AdhesiveDealTimelineRequest request)
+        public async Task<BaseResponse> UpdateDealTimelineAsync(string accessToken, AdhesiveDealTimelineRequest request)
         {
             var url = "https://www.zohoapis.com/crm/v8/Deals";
 
@@ -267,9 +268,9 @@ namespace OBL_Zoho.Services
         {
             var client = new HttpClient();
 
-            var request = new HttpRequestMessage(HttpMethod.Post,"https://www.zohoapis.com/crm/v7/functions/getleaddeatail_adhesive/actions/execute?auth_type=apikey&zapikey=1003.6ceb2d2934296e02f21ffe5a9adfaf29.155d45a2b6938e2e9c3e20e3caac7d92");
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v7/functions/getleaddeatail_adhesive/actions/execute?auth_type=apikey&zapikey=1003.6ceb2d2934296e02f21ffe5a9adfaf29.155d45a2b6938e2e9c3e20e3caac7d92");
 
-            client.DefaultRequestHeaders.Authorization =new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
 
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
 
@@ -278,18 +279,18 @@ namespace OBL_Zoho.Services
                 id = id
             });
 
-            request.Content = new StringContent(body,Encoding.UTF8,"application/json");
+            request.Content = new StringContent(body, Encoding.UTF8, "application/json");
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
-            var rawResponse =JsonConvert.DeserializeObject<RawAdhesiveLeadDetailResponse>(result);
+            var rawResponse = JsonConvert.DeserializeObject<RawAdhesiveLeadDetailResponse>(result);
             var finalResponse = new AdhesiveLeadDetailResponse
             {
                 code = rawResponse.code,
                 message = rawResponse.message,
                 details = new AdhesiveDetails
                 {
-                    output = JsonConvert.DeserializeObject<LeadDetailOutput>( rawResponse.details.output),
+                    output = JsonConvert.DeserializeObject<LeadDetailOutput>(rawResponse.details.output),
                     userMessage = rawResponse.details.userMessage,
                     output_type = rawResponse.details.output_type,
                     id = rawResponse.details.id
