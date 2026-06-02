@@ -691,5 +691,23 @@ namespace OBL_Zoho.Controllers
             var response = await _zohoService.GetZohoSurveyAsync(accessToken, empCode);
             return Ok(response);
         }
+
+
+        [SwaggerOperation(Tags = new[] { "Deals" })]
+        [HttpPost]
+        [Route("get-count-records-and-total-tile-between-dates")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> GetCountRecordsAndTotalTileBetweenDates(string refreshToken, string fromDate)
+        {
+            if (string.IsNullOrWhiteSpace(refreshToken))
+                return Unauthorized(new { Message = "Refresh token is required." });
+
+            if (string.IsNullOrWhiteSpace(fromDate))
+                return BadRequest(new { Message = "From date is required." });
+
+            var response = await _zohoService.GetCountRecordsAndTotalTileBetweenDates(refreshToken, fromDate);
+            return Ok(response);
+        }
     }
 }

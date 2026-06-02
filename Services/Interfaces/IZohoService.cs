@@ -78,5 +78,7 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> ChatBot_Analytics_Refresh_Token();
 
         Task<BaseResponse> GetZohoSurveyAsync(string accessToken, string empCode);
+
+        Task<BaseResponse> GetCountRecordsAndTotalTileBetweenDates(string accessToken, string fromDate);
     }
 }

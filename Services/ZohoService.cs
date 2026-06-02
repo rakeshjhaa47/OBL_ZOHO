@@ -2716,6 +2716,55 @@ namespace OBL_Zoho.Services
             }
         }
 
-       
+
+
+        public async Task<BaseResponse> GetCountRecordsAndTotalTileBetweenDates(string refreshToken, string fromDate)
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
+
+            var allData = new List<CountRecordsAndTotalTileData>();
+            int offset = 0;
+            bool moreRecords = true;
+
+            while (moreRecords)
+            {
+                var query = $"select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total, SUM(Final_Tile_Requirement_in_Area_Sq_ft) as Final_Tile_Total from Deals where ((((Stage = 'Closed Won') and ((Tile_Requirement_in_Area_Sq_Mtr >= 500 and Closing_Date >='{fromDate}') or (Tile_Requirement_in_Area_Sq_Mtr < 500 and Closing_Date >='{fromDate}'))) or ((Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared')) and ((Tile_Requirement_in_Area_Sq_Mtr >= 500 and Created_Time > '{fromDate}T00:00:00+05:30') or (Tile_Requirement_in_Area_Sq_Mtr < 500 and Created_Time > '{fromDate}T00:00:00+05:30')))) and ((((ZM_Code = '' or ZH_Code = '') or (BM_Code = '')) or (Sales_Person_Emp_ID = '')) or (Sales_Person_Emp_ID is not null or Adhesive_NH_Code = ''))) group by Stage limit 200 offset {offset}";
+
+                var content = new StringContent("{\"select_query\": \"" + query + "\"}", null, "application/json");
+                request.Content = content;
+
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                var result = await response.Content.ReadAsStringAsync();
+                var deserializedResult = JsonConvert.DeserializeObject<CountRecordsAndTotalTileResponse>(result);
+
+                if (deserializedResult?.Data != null)
+                {
+                    allData.AddRange(deserializedResult.Data);
+                }
+
+                moreRecords = deserializedResult?.Info?.more_records ?? false;
+                offset += 200;
+
+                // Re-create request for next iteration
+                request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+                request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
+            }
+
+            return new BaseResponse
+            {
+                Response = new CountRecordsAndTotalTileResponse
+                {
+                    Data = allData,
+                    Info = new InfoDetails { count = allData.Count, more_records = false }
+                }
+            };
+        }
+
+
     }
 }
