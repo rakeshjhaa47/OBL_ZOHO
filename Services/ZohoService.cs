@@ -2542,9 +2542,11 @@ namespace OBL_Zoho.Services
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
+            var newEndDate = DateTime.UtcNow.ToString("yyyy-MM-dd");
+            var newStartDate = DateTime.UtcNow.AddDays(-30).ToString("yyyy-MM-dd");
             //if (isEmployee)
             //{
-                content = new StringContent("{\"select_query\": \"SELECT SUM(Volume_In_Sq_Mtr) AS Total_Amount,Sales_Person_Emp_ID,Sales_Person_Name AS Name FROM Deals Where ((Stage = 'Closed Won') AND (Closing_Date between '" + startDate+"' and '"+endDate+"')) GROUP BY Sales_Person_Emp_ID,Sales_Person_Name LIMIT 200 OFFSET "+offSet+" \"}");
+            content = new StringContent("{\"select_query\": \"SELECT SUM(Volume_In_Sq_Mtr) AS Total_Amount,Sales_Person_Emp_ID,Sales_Person_Name AS Name FROM Deals Where ((Stage = 'Closed Won') AND (Closing_Date between '" + newStartDate+"' and '"+ newEndDate + "')) GROUP BY Sales_Person_Emp_ID,Sales_Person_Name LIMIT 200 OFFSET "+offSet+" \"}");
             //}
             //else
             //{
@@ -2716,22 +2718,24 @@ namespace OBL_Zoho.Services
             }
         }
 
-
-
-        public async Task<BaseResponse> GetCountRecordsAndTotalTileBetweenDates(string refreshToken, string fromDate)
+        public async Task<BaseResponse> GetCountRecordsAndTotalTileBetweenDates(string refreshToken,string zmCode,string zhCode,string bmCode,string salesPersonEmpID, string nhCode)
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", refreshToken);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {refreshToken}");
 
+            var Closing_Date = DateTime.Now.AddDays(-90).ToString("yyyy-MM-dd");
+            var Created_Time = DateTime.Now.AddDays(-90).ToString("yyyy-MM-ddTHH:mm:ssK");
+            var closingDateOneYearBefore = DateTime.Today.AddYears(-1).ToString("yyyy-MM-dd");
+            var createdTimeThresholdOneYearBefore = DateTime.Today.AddYears(-1).ToString("yyyy-MM-ddTHH:mm:ssK");
             var allData = new List<CountRecordsAndTotalTileData>();
             int offset = 0;
             bool moreRecords = true;
 
             while (moreRecords)
             {
-                var query = $"select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total, SUM(Final_Tile_Requirement_in_Area_Sq_ft) as Final_Tile_Total from Deals where ((((Stage = 'Closed Won') and ((Tile_Requirement_in_Area_Sq_Mtr >= 500 and Closing_Date >='{fromDate}') or (Tile_Requirement_in_Area_Sq_Mtr < 500 and Closing_Date >='{fromDate}'))) or ((Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared')) and ((Tile_Requirement_in_Area_Sq_Mtr >= 500 and Created_Time > '{fromDate}T00:00:00+05:30') or (Tile_Requirement_in_Area_Sq_Mtr < 500 and Created_Time > '{fromDate}T00:00:00+05:30')))) and ((((ZM_Code = '' or ZH_Code = '') or (BM_Code = '')) or (Sales_Person_Emp_ID = '')) or (Sales_Person_Emp_ID is not null or Adhesive_NH_Code = ''))) group by Stage limit 200 offset {offset}";
+                var query = $"select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total, SUM(Final_Tile_Requirement_in_Area_Sq_ft) as Final_Tile_Total from Deals where ((((Stage = 'Closed Won') and ((Tile_Requirement_in_Area_Sq_Mtr >= 500 and Closing_Date >='{closingDateOneYearBefore}') or (Tile_Requirement_in_Area_Sq_Mtr < 500 and Closing_Date >='{Closing_Date}'))) or ((Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared')) and ((Tile_Requirement_in_Area_Sq_Mtr >= 500 and Created_Time > '{createdTimeThresholdOneYearBefore}') or (Tile_Requirement_in_Area_Sq_Mtr < 500 and Created_Time > '{Created_Time}')))) and ((((ZM_Code = '{zmCode}' or ZH_Code = '{zhCode}') or (BM_Code = '{bmCode}')) or (Sales_Person_Emp_ID = '{salesPersonEmpID}')) or (Sales_Person_Emp_ID is not null or Adhesive_NH_Code = '{nhCode}'))) group by Stage limit 200 offset {offset}";
 
                 var content = new StringContent("{\"select_query\": \"" + query + "\"}", null, "application/json");
                 request.Content = content;

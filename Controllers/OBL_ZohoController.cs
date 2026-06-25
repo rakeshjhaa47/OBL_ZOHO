@@ -693,20 +693,18 @@ namespace OBL_Zoho.Controllers
         }
 
 
-        [SwaggerOperation(Tags = new[] { "Deals" })]
+        [SwaggerOperation(Tags = new[] { "Obl" })]
         [HttpPost]
-        [Route("get-count-records-and-total-tile-between-dates")]
+        [Route("owner_lead_summary")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> GetCountRecordsAndTotalTileBetweenDates(string refreshToken, string fromDate)
+        public async Task<IActionResult> GetCountRecordsAndTotalTileBetweenDates(string refreshToken, string zmCode, string zhCode, string bmCode, string salesPersonEmpID, string nhCode)
         {
             if (string.IsNullOrWhiteSpace(refreshToken))
                 return Unauthorized(new { Message = "Refresh token is required." });
 
-            if (string.IsNullOrWhiteSpace(fromDate))
-                return BadRequest(new { Message = "From date is required." });
 
-            var response = await _zohoService.GetCountRecordsAndTotalTileBetweenDates(refreshToken, fromDate);
+            var response = await _zohoService.GetCountRecordsAndTotalTileBetweenDates(refreshToken,zmCode,zhCode,bmCode,salesPersonEmpID,nhCode);
             return Ok(response);
         }
     }

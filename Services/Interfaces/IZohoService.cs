@@ -79,6 +79,6 @@ namespace OBL_Zoho.Services.Interfaces
 
         Task<BaseResponse> GetZohoSurveyAsync(string accessToken, string empCode);
 
-        Task<BaseResponse> GetCountRecordsAndTotalTileBetweenDates(string accessToken, string fromDate);
+        Task<BaseResponse> GetCountRecordsAndTotalTileBetweenDates(string refreshToken, string zmCode, string zhCode, string bmCode, string salesPersonEmpID, string nhCode);
     }
 }
