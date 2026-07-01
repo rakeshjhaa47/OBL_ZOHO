@@ -707,5 +707,21 @@ namespace OBL_Zoho.Controllers
             var response = await _zohoService.GetCountRecordsAndTotalTileBetweenDates(refreshToken,zmCode,zhCode,bmCode,salesPersonEmpID,nhCode);
             return Ok(response);
         }
+
+        [SwaggerOperation(Tags = new[] { "Obl" })]
+        [HttpPost]
+        [Route("inactive-leads-summary")]
+        public async Task<IActionResult> InactiveLeadsSummary(string accessToken, string EmpId)
+        {
+            return Ok(await _zohoService.InactiveLeadsSummaryAsync(accessToken, EmpId));
+        }
+
+        [SwaggerOperation(Tags = new[] { "Obl" })]
+        [HttpPost]
+        [Route("OwnerDashboard")]
+        public async Task<IActionResult> OwnerDashboard(string refreshToken, string? ZM_Code, string? ZH_Code, string? PCH_Email_ID, string? Sales_Person_Emp_ID, string? Adhesive_NH_Code, string Start_Date, string End_Date)
+        {
+            return Ok(await _zohoService.OwnerDashboardAsync(refreshToken, ZM_Code, ZH_Code, PCH_Email_ID, Sales_Person_Emp_ID, Adhesive_NH_Code, Start_Date, End_Date));
+        }
     }
 }

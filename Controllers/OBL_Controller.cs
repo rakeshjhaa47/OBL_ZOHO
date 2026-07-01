@@ -39,9 +39,9 @@ namespace OBL_Zoho.Controllers
 
         [Route("dashboard")]
         [HttpPost]
-        public async Task<IActionResult> dashboard(string accessToken ,string salesPersonEmpId,string closingDate, string createdTime, string nhCode, string zmCode)
+        public async Task<IActionResult> dashboard(string accessToken, string salesPersonEmpId, string closingDate, string createdTime, string nhCode, string zmCode)
         {
-            var response = await _oblservice.DashboardAsync(accessToken, salesPersonEmpId,closingDate,createdTime,nhCode,zmCode);
+            var response = await _oblservice.DashboardAsync(accessToken, salesPersonEmpId, closingDate, createdTime, nhCode, zmCode);
             return Ok(response);
         }
 
@@ -54,14 +54,14 @@ namespace OBL_Zoho.Controllers
 
         [HttpGet]
         [Route("get-lead-by-stage")]
-        public async Task<IActionResult> GetLeadByStage(string accessToken, string SalesPersonEmpId, string createdTime, int minSqmt, int maxSqmt, string stageCategory,string closingDate,string nhCode,string zmCode, int offSet, int limit)
+        public async Task<IActionResult> GetLeadByStage(string accessToken, string SalesPersonEmpId, string createdTime, int minSqmt, int maxSqmt, string stageCategory, string closingDate, string nhCode, string zmCode, int offSet, int limit)
         {
-            return Ok(await _oblservice.GetLeadByStageAsync(accessToken, SalesPersonEmpId, createdTime, minSqmt, maxSqmt, stageCategory, closingDate,nhCode,zmCode, offSet, limit));
+            return Ok(await _oblservice.GetLeadByStageAsync(accessToken, SalesPersonEmpId, createdTime, minSqmt, maxSqmt, stageCategory, closingDate, nhCode, zmCode, offSet, limit));
         }
 
         [HttpGet]
         [Route("get-hierarchy-data")]
-        public async Task<IActionResult> GetHierarchy(string accessToken,string empCode)
+        public async Task<IActionResult> GetHierarchy(string accessToken, string empCode)
         {
             return Ok(await _oblservice.GetHierarchyAsync(accessToken, empCode));
         }
@@ -79,5 +79,9 @@ namespace OBL_Zoho.Controllers
         {
             return Ok(await _oblservice.UpdatePmtAsync(accessToken, model));
         }
+
+
+
+     
     }
 }

@@ -338,5 +338,66 @@ namespace OBL_Zoho.Services
             };
         }
 
+
+
+        //private async Task<NewSectionDashboardRoot> InactiveLeadsSummary(string accessToken, string EmpId, int offSet)
+        //{
+        //    StringContent content;
+        //    var client = new HttpClient();
+        //    var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+        //    string oneYearCreatedTime = DateTime.Now.AddYears(-1).ToString("yyyy-MM-ddTHH:mm:ssK");
+        //    var oneYearBeforeClosingDate = DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd");
+
+        //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+        //    request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
+
+        //    content = new StringContent("{\"select_query\": \"SELECT Post, Sales_Person_Name FROM Dealer WHERE Name = '"+EmpId+"'\"}");
+
+        //    request.Content = content;
+        //    var response = await client.SendAsync(request);
+        //    response.EnsureSuccessStatusCode();
+        //    var result = await response.Content.ReadAsStringAsync();
+
+        //    return JsonConvert.DeserializeObject<NewSectionDashboardRoot>(result);
+        //}
+
+        //public async Task<BaseResponse> InactiveLeadsSummaryAsync(string accessToken, string EmpId, string closingDate, string createdTime, string nhCode, string zmCode)
+        //{
+        //    var response = new NewSectionDashboardRoot();
+        //    int offSet = 0;
+        //    while (true)
+        //    {
+        //        var dd = await InactiveLeadsSummary(accessToken, EmpId, offSet);
+        //        if (dd == null || dd?.data == null)
+        //        {
+        //            break;
+        //        }
+
+        //        response.data.AddRange(dd.data);
+
+        //        if (dd.info?.more_records == true)
+        //        {
+        //            offSet += 200;
+        //        }
+        //        else
+        //        {
+        //            break;
+        //        }
+        //    }
+
+        //    response.info = new NewSectionDashboardInfo
+        //    {
+        //        count = response.data.Count,
+        //        more_records = false
+        //    };
+
+        //    return new BaseResponse
+        //    {
+        //        Response = response
+        //    };
+        //}
+
+
+        
     }
 }

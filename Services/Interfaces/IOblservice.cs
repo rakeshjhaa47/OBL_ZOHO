@@ -13,5 +13,6 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> DashboardAsync(string accessToken, string salesPersonEmpId, string closingDate, string createdTime, string nhCode, string zmCode);
         Task<BaseResponse> AddProjectInstallmentAsync(string accessToken, ProjectInstallmentRequest model);
         Task<BaseResponse> UpdatePmtAsync(string accessToken, UpdatePmtRequest obj);
+        
     }
 }

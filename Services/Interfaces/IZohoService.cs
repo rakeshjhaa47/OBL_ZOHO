@@ -57,6 +57,7 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> DealSortDataAsync(string refreshToken,string PCH_Email_ID, string Start_Date, string End_Date);
 
         Task<BaseResponse> ClosedWonAsync(string refreshToken,string? ZM_Code, string? ZH_Code, string? PCH_Email_ID, string? Sales_Person_Emp_ID, string Start_Date, string End_Date);
+        Task<BaseResponse> OwnerDashboardAsync(string refreshToken, string? ZM_Code, string? ZH_Code, string? PCH_Email_ID, string? Sales_Person_Emp_ID, string? Adhesive_NH_Code, string Start_Date, string End_Date);
         Task<BaseResponse> CreateFireBaseToken();
         Task<BaseResponse> UpdateStageVisitedStoreAsync(string accessToken, string id, BlueprintRequest bur);
 
@@ -80,5 +81,6 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> GetZohoSurveyAsync(string accessToken, string empCode);
 
         Task<BaseResponse> GetCountRecordsAndTotalTileBetweenDates(string refreshToken, string zmCode, string zhCode, string bmCode, string salesPersonEmpID, string nhCode);
+        Task<BaseResponse> InactiveLeadsSummaryAsync(string accessToken, string EmpId);
     }
 }

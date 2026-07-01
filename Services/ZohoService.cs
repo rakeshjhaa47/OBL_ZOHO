@@ -1734,7 +1734,6 @@ namespace OBL_Zoho.Services
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
-            //var content = new StringContent($@"{{""select_query"":""select Stage,Amount,Closing_Date,Volume_In_Sq_Mtr,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft from Deals where (((((((ZM_Code ='{ZM_Code}' or ZH_Code='{ZH_Code}') or (PCH_Email_ID = '{PCH_Email_ID}')) or (Sales_Person_Email_ID = '{Sales_Person_Emp_ID}')) and (Stage ='Closed Won')) and (Closing_Date is not null)) and (Amount is not null)) and (Closing_Date between '{Start_Date}' and '{End_Date}')) limit 200 offset {offSet}""}}", null, "application/json");
 
             var content = new StringContent($@"{{""select_query"":""select Stage,Amount,Closing_Date,Volume_In_Sq_Mtr,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_Mtr from Deals where (((Tile_Requirement_in_Area_Sq_Mtr >= 500 and Closing_Date between '{oneYearBefore}' and '{currentDate}') or (Tile_Requirement_in_Area_Sq_Mtr < 500 and Closing_Date between '{Start_Date}' and '{End_Date}')) and ((((((ZM_Code ='{ZM_Code}' or ZH_Code='{ZH_Code}') or (PCH_Email_ID = '{PCH_Email_ID}')) or (Sales_Person_Email_ID = '{Sales_Person_Emp_ID}')) and (Stage ='Closed Won')) and (Closing_Date is not null)) and (Amount is not null))) limit 200 offset {offSet}""}}", null, "application/json");
             request.Content = content;
@@ -2767,6 +2766,179 @@ namespace OBL_Zoho.Services
                     Info = new InfoDetails { count = allData.Count, more_records = false }
                 }
             };
+        }
+
+        private async Task<DealerResponse> GetDealerDetailsAsync(string accessToken, string empId)
+        {
+            using var client = new HttpClient();
+
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v8/coql");
+
+            var query = new
+            {
+                select_query = $"SELECT id, Post, Sales_Person_Name FROM Dealer WHERE Name = '{empId}'"
+            };
+
+            request.Content = new StringContent(
+                JsonConvert.SerializeObject(query),
+                Encoding.UTF8,
+                "application/json");
+
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<DealerResponse>(json);
+        }
+
+
+        private async Task<DealsSummaryResponse> GetDealsSummaryAsync(string accessToken, DateTime startDate, DateTime endDate, string post, string empId)
+        {
+            using var client = new HttpClient();
+
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v8/coql");
+
+            string fromDate = startDate.ToString("yyyy-MM-ddT00:00:00zzz");
+            string toDate = endDate.ToString("yyyy-MM-ddT23:59:59zzz");
+
+            string whereClause = post switch
+            {
+                "BM" => $"BM_Code = '{empId}'",
+                "NH" => $"Adhesive_NH_Code = '{empId}'",
+                "ZH" => $"ZH_Code = '{empId}'",
+                _ => throw new Exception("Invalid Dealer Post")
+            };
+
+            string selectQuery =
+                $"SELECT COUNT(id), Sales_Person_Emp_ID, Sales_Person_Name " +
+                $"FROM Deals " +
+                $"WHERE (((Stage = 'Qualification' " +
+                $"AND Created_Time >= '{fromDate}') " +
+                $"AND Created_Time <= '{toDate}') " +
+                $"AND {whereClause}) " +
+                $"GROUP BY Sales_Person_Emp_ID, Sales_Person_Name";
+
+            request.Content = new StringContent(
+                JsonConvert.SerializeObject(new
+                {
+                    select_query = selectQuery
+                }),
+                Encoding.UTF8,
+                "application/json");
+
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<DealsSummaryResponse>(json);
+        }
+
+        public async Task<BaseResponse> InactiveLeadsSummaryAsync(string accessToken, string empId)
+        {
+            // Get Dealer Details
+            var dealer = await GetDealerDetailsAsync(accessToken, empId);
+
+            if (dealer?.data == null || !dealer.data.Any())
+            {
+                return new BaseResponse
+                {
+                    Response = null
+                };
+            }
+
+            var dealerInfo = dealer.data.First();
+
+            string post = dealerInfo.Post?.Trim().ToUpper();
+
+            int days = post switch
+            {
+                "ZH" => 8,
+                "BM" => 5,
+                "NH" => 11,
+                _ => 5
+            };
+
+            DateTime endDate = DateTime.Now;
+            DateTime startDate = endDate.AddDays(-days);
+
+            var dealsSummary = await GetDealsSummaryAsync(
+                accessToken,
+                startDate,
+                endDate,
+                post,
+                empId);
+
+            return new BaseResponse
+            {
+                Response = dealsSummary
+            };
+        }
+
+        public async Task<BaseResponse> OwnerDashboardAsync(string refreshToken, string? ZM_Code, string? ZH_Code, string? PCH_Email_ID, string? Sales_Person_Emp_ID, string Adhesive_NH_Code, string Start_Date, string End_Date)
+        {
+            var response = new SummaryResponse();
+            int offSet = 0;
+            //var token = await GenerateRefreshToken();
+
+            while (true)
+            {
+                var dd = await OwnerDashboard(refreshToken, ZM_Code, ZH_Code, PCH_Email_ID, Sales_Person_Emp_ID, Adhesive_NH_Code, Start_Date, End_Date, offSet);
+                if (dd == null || dd?.data == null)
+                {
+                    break;
+                }
+
+                response.data.AddRange(dd.data);
+
+                if (dd.info?.more_records == true)
+                {
+                    offSet += 200;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            response.info = new SummaryDataInfo
+            {
+                count = response.data.Count,
+                more_records = false
+            };
+
+            return new BaseResponse
+            {
+                Response = response
+            };
+
+        }
+
+        private async Task<SummaryResponse> OwnerDashboard(string token, string? ZM_Code, string? ZH_Code, string? PCH_Email_ID, string? Sales_Person_Emp_ID,string Adhesive_NH_Code, string Start_Date, string End_Date, int offSet)
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+            var currentDate = DateTime.Now.ToString("yyyy-MM-dd");
+            var oneYearBefore = DateTime.Today.AddYears(-1).ToString("yyyy-MM-dd");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
+            //var content = new StringContent($@"{{""select_query"":""select Stage,Amount,Closing_Date,Volume_In_Sq_Mtr,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft from Deals where (((((((ZM_Code ='{ZM_Code}' or ZH_Code='{ZH_Code}') or (PCH_Email_ID = '{PCH_Email_ID}')) or (Sales_Person_Email_ID = '{Sales_Person_Emp_ID}')) and (Stage ='Closed Won')) and (Closing_Date is not null)) and (Amount is not null)) and (Closing_Date between '{Start_Date}' and '{End_Date}')) limit 200 offset {offSet}""}}", null, "application/json");
+
+            var content = new StringContent($@"{{""select_query"":""select Stage,Amount,Closing_Date,Volume_In_Sq_Mtr,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_Mtr from Deals where (((Tile_Requirement_in_Area_Sq_Mtr >= 500 and Closing_Date between '{oneYearBefore}' and '{currentDate}') or (Tile_Requirement_in_Area_Sq_Mtr < 500 and Closing_Date between '{Start_Date}' and '{End_Date}')) and (((((((ZM_Code ='{ZM_Code}' or ZH_Code='{ZH_Code}') or (PCH_Email_ID = '{PCH_Email_ID}')) or (Sales_Person_Email_ID = '{Sales_Person_Emp_ID}')) or (Adhesive_NH_Code = '{Adhesive_NH_Code}')) and (Stage ='Closed Won')) and (Closing_Date is not null)) and (Amount is not null))) limit 200 offset {offSet}""}}", null, "application/json");
+            request.Content = content;
+
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<SummaryResponse>(result);
         }
 
 
