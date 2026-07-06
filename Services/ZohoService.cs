@@ -2734,7 +2734,7 @@ namespace OBL_Zoho.Services
 
             while (moreRecords)
             {
-                var query = $"select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total, SUM(Final_Tile_Requirement_in_Area_Sq_ft) as Final_Tile_Total from Deals where ((((Stage = 'Closed Won') and ((Tile_Requirement_in_Area_Sq_Mtr >= 500 and Closing_Date >='{closingDateOneYearBefore}') or (Tile_Requirement_in_Area_Sq_Mtr < 500 and Closing_Date >='{Closing_Date}'))) or ((Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared')) and ((Tile_Requirement_in_Area_Sq_Mtr >= 500 and Created_Time > '{createdTimeThresholdOneYearBefore}') or (Tile_Requirement_in_Area_Sq_Mtr < 500 and Created_Time > '{Created_Time}')))) and ((((ZM_Code = '{zmCode}' or ZH_Code = '{zhCode}') or (BM_Code = '{bmCode}')) or (Sales_Person_Emp_ID = '{salesPersonEmpID}')) or (Sales_Person_Emp_ID is not null or Adhesive_NH_Code = '{nhCode}'))) group by Stage limit 200 offset {offset}";
+                var query = $"select Stage, COUNT(id) as Total_Count, SUM(Amount) as Total_Amount, SUM(Tile_Requirement_in_Area_Sq_ft) as Tile_Total, SUM(Final_Tile_Requirement_in_Area_Sq_ft) as Final_Tile_Total from Deals where ((((Stage = 'Closed Won') and ((Tile_Requirement_in_Area_Sq_Mtr >= 500 and Closing_Date >='{closingDateOneYearBefore}') or (Tile_Requirement_in_Area_Sq_Mtr < 500 and Closing_Date >='{Closing_Date}'))) or ((Stage in ('Qualification', 'Junk Lead', 'Closed Lost', 'Not Contactable - 4', 'Spoken to Customer', 'Quotation Shared', 'Scheduled a visit', 'Visited Store', 'Samples shared')) and ((Tile_Requirement_in_Area_Sq_Mtr >= 500 and Created_Time > '{createdTimeThresholdOneYearBefore}') or (Tile_Requirement_in_Area_Sq_Mtr < 500 and Created_Time > '{Created_Time}')))) and ((((ZM_Code = '{zmCode}' or ZH_Code = '{zhCode}') or (BM_Code = '{bmCode}')) or (Sales_Person_Emp_ID = '{salesPersonEmpID}')) or (Adhesive_NH_Code = '{nhCode}'))) group by Stage limit 200 offset {offset}";
 
                 var content = new StringContent("{\"select_query\": \"" + query + "\"}", null, "application/json");
                 request.Content = content;
@@ -2805,14 +2805,15 @@ namespace OBL_Zoho.Services
 
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v8/coql");
 
-            string fromDate = startDate.ToString("yyyy-MM-ddT00:00:00zzz");
-            string toDate = endDate.ToString("yyyy-MM-ddT23:59:59zzz");
+            string fromDate = startDate.ToString("yyyy-MM-ddT23:59:59+05:30");
+            string toDate = endDate.ToString("yyyy-MM-ddT23:59:59+05:30");
 
             string whereClause = post switch
             {
-                "BM" => $"BM_Code = '{empId}'",
+                "BM" or "BH" => $"BM_Code = '{empId}'",
                 "NH" => $"Adhesive_NH_Code = '{empId}'",
                 "ZH" => $"ZH_Code = '{empId}'",
+                "ZM" => $"ZM_Code = '{empId}'",
                 _ => throw new Exception("Invalid Dealer Post")
             };
 
@@ -2860,14 +2861,24 @@ namespace OBL_Zoho.Services
 
             int days = post switch
             {
-                "ZH" => 8,
-                "BM" => 5,
-                "NH" => 11,
+                "ZH" => 11,
+                "BM" or "BH" => 8,
+                "NH" => 20,
+                "ZM" => 11,
                 _ => 5
             };
 
-            DateTime endDate = DateTime.Now;
-            DateTime startDate = endDate.AddDays(-days);
+            int enddays = post switch
+            {
+                "ZH" => 8,
+                "BM" or "BH" => 5,
+                "NH" => 11,
+                "ZM" => 8,
+                _ => 5
+            };
+            DateTime currentDate = DateTime.Now;
+            DateTime endDate = currentDate.AddDays(-enddays);
+            DateTime startDate = currentDate.AddDays(-days);
 
             var dealsSummary = await GetDealsSummaryAsync(
                 accessToken,
@@ -2886,7 +2897,6 @@ namespace OBL_Zoho.Services
         {
             var response = new SummaryResponse();
             int offSet = 0;
-            //var token = await GenerateRefreshToken();
 
             while (true)
             {
@@ -2930,7 +2940,6 @@ namespace OBL_Zoho.Services
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
-            //var content = new StringContent($@"{{""select_query"":""select Stage,Amount,Closing_Date,Volume_In_Sq_Mtr,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft from Deals where (((((((ZM_Code ='{ZM_Code}' or ZH_Code='{ZH_Code}') or (PCH_Email_ID = '{PCH_Email_ID}')) or (Sales_Person_Email_ID = '{Sales_Person_Emp_ID}')) and (Stage ='Closed Won')) and (Closing_Date is not null)) and (Amount is not null)) and (Closing_Date between '{Start_Date}' and '{End_Date}')) limit 200 offset {offSet}""}}", null, "application/json");
 
             var content = new StringContent($@"{{""select_query"":""select Stage,Amount,Closing_Date,Volume_In_Sq_Mtr,Final_Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_ft,Tile_Requirement_in_Area_Sq_Mtr from Deals where (((Tile_Requirement_in_Area_Sq_Mtr >= 500 and Closing_Date between '{oneYearBefore}' and '{currentDate}') or (Tile_Requirement_in_Area_Sq_Mtr < 500 and Closing_Date between '{Start_Date}' and '{End_Date}')) and (((((((ZM_Code ='{ZM_Code}' or ZH_Code='{ZH_Code}') or (PCH_Email_ID = '{PCH_Email_ID}')) or (Sales_Person_Email_ID = '{Sales_Person_Emp_ID}')) or (Adhesive_NH_Code = '{Adhesive_NH_Code}')) and (Stage ='Closed Won')) and (Closing_Date is not null)) and (Amount is not null))) limit 200 offset {offSet}""}}", null, "application/json");
             request.Content = content;
