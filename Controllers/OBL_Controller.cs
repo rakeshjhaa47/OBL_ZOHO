@@ -80,8 +80,15 @@ namespace OBL_Zoho.Controllers
             return Ok(await _oblservice.UpdatePmtAsync(accessToken, model));
         }
 
+        [HttpPost]
+        [Route("sources-and-sub-sources")]
+        public async Task<IActionResult> SourcesAndSubSources(string accessToken, string startDate, string endDate)
+        {
+            return Ok(await _oblservice.SourcesAndSubSourcesAsync(accessToken, startDate,endDate));
+        }
 
 
-     
+
+
     }
 }

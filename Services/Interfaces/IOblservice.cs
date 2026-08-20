@@ -1,4 +1,6 @@
-﻿using OBL_Zoho.Models.Request;
+﻿using Azure.Core;
+using DocumentFormat.OpenXml.Wordprocessing;
+using OBL_Zoho.Models.Request;
 using OBL_Zoho.Models.Response;
 
 namespace OBL_Zoho.Services.Interfaces
@@ -13,6 +15,7 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> DashboardAsync(string accessToken, string salesPersonEmpId, string closingDate, string createdTime, string nhCode, string zmCode);
         Task<BaseResponse> AddProjectInstallmentAsync(string accessToken, ProjectInstallmentRequest model);
         Task<BaseResponse> UpdatePmtAsync(string accessToken, UpdatePmtRequest obj);
+        Task<BaseResponse> SourcesAndSubSourcesAsync(string accessToken, string startDate, string endDate);
         
     }
 }

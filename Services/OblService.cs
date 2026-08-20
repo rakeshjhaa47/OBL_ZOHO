@@ -397,7 +397,70 @@ namespace OBL_Zoho.Services
         //    };
         //}
 
+        private async Task<SourcesAndSubSourcesRoot> SourcesAndSubSources(string accessToken, string startDate, string endDate, int offSet)
+        {
+            StringContent content;
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
 
-        
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", accessToken);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {accessToken}");
+
+            content = new StringContent("{\"select_query\": \"SELECT First_Name, Last_Name, Mobile, Lead_Source, Sub_Source, Type_of_Lead, Lead_Category, Zip_Code, gaconnectorfields1__Pages_Visited FROM Leads WHERE (Created_Time >= '"+startDate+"' AND Created_Time <= '"+endDate+"') LIMIT 200 offset "+offSet+"\"}");
+            try
+            {
+                request.Content = content;
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                var result = await response.Content.ReadAsStringAsync();
+
+                return JsonConvert.DeserializeObject<SourcesAndSubSourcesRoot>(result);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return new SourcesAndSubSourcesRoot();
+
+
+
+        }
+
+        public async Task<BaseResponse> SourcesAndSubSourcesAsync(string accessToken, string startDate, string endDate)
+        {
+            var response = new SourcesAndSubSourcesRoot();
+            int offSet = 0;
+            while (true)
+            {
+                var dd = await SourcesAndSubSources(accessToken, startDate, endDate, offSet);
+                if (dd == null || dd?.data == null)
+                {
+                    break;
+                }
+
+                response.data.AddRange(dd.data);
+
+                if (dd.info?.more_records == true)
+                {
+                    offSet += 200;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            response.info = new SourcesAndSubSourcesInfo
+            {
+                count = response.data.Count,
+                more_records = false
+            };
+
+            return new BaseResponse
+            {
+                Response = response
+            };
+        }
+
     }
 }

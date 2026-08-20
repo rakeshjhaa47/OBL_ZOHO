@@ -2561,15 +2561,108 @@ namespace OBL_Zoho.Services
             return responseData;
         }
 
-        public async Task<BaseResponse>ChatBotDeals(string token, string startDate, string endDate)
+        //public async Task<BaseResponse> ChatBotDeals(string token, string startDate, string endDate)
+        //{
+        //    var response = new ChatBotRoot();
+        //    int offSet = 0;
+
+        //    while (true)
+        //    {
+        //        var dd = await ChatBotDeals(token, startDate, endDate, offSet);
+        //        if (dd == null || dd?.Data == null)
+        //        {
+        //            break;
+        //        }
+
+        //        response.Data.AddRange(dd.Data);
+
+        //        if (dd.Info?.more_records == true)
+        //        {
+        //            offSet += 200;
+        //        }
+        //        else
+        //        {
+        //            break;
+        //        }
+        //    }
+
+        //    response.Info = new ChatBotInfo
+        //    {
+        //        count = response.Data.Count,
+        //        more_records = false
+        //    };
+
+        //    var groupedResponse = response.Data
+        //    .GroupBy(x => x.Parent_Id_id)
+        //    .Select(g =>
+        //    {
+        //        var first = g.First();
+
+        //        return new ChatBotGroupedResponse
+        //        {
+        //            id = first.Parent_Id_id,
+        //            Sizes_Shortlisted = first.Parent_Id_Sizes_Shortlisted,
+        //            Stage_Category = first.Parent_Id_Stage_Category,
+        //            Assigned_CP_By_Agent = first.Parent_Id_Assigned_CP_By_Agent,
+        //            Zone = first.Parent_Id_Zone,
+        //            CP_Allocated_Date = first.Parent_Id_CP_Allocated_Date,
+        //            Stage = first.Parent_Id_Stage,
+        //            Amount = first.Parent_Id_Amount,
+        //            Volume_In_Sq_Mtr = first.Parent_Id_Volume_In_Sq_Mtr,
+        //            Assigned_CP_Name = first.Parent_Id_Assigned_CP_Name,
+        //            Branch_Area = first.Parent_Id_Branch_Area,
+        //            Sales_Person_Name = first.Parent_Id_Sales_Person_Name,
+        //            Tile_Requirement_in_Area_Sq_Mtr = first.Parent_Id_Tile_Requirement_in_Area_Sq_Mtr,
+        //            Sales_Person_Emp_ID = first.Parent_Id_Sales_Person_Emp_ID,
+        //            Created_Time = first.Parent_Id_Created_Time,
+        //            Deal_Name = first.Parent_Id_Deal_Name,
+        //            Category = first.Parent_Id_Category,
+        //            Closing_Date = first.Parent_Id_Closing_Date,
+
+        //            Category_Details_from_APP = g.Select(x => new ChatBotCategoryDetail
+        //            {
+        //                id = x.id,
+        //                Category = x.Category,
+        //                Size = x.Size,
+        //                Box = x.Box,
+        //                Sq_Mt = x.Sq_Mt,
+        //                Entry_Date = x.Entry_Date
+        //            }).ToList()
+        //        };
+        //    })
+        //    .ToList();
+
+        //    return new BaseResponse
+        //    {
+        //        Response = groupedResponse
+        //    };
+        //}
+
+
+        public async Task<BaseResponse> ChatBotDeals(
+     string token,
+     string startDate,
+     string endDate)
         {
+            // =========================================================
+            // 1. FIRST API
+            // Category Details
+            // =========================================================
+
             var response = new ChatBotRoot();
             int offSet = 0;
 
             while (true)
             {
-                var dd = await ChatBotDeals(token, startDate,endDate, offSet);
-                if (dd == null || dd?.Data == null)
+                var dd = await ChatBotDeals(
+                    token,
+                    startDate,
+                    endDate,
+                    offSet);
+
+                if (dd == null ||
+                    dd.Data == null ||
+                    dd.Data.Count == 0)
                 {
                     break;
                 }
@@ -2586,18 +2679,211 @@ namespace OBL_Zoho.Services
                 }
             }
 
-            response.Info = new ChatBotInfo
+
+            // =========================================================
+            // 2. GROUP FIRST API
+            // =========================================================
+
+            var groupedResponse = response.Data
+                .GroupBy(x => x.Parent_Id_id)
+                .Select(g =>
+                {
+                    var first = g.First();
+
+                    return new ChatBotGroupedResponse
+                    {
+                        id = first.Parent_Id_id,
+
+                        Sizes_Shortlisted =
+                            first.Parent_Id_Sizes_Shortlisted,
+
+                        Stage_Category =
+                            first.Parent_Id_Stage_Category,
+
+                        Assigned_CP_By_Agent =
+                            first.Parent_Id_Assigned_CP_By_Agent,
+
+                        Zone =
+                            first.Parent_Id_Zone,
+
+                        CP_Allocated_Date =
+                            first.Parent_Id_CP_Allocated_Date,
+
+                        Stage =
+                            first.Parent_Id_Stage,
+
+                        Amount =
+                            first.Parent_Id_Amount,
+
+                        Volume_In_Sq_Mtr =
+                            first.Parent_Id_Volume_In_Sq_Mtr,
+
+                        Assigned_CP_Name =
+                            first.Parent_Id_Assigned_CP_Name,
+
+                        Branch_Area =
+                            first.Parent_Id_Branch_Area,
+
+                        Sales_Person_Name =
+                            first.Parent_Id_Sales_Person_Name,
+
+                        Tile_Requirement_in_Area_Sq_Mtr =
+                            first.Parent_Id_Tile_Requirement_in_Area_Sq_Mtr,
+
+                        Sales_Person_Emp_ID =
+                            first.Parent_Id_Sales_Person_Emp_ID,
+
+                        Created_Time =
+                            first.Parent_Id_Created_Time,
+
+                        Deal_Name =
+                            first.Parent_Id_Deal_Name,
+
+                        Category =
+                            first.Parent_Id_Category,
+
+                        Closing_Date =
+                            first.Parent_Id_Closing_Date,
+
+                        // First API category details
+                        Category_Details_from_APP =
+                            g.Select(x => new ChatBotCategoryDetail
+                            {
+                                id = x.id,
+                                Category = x.Category,
+                                Size = x.Size,
+                                Box = x.Box,
+                                Sq_Mt = x.Sq_Mt,
+                                Entry_Date = x.Entry_Date
+                            }).ToList()
+                    };
+                })
+                .ToList();
+
+
+            // =========================================================
+            // 3. SECOND API
+            // Deals
+            // =========================================================
+
+            var dealsResponse = new ChatBotDealsRoot();
+            int dealOffset = 0;
+
+            while (true)
             {
-                count = response.Data.Count,
-                more_records = false
-            };
+                var deals = await GetDeals(
+                    token,
+                    startDate,
+                    endDate,
+                    dealOffset);
+
+                if (deals == null ||
+                    deals.data == null ||
+                    deals.data.Count == 0)
+                {
+                    break;
+                }
+
+                dealsResponse.data.AddRange(deals.data);
+
+                if (deals.info?.more_records == true)
+                {
+                    dealOffset += 200;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+
+            // =========================================================
+            // 4. MAP SECOND API
+            // DO NOT GROUP
+            // DO NOT MATCH
+            //
+            // Just convert each Deal into ChatBotGroupedResponse
+            // =========================================================
+
+            var secondApiResponse = dealsResponse.data
+                .Select(deal => new ChatBotGroupedResponse
+                {
+                    id = deal.id,
+
+                    Sizes_Shortlisted =
+                        deal.Sizes_Shortlisted,
+
+                    Stage_Category =
+                        deal.Stage_Category,
+
+                    Assigned_CP_By_Agent =
+                        deal.Assigned_CP_By_Agent,
+
+                    Zone =
+                        deal.Zone,
+
+                    CP_Allocated_Date =
+                        deal.CP_Allocated_Date,
+
+                    Stage =
+                        deal.Stage,
+
+                    Amount =
+                        deal.Amount,
+
+                    Volume_In_Sq_Mtr =
+                        deal.Volume_In_Sq_Mtr,
+
+                    Assigned_CP_Name =
+                        deal.Assigned_CP_Name,
+
+                    Branch_Area =
+                        deal.Branch_Area,
+
+                    Sales_Person_Name =
+                        deal.Sales_Person_Name,
+
+                    Tile_Requirement_in_Area_Sq_Mtr =
+                        deal.Tile_Requirement_in_Area_Sq_Mtr,
+
+                    Sales_Person_Emp_ID =
+                        deal.Sales_Person_Emp_ID,
+
+                    Created_Time =
+                        deal.Created_Time,
+
+                    Deal_Name =
+                        deal.Deal_Name,
+
+                    Category =
+                        deal.Category,
+
+                    Closing_Date =
+                        deal.Closing_Date,
+
+                    // Second API always gets empty category details
+                    Category_Details_from_APP =
+                        new List<ChatBotCategoryDetail>()
+                })
+                .ToList();
+
+
+            // =========================================================
+            // 5. ADD SECOND API DATA TO FIRST API DATA
+            // =========================================================
+
+            groupedResponse.AddRange(secondApiResponse);
+
+
+            // =========================================================
+            // 6. RETURN BOTH
+            // =========================================================
 
             return new BaseResponse
             {
-                Response = response
+                Response = groupedResponse
             };
         }
-
         private async Task<ChatBotRoot> ChatBotDeals(string token, string startDate, string endDate, int offSet)
         {
             StringContent content;
@@ -2608,7 +2894,7 @@ namespace OBL_Zoho.Services
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
 
-            content = new StringContent("{\"select_query\": \"select Sales_Person_Emp_ID, Sales_Person_Name, Assigned_CP_By_Agent, Assigned_CP_Name,Deal_Name,Tile_Requirement_in_Area_Sq_Mtr,Amount,CP_Allocated_Date,Stage,Closing_Date from Deals where ((Assigned_CP_By_Agent is not null) and (Created_Time between '"+startDate+"' and '"+endDate+"')) limit 200 offset "+offSet+" \"}");
+            content = new StringContent("{\"select_query\": \"select Parent_Id.id, Parent_Id.Sales_Person_Emp_ID, Parent_Id.Sales_Person_Name, Parent_Id.Assigned_CP_By_Agent, Parent_Id.Assigned_CP_Name, Parent_Id.Deal_Name, Parent_Id.Tile_Requirement_in_Area_Sq_Mtr, Parent_Id.Amount, Parent_Id.CP_Allocated_Date, Parent_Id.Stage, Parent_Id.Closing_Date, Parent_Id.Volume_In_Sq_Mtr, Parent_Id.Created_Time, Parent_Id.Sizes_Shortlisted, Parent_Id.Category, Parent_Id.Stage_Category, Parent_Id.Zone, Parent_Id.Branch_Area, Category, Size, Box, Sq_Mt, Entry_Date from Category_Details_from_APP where ((Parent_Id.Assigned_CP_By_Agent is not null) and (Parent_Id.Created_Time between '" + startDate +"' and '"+endDate+"')) limit 200 offset "+offSet+"\"}");
 
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -2616,6 +2902,27 @@ namespace OBL_Zoho.Services
             var result = await response.Content.ReadAsStringAsync();
 
             var responseData = JsonConvert.DeserializeObject<ChatBotRoot>(result);
+            return responseData;
+        }
+
+        private async Task<ChatBotDealsRoot> GetDeals(string token, string startDate, string endDate, int offSet)
+        {
+            StringContent content;
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.zohoapis.com/crm/v6/coql");
+            var Created_Time = DateTime.Now.AddDays(-90).ToString("yyyy-MM-ddTHH:mm:ssK");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
+            request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
+
+            content = new StringContent("{\"select_query\": \"SELECT id, Sales_Person_Emp_ID, Sales_Person_Name, Assigned_CP_By_Agent, Assigned_CP_Name, Deal_Name, Tile_Requirement_in_Area_Sq_Mtr, Amount, CP_Allocated_Date, Stage, Closing_Date, Volume_In_Sq_Mtr, Created_Time, Sizes_Shortlisted, Category, Stage_Category, Zone, Branch_Area FROM Deals WHERE ((Stage != 'Closed Won') AND (Created_Time >= '"+startDate+"' AND Created_Time <= '"+endDate+"')) LIMIT 200 offset " + offSet + "\"}");
+
+            request.Content = content;
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+
+            var responseData = JsonConvert.DeserializeObject<ChatBotDealsRoot>(result);
             return responseData;
         }
 
