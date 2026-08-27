@@ -2639,10 +2639,7 @@ namespace OBL_Zoho.Services
         //}
 
 
-        public async Task<BaseResponse> ChatBotDeals(
-     string token,
-     string startDate,
-     string endDate)
+        public async Task<BaseResponse> ChatBotDeals(string token,string startDate,string endDate, string modifiedStartDate, string modifiedEndDate)
         {
             // =========================================================
             // 1. FIRST API
@@ -2658,6 +2655,8 @@ namespace OBL_Zoho.Services
                     token,
                     startDate,
                     endDate,
+                    modifiedStartDate,
+                    modifiedEndDate,
                     offSet);
 
                 if (dd == null ||
@@ -2744,6 +2743,8 @@ namespace OBL_Zoho.Services
 
                         Closing_Date =
                             first.Parent_Id_Closing_Date,
+                        Modified_Time = 
+                            first.Parent_Id_Modified_Time,
 
                         // First API category details
                         Category_Details_from_APP =
@@ -2775,6 +2776,8 @@ namespace OBL_Zoho.Services
                     token,
                     startDate,
                     endDate,
+                    modifiedStartDate,
+                    modifiedEndDate,
                     dealOffset);
 
                 if (deals == null ||
@@ -2861,6 +2864,9 @@ namespace OBL_Zoho.Services
                     Closing_Date =
                         deal.Closing_Date,
 
+                    Modified_Time =
+                    deal.Modified_Time,
+
                     // Second API always gets empty category details
                     Category_Details_from_APP =
                         new List<ChatBotCategoryDetail>()
@@ -2884,7 +2890,7 @@ namespace OBL_Zoho.Services
                 Response = groupedResponse
             };
         }
-        private async Task<ChatBotRoot> ChatBotDeals(string token, string startDate, string endDate, int offSet)
+        private async Task<ChatBotRoot> ChatBotDeals(string token, string startDate, string endDate, string modifiedStartDate, string modifiedEndDate, int offSet)
         {
             StringContent content;
             var client = new HttpClient();
@@ -2893,8 +2899,19 @@ namespace OBL_Zoho.Services
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
+            if (!string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate) && !string.IsNullOrEmpty(modifiedStartDate) && !string.IsNullOrEmpty(modifiedEndDate))
+            {
+                content = new StringContent("{\"select_query\": \"select Parent_Id.id, Parent_Id.Sales_Person_Emp_ID, Parent_Id.Sales_Person_Name, Parent_Id.Assigned_CP_By_Agent, Parent_Id.Assigned_CP_Name, Parent_Id.Deal_Name, Parent_Id.Tile_Requirement_in_Area_Sq_Mtr, Parent_Id.Amount, Parent_Id.CP_Allocated_Date, Parent_Id.Stage, Parent_Id.Closing_Date, Parent_Id.Volume_In_Sq_Mtr, Parent_Id.Created_Time, Parent_Id.Sizes_Shortlisted, Parent_Id.Category, Parent_Id.Stage_Category, Parent_Id.Zone, Parent_Id.Branch_Area,Parent_Id.Modified_Time, Category, Size, Box, Sq_Mt, Entry_Date from Category_Details_from_APP WHERE ((Parent_Id.Created_Time between '" + startDate+"' and '"+endDate+"') OR (Parent_Id.Modified_Time between '"+modifiedStartDate+"' and '"+modifiedEndDate+"')) LIMIT 200 offset "+offSet+"\"}");
 
-            content = new StringContent("{\"select_query\": \"select Parent_Id.id, Parent_Id.Sales_Person_Emp_ID, Parent_Id.Sales_Person_Name, Parent_Id.Assigned_CP_By_Agent, Parent_Id.Assigned_CP_Name, Parent_Id.Deal_Name, Parent_Id.Tile_Requirement_in_Area_Sq_Mtr, Parent_Id.Amount, Parent_Id.CP_Allocated_Date, Parent_Id.Stage, Parent_Id.Closing_Date, Parent_Id.Volume_In_Sq_Mtr, Parent_Id.Created_Time, Parent_Id.Sizes_Shortlisted, Parent_Id.Category, Parent_Id.Stage_Category, Parent_Id.Zone, Parent_Id.Branch_Area, Category, Size, Box, Sq_Mt, Entry_Date from Category_Details_from_APP where ((Parent_Id.Assigned_CP_By_Agent is not null) and (Parent_Id.Created_Time between '" + startDate +"' and '"+endDate+"')) limit 200 offset "+offSet+"\"}");
+            }
+            else if (!string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
+            {
+                content = new StringContent("{\"select_query\": \"select Parent_Id.id, Parent_Id.Sales_Person_Emp_ID, Parent_Id.Sales_Person_Name, Parent_Id.Assigned_CP_By_Agent, Parent_Id.Assigned_CP_Name, Parent_Id.Deal_Name, Parent_Id.Tile_Requirement_in_Area_Sq_Mtr, Parent_Id.Amount, Parent_Id.CP_Allocated_Date, Parent_Id.Stage, Parent_Id.Closing_Date, Parent_Id.Volume_In_Sq_Mtr, Parent_Id.Created_Time, Parent_Id.Sizes_Shortlisted, Parent_Id.Category, Parent_Id.Stage_Category, Parent_Id.Zone, Parent_Id.Branch_Area,Parent_Id.Modified_Time, Category, Size, Box, Sq_Mt, Entry_Date from Category_Details_from_APP where ((Parent_Id.Assigned_CP_By_Agent is not null) and (Parent_Id.Created_Time between '" + startDate + "' and '" + endDate + "')) limit 200 offset " + offSet + "\"}");
+            }
+            else
+            {
+                content = new StringContent("{\"select_query\": \"select Parent_Id.id, Parent_Id.Sales_Person_Emp_ID, Parent_Id.Sales_Person_Name, Parent_Id.Assigned_CP_By_Agent, Parent_Id.Assigned_CP_Name, Parent_Id.Deal_Name, Parent_Id.Tile_Requirement_in_Area_Sq_Mtr, Parent_Id.Amount, Parent_Id.CP_Allocated_Date, Parent_Id.Stage, Parent_Id.Closing_Date, Parent_Id.Volume_In_Sq_Mtr, Parent_Id.Created_Time, Parent_Id.Sizes_Shortlisted, Parent_Id.Category, Parent_Id.Stage_Category, Parent_Id.Zone, Parent_Id.Branch_Area,Parent_Id.Modified_Time, Category, Size, Box, Sq_Mt, Entry_Date from Category_Details_from_APP WHERE (Parent_Id.Modified_Time between '" + modifiedStartDate + "' and '" + modifiedEndDate + "') LIMIT 200 offset " + offSet + "\"}");
+            }
 
             request.Content = content;
             var response = await client.SendAsync(request);
@@ -2905,7 +2922,7 @@ namespace OBL_Zoho.Services
             return responseData;
         }
 
-        private async Task<ChatBotDealsRoot> GetDeals(string token, string startDate, string endDate, int offSet)
+        private async Task<ChatBotDealsRoot> GetDeals(string token, string startDate, string endDate, string modifiedStartDate, string modifiedEndDate, int offSet)
         {
             StringContent content;
             var client = new HttpClient();
@@ -2914,9 +2931,19 @@ namespace OBL_Zoho.Services
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Zoho-oauthtoken", token);
             request.Headers.Add("Authorization", $"Zoho-oauthtoken {token}");
+            if (!string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate) && !string.IsNullOrEmpty(modifiedStartDate) && !string.IsNullOrEmpty(modifiedEndDate))
+            {
+                content = new StringContent("{\"select_query\": \"SELECT id, Sales_Person_Emp_ID, Sales_Person_Name, Assigned_CP_By_Agent, Assigned_CP_Name, Deal_Name, Tile_Requirement_in_Area_Sq_Mtr, Amount, CP_Allocated_Date, Stage, Closing_Date, Volume_In_Sq_Mtr, Created_Time, Sizes_Shortlisted, Category, Stage_Category,Modified_Time, Zone, Branch_Area FROM Deals WHERE ((Stage != 'Closed Won') AND ((Created_Time between '" + startDate+"' and '"+endDate+"') OR (Modified_Time between '"+modifiedStartDate+"' and '"+modifiedEndDate+"'))) LIMIT 200 offset "+offSet+"\"}");
 
-            content = new StringContent("{\"select_query\": \"SELECT id, Sales_Person_Emp_ID, Sales_Person_Name, Assigned_CP_By_Agent, Assigned_CP_Name, Deal_Name, Tile_Requirement_in_Area_Sq_Mtr, Amount, CP_Allocated_Date, Stage, Closing_Date, Volume_In_Sq_Mtr, Created_Time, Sizes_Shortlisted, Category, Stage_Category, Zone, Branch_Area FROM Deals WHERE ((Stage != 'Closed Won') AND (Created_Time >= '"+startDate+"' AND Created_Time <= '"+endDate+"')) LIMIT 200 offset " + offSet + "\"}");
-
+            }
+            else if (!string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
+            {
+                content = new StringContent("{\"select_query\": \"SELECT id, Sales_Person_Emp_ID, Sales_Person_Name, Assigned_CP_By_Agent, Assigned_CP_Name, Deal_Name, Tile_Requirement_in_Area_Sq_Mtr, Amount, CP_Allocated_Date, Stage, Closing_Date, Volume_In_Sq_Mtr, Created_Time, Sizes_Shortlisted, Category, Stage_Category,Modified_Time, Zone, Branch_Area FROM Deals WHERE ((Stage != 'Closed Won') AND (Created_Time >= '" + startDate + "' AND Created_Time <= '" + endDate + "')) LIMIT 200 offset " + offSet + "\"}");
+            }
+            else
+            {
+                content = new StringContent("{\"select_query\": \"SELECT id, Sales_Person_Emp_ID, Sales_Person_Name, Assigned_CP_By_Agent, Assigned_CP_Name, Deal_Name, Tile_Requirement_in_Area_Sq_Mtr, Amount, CP_Allocated_Date, Stage, Closing_Date, Volume_In_Sq_Mtr, Created_Time, Sizes_Shortlisted, Category, Stage_Category,Modified_Time, Zone, Branch_Area FROM Deals WHERE ((Stage != 'Closed Won') AND (Modified_Time between '" + modifiedStartDate + "' and '" + modifiedEndDate + "')) LIMIT 200 offset " + offSet + "\"}");
+            }
             request.Content = content;
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();

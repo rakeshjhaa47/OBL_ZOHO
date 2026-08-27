@@ -659,9 +659,9 @@ namespace OBL_Zoho.Controllers
         [SwaggerOperation(Tags = new[] { "ChatBot" })]
         [HttpGet]
         [Route("ChatBotDeals")]
-        public async Task<IActionResult> ChatBotDeals(string token, string startDate,string endDate)
+        public async Task<IActionResult> ChatBotDeals(string token, string? startDate=null,string? endDate=null, string? modifiedStartDate =null, string? modifiedEndDate=null)
         {
-            var response = await _zohoService.ChatBotDeals(token, startDate,endDate);
+            var response = await _zohoService.ChatBotDeals(token, startDate,endDate, modifiedStartDate, modifiedEndDate);
             return Ok(response);
         }
 

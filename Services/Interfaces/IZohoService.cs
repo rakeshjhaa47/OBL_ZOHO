@@ -75,7 +75,7 @@ namespace OBL_Zoho.Services.Interfaces
         Task<BaseResponse> CpLeaderBoardAsync(string token);
         Task<BaseResponse> FLSLeaderboardAsync(string token, bool isEmployee, string startDate, string endDate);
         Task<DeviceIdAndPlatformResponse> SaveFcmTokenAsync(string accessToken,DeviceIdAndPlatformRequest request);
-        Task<BaseResponse> ChatBotDeals(string token, string startDate,string endDate);
+        Task<BaseResponse> ChatBotDeals(string token, string startDate,string endDate, string modifiedStartDate, string modifiedEndDate);
         Task<BaseResponse> ChatBot_Analytics_Refresh_Token();
 
         Task<BaseResponse> GetZohoSurveyAsync(string accessToken, string empCode);

@@ -120,6 +120,9 @@ namespace OBL_Zoho.Models.Response
 
         [JsonProperty("id")]
         public string? id { get; set; }
+
+        [JsonProperty("Parent_Id.Modified_Time")]
+        public DateTime? Parent_Id_Modified_Time { get; set; }
     }
 
     public class ChatBotInfo
@@ -160,6 +163,7 @@ namespace OBL_Zoho.Models.Response
         public string? Deal_Name { get; set; }
         public string? Category { get; set; }
         public DateTime? Closing_Date { get; set; }
+        public DateTime? Modified_Time { get; set; }
 
         public List<ChatBotCategoryDetail> Category_Details_from_APP { get; set; } = new();
     }
@@ -211,6 +215,7 @@ namespace OBL_Zoho.Models.Response
         public string? Zone { get; set; }
 
         public string? Branch_Area { get; set; }
+        public DateTime? Modified_Time { get; set; }
     }
 
     public class ChatBotDealsRoot
