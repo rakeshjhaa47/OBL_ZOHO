@@ -22,6 +22,7 @@ builder.Services.AddScoped<IZohoService, ZohoService>();
 builder.Services.AddScoped<IConnectService, ConnectService>();
 builder.Services.AddScoped<IOblservice, OblService>();
 builder.Services.AddScoped<IOblAdhesiveService, OblAdhesiveService>();
+builder.Services.AddScoped<ITilekartnewUIService, TilekartnewUIService>();
 
 builder.Services.AddControllers();
 
